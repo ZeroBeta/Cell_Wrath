@@ -87,7 +87,7 @@ end
 --------------------------------------------------
 -- bar
 --------------------------------------------------
-local bar = Cell.CreateStatusBar("CellBattleResBar", battleResFrame, 10, 4, 100, false, nil, false, "Interface\\AddOns\\Cell\\Media\\statusbar", Cell.GetAccentColorTable())
+local bar = Cell.CreateStatusBar("CellBattleResBar", battleResFrame, 10, 4, 100, false, nil, false, "Interface\\AddOns\\Cell_Wrath\\Media\\statusbar", Cell.GetAccentColorTable())
 bar:SetPoint("BOTTOMLEFT")
 bar:SetPoint("BOTTOMRIGHT")
 -- P.Point(bar, "BOTTOMLEFT", battleResFrame, "BOTTOMLEFT", 1, 1)

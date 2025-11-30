@@ -188,7 +188,7 @@ local function CreateDRPane()
     end)
 
     debuffItems[0] = Cell.CreateButton(drDebuffsList.scrollFrame.content, "", "transparent-accent", {20, 20})
-    debuffItems[0]:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\new", {16, 16}, {"RIGHT", -1, 0})
+    debuffItems[0]:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\new", {16, 16}, {"RIGHT", -1, 0})
     debuffItems[0]:SetScript("OnClick", function(self)
         local popup = Cell.CreatePopupEditBox(drDebuffsList, function(text)
             local spellId = tonumber(text)
@@ -316,7 +316,7 @@ LoadList = function(scrollToBottom)
 
             -- del
             debuffItems[i].del = Cell.CreateButton(debuffItems[i], "", "none", {18, 20}, true, true)
-            debuffItems[i].del:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\delete", {16, 16}, {"CENTER", 0, 0})
+            debuffItems[i].del:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\delete", {16, 16}, {"CENTER", 0, 0})
             debuffItems[i].del:SetPoint("RIGHT")
             debuffItems[i].del.tex:SetVertexColor(0.6, 0.6, 0.6, 1)
             debuffItems[i].del:SetScript("OnEnter", function()

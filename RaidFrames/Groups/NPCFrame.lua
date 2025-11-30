@@ -116,7 +116,8 @@ local pointUpdater = [[
         end
     end
 
-    self:CallMethod("UpdateSeparateAnchor")
+    -- WotLK: CallMethod doesn't exist in restricted environment
+    -- UpdateSeparateAnchor is called from regular Lua code elsewhere (line 448)
 ]]
 npcFrame:SetAttribute("pointUpdater", pointUpdater)
 
@@ -184,8 +185,25 @@ for i = 1, 8 do
         local npcFrame = self:GetFrameRef("npcFrame")
         self:RunFor(npcFrame, npcFrame:GetAttribute("pointUpdater"), orientation, point, anchorPoint, unitSpacing)
     ]])
-    button.helper:SetAttribute("_onshow", [[ self:RunAttribute("pointUpdater") ]])
-    button.helper:SetAttribute("_onhide", [[ self:RunAttribute("pointUpdater") ]])
+    -- WotLK: RunAttribute doesn't exist, inline the pointUpdater logic
+    button.helper:SetAttribute("_onshow", [[
+        local orientation = self:GetAttribute("orientation")
+        local point = self:GetAttribute("point")
+        local anchorPoint = self:GetAttribute("anchorPoint")
+        local unitSpacing = self:GetAttribute("unitSpacing")
+
+        local npcFrame = self:GetFrameRef("npcFrame")
+        self:RunFor(npcFrame, npcFrame:GetAttribute("pointUpdater"), orientation, point, anchorPoint, unitSpacing)
+    ]])
+    button.helper:SetAttribute("_onhide", [[
+        local orientation = self:GetAttribute("orientation")
+        local point = self:GetAttribute("point")
+        local anchorPoint = self:GetAttribute("anchorPoint")
+        local unitSpacing = self:GetAttribute("unitSpacing")
+
+        local npcFrame = self:GetFrameRef("npcFrame")
+        self:RunFor(npcFrame, npcFrame:GetAttribute("pointUpdater"), orientation, point, anchorPoint, unitSpacing)
+    ]])
 end
 
 -------------------------------------------------
@@ -320,7 +338,28 @@ npcFrame:SetAttribute("_onstate-groupstate", [[
     end
 
     -- NOTE: update each npc button
-    self:RunAttribute("pointUpdater", orientation, point, anchorPoint, unitSpacing)
+    -- WotLK: RunAttribute doesn't exist, inline the pointUpdater logic
+    local last
+    for i = 1, 8 do
+        local button = self:GetFrameRef("button"..i)
+        button:ClearAllPoints()
+        if button:IsVisible() then
+            if last then
+                -- NOTE: anchor to last
+                if orientation == "vertical" then
+                    button:SetPoint(point, last, anchorPoint, 0, unitSpacing)
+                else
+                    button:SetPoint(point, last, anchorPoint, unitSpacing, 0)
+                end
+            else
+                button:SetPoint("TOPLEFT", self)
+            end
+            last = button
+        end
+    end
+
+    -- WotLK: CallMethod doesn't exist in restricted environment
+    -- UpdateSeparateAnchor is called from regular Lua code elsewhere (line 448)
 ]])
 
 -------------------------------------------------

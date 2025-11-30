@@ -40,7 +40,7 @@ local function CreateCellPane()
     -- recommended scale
     local recScaleBtn = Cell.CreateButton(cellPane, nil, "accent-hover", {17, 17}, nil, nil, nil, nil, nil, L["Apply Recommended Scale"])
     recScaleBtn:SetPoint("BOTTOMRIGHT", scaleSlider, "TOPRIGHT", 0, 2)
-    recScaleBtn:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\resize", {15, 15}, {"CENTER", 0, 0})
+    recScaleBtn:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\resize", {15, 15}, {"CENTER", 0, 0})
     recScaleBtn:SetScript("OnClick", function()
         local scale = P.GetRecommendedScale()
         scaleSlider:SetValue(scale)
@@ -564,7 +564,7 @@ local LSM = LibStub("LibSharedMedia-3.0", true)
 local function CheckTextures()
     local items = {}
     local textures, textureNames
-    local defaultTexture, defaultTextureName = "Interface\\AddOns\\Cell\\Media\\statusbar.tga", "Cell ".._G.DEFAULT
+    local defaultTexture, defaultTextureName = "Interface\\AddOns\\Cell_Wrath\\Media\\statusbar.tga", "Cell ".._G.DEFAULT
 
     -- if LSM then
         textures, textureNames = F.Copy(LSM:HashTable("statusbar")), F.Copy(LSM:List("statusbar"))
@@ -1532,7 +1532,7 @@ local function CreateUnitButtonStylePane()
             F.ResetButtonStyle()
 
             -- load data
-            textureDropdown:SetSelected("Cell ".._G.DEFAULT, "Interface\\AddOns\\Cell\\Media\\statusbar.tga")
+            textureDropdown:SetSelected("Cell ".._G.DEFAULT, "Interface\\AddOns\\Cell_Wrath\\Media\\statusbar.tga")
             LoadButtonStyle()
 
             Cell.Fire("UpdateAppearance", "reset")
@@ -1551,35 +1551,35 @@ local function CreateDebuffTypeColorPane()
     dtcPane:SetPoint("TOPLEFT", appearanceTab, "TOPLEFT", 5, -595)
 
     -- curse
-    curseCP = Cell.CreateColorPicker(dtcPane, "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\Curse:0|t"..L["Curse"], false, nil, function(r, g, b)
+    curseCP = Cell.CreateColorPicker(dtcPane, "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\Curse:0|t"..L["Curse"], false, nil, function(r, g, b)
         I.SetDebuffTypeColor("Curse", r, g, b)
         Cell.Fire("UpdateIndicators", F.GetNotifiedLayoutName(Cell.vars.currentLayout), "dispels", "debuffTypeColor")
     end)
     curseCP:SetPoint("TOPLEFT", 5, -27)
 
     -- disease
-    diseaseCP = Cell.CreateColorPicker(dtcPane, "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\Disease:0|t"..L["Disease"], false, nil, function(r, g, b)
+    diseaseCP = Cell.CreateColorPicker(dtcPane, "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\Disease:0|t"..L["Disease"], false, nil, function(r, g, b)
         I.SetDebuffTypeColor("Disease", r, g, b)
         Cell.Fire("UpdateIndicators", F.GetNotifiedLayoutName(Cell.vars.currentLayout), "dispels", "debuffTypeColor")
     end)
     diseaseCP:SetPoint("TOPLEFT", curseCP, "TOPRIGHT", 95, 0)
 
     -- magic
-    magicCP = Cell.CreateColorPicker(dtcPane, "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\Magic:0|t"..L["Magic"], false, nil, function(r, g, b)
+    magicCP = Cell.CreateColorPicker(dtcPane, "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\Magic:0|t"..L["Magic"], false, nil, function(r, g, b)
         I.SetDebuffTypeColor("Magic", r, g, b)
         Cell.Fire("UpdateIndicators", F.GetNotifiedLayoutName(Cell.vars.currentLayout), "dispels", "debuffTypeColor")
     end)
     magicCP:SetPoint("TOPLEFT", diseaseCP, "TOPRIGHT", 95, 0)
 
     -- poison
-    poisonCP = Cell.CreateColorPicker(dtcPane, "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\Poison:0|t"..L["Poison"], false, nil, function(r, g, b)
+    poisonCP = Cell.CreateColorPicker(dtcPane, "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\Poison:0|t"..L["Poison"], false, nil, function(r, g, b)
         I.SetDebuffTypeColor("Poison", r, g, b)
         Cell.Fire("UpdateIndicators", F.GetNotifiedLayoutName(Cell.vars.currentLayout), "dispels", "debuffTypeColor")
     end)
     poisonCP:SetPoint("TOPLEFT", magicCP, "TOPRIGHT", 95, 0)
 
     -- bleed
-    bleedCP = Cell.CreateColorPicker(dtcPane, "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\Bleed:0|t"..L["Bleed"], false, nil, function(r, g, b)
+    bleedCP = Cell.CreateColorPicker(dtcPane, "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\Bleed:0|t"..L["Bleed"], false, nil, function(r, g, b)
         I.SetDebuffTypeColor("Bleed", r, g, b)
         Cell.Fire("UpdateIndicators", F.GetNotifiedLayoutName(Cell.vars.currentLayout), "dispels", "debuffTypeColor")
     end)

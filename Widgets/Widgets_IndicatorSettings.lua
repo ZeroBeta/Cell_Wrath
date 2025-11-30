@@ -3631,7 +3631,7 @@ local function CreateSetting_RoleTexture(parent)
 
         local blizzard = F.UpperFirst(SLASH_TEXTTOSPEECH_BLIZZARD)
         local indices = {"default", "default2", "blizzard", "blizzard2", "blizzard3", "blizzard4", "ffxiv", "miirgui", "mattui", "custom"}
-        local ICON_PATH = " |TInterface\\AddOns\\Cell\\Media\\Roles\\Preview_%s:0:4|t"
+        local ICON_PATH = " |TInterface\\AddOns\\Cell_Wrath\\Media\\Roles\\Preview_%s:0:4|t"
         local options = {
             ["default"] = _G.DEFAULT..format(ICON_PATH, "Default"),
             ["default2"] = _G.DEFAULT.." 2"..format(ICON_PATH, "Default2"),
@@ -4123,7 +4123,7 @@ local function CreateAuraButtons(parent, auraButtons, auraTable, noUpDownButtons
     -- new
     if not auraButtons[0] then
         auraButtons[0] = Cell.CreateButton(parent, "", "transparent-accent", {20, 20})
-        auraButtons[0]:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\new", {16, 16}, {"RIGHT", -1, 0})
+        auraButtons[0]:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\new", {16, 16}, {"RIGHT", -1, 0})
         auraButtons[0]:SetPoint("BOTTOMLEFT")
         auraButtons[0]:SetPoint("RIGHT")
     end
@@ -4191,7 +4191,7 @@ local function CreateAuraButtons(parent, auraButtons, auraTable, noUpDownButtons
 
             -- del
             auraButtons[i].del = Cell.CreateButton(auraButtons[i], "", "none", {18, 20}, true, true)
-            auraButtons[i].del:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\delete", {16, 16}, {"CENTER", 0, 0})
+            auraButtons[i].del:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\delete", {16, 16}, {"CENTER", 0, 0})
             auraButtons[i].del:SetPoint("RIGHT")
             auraButtons[i].del.tex:SetVertexColor(0.6, 0.6, 0.6, 1)
             auraButtons[i].del:SetScript("OnEnter", function()
@@ -4206,7 +4206,7 @@ local function CreateAuraButtons(parent, auraButtons, auraTable, noUpDownButtons
             -- edit
             -- auraButtons[i].edit = Cell.CreateButton(auraButtons[i], "", "none", {18, 20}, true, true)
             -- auraButtons[i].edit:SetPoint("RIGHT", auraButtons[i].del, "LEFT", 1, 0)
-            -- auraButtons[i].edit:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\info", {16, 16}, {"CENTER", 0, 0})
+            -- auraButtons[i].edit:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\info", {16, 16}, {"CENTER", 0, 0})
             -- auraButtons[i].edit.tex:SetVertexColor(0.6, 0.6, 0.6, 1)
             -- auraButtons[i].edit:SetScript("OnEnter", function()
             --     auraButtons[i]:GetScript("OnEnter")(auraButtons[i])
@@ -4220,7 +4220,7 @@ local function CreateAuraButtons(parent, auraButtons, auraTable, noUpDownButtons
             -- down
             auraButtons[i].down = Cell.CreateButton(auraButtons[i], "", "none", {18, 20}, true, true)
             auraButtons[i].down:SetPoint("RIGHT", auraButtons[i].del, "LEFT", 1, 0)
-            auraButtons[i].down:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\down", {16, 16}, {"CENTER", 0, 0})
+            auraButtons[i].down:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\down", {16, 16}, {"CENTER", 0, 0})
             auraButtons[i].down.tex:SetVertexColor(0.6, 0.6, 0.6, 1)
             auraButtons[i].down:SetScript("OnEnter", function()
                 auraButtons[i]:GetScript("OnEnter")(auraButtons[i])
@@ -4234,7 +4234,7 @@ local function CreateAuraButtons(parent, auraButtons, auraTable, noUpDownButtons
             -- up
             auraButtons[i].up = Cell.CreateButton(auraButtons[i], "", "none", {18, 20}, true, true)
             auraButtons[i].up:SetPoint("RIGHT", auraButtons[i].down, "LEFT", 1, 0)
-            auraButtons[i].up:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\up", {16, 16}, {"CENTER", 0, 0})
+            auraButtons[i].up:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\up", {16, 16}, {"CENTER", 0, 0})
             auraButtons[i].up.tex:SetVertexColor(0.6, 0.6, 0.6, 1)
             auraButtons[i].up:SetScript("OnEnter", function()
                 auraButtons[i]:GetScript("OnEnter")(auraButtons[i])
@@ -4612,7 +4612,7 @@ local function CreateSetting_Auras(parent, index)
 
         widget.export = Cell.CreateButton(widget, nil, "accent-hover", {21, 17}, nil, nil, nil, nil, nil, L["Export"])
         widget.export:SetPoint("BOTTOMRIGHT", widget.frame, "TOPRIGHT", 0, 1)
-        widget.export:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\export", {15, 15}, {"CENTER", 0, 0})
+        widget.export:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\export", {15, 15}, {"CENTER", 0, 0})
         widget.export:SetScript("OnClick", function()
             auraImportExportFrame.isImport = false
             auraImportExportFrame.parent = widget
@@ -4630,7 +4630,7 @@ local function CreateSetting_Auras(parent, index)
 
         widget.import = Cell.CreateButton(widget, nil, "accent-hover", {21, 17}, nil, nil, nil, nil, nil, L["Import"])
         widget.import:SetPoint("BOTTOMRIGHT", widget.export, "BOTTOMLEFT", -1, 0)
-        widget.import:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\import", {15, 15}, {"CENTER", 0, 0})
+        widget.import:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\import", {15, 15}, {"CENTER", 0, 0})
         widget.import:SetScript("OnClick", function()
             auraImportExportFrame.isImport = true
             auraImportExportFrame.parent = widget
@@ -4647,7 +4647,7 @@ local function CreateSetting_Auras(parent, index)
 
         widget.clear = Cell.CreateButton(widget, nil, "accent-hover", {21, 17}, nil, nil, nil, nil, nil, L["Clear"], "|cffffb5c5Ctrl+"..L["Left-Click"])
         widget.clear:SetPoint("BOTTOMRIGHT", widget.import, "BOTTOMLEFT", -1, 0)
-        widget.clear:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\trash", {15, 15}, {"CENTER", 0, 0})
+        widget.clear:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\trash", {15, 15}, {"CENTER", 0, 0})
         widget.clear:SetScript("OnClick", function(self, button)
             if button == "LeftButton" and IsControlKeyDown() then
                 wipe(widget.t)
@@ -4808,7 +4808,7 @@ local function CreateCleuAuraButtons(parent, auraTable, updateHeightFunc)
     -- new
     if not cleuAuraButtons[0] then
         cleuAuraButtons[0] = Cell.CreateButton(parent, "", "transparent-accent", {20, 20})
-        cleuAuraButtons[0]:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\new", {16, 16}, {"RIGHT", -1, 0})
+        cleuAuraButtons[0]:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\new", {16, 16}, {"RIGHT", -1, 0})
         cleuAuraButtons[0]:SetPoint("BOTTOMLEFT")
         cleuAuraButtons[0]:SetPoint("RIGHT")
     end
@@ -4873,7 +4873,7 @@ local function CreateCleuAuraButtons(parent, auraTable, updateHeightFunc)
 
             -- del
             cleuAuraButtons[i].del = Cell.CreateButton(cleuAuraButtons[i], "", "none", {18, 20}, true, true)
-            cleuAuraButtons[i].del:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\delete", {16, 16}, {"CENTER", 0, 0})
+            cleuAuraButtons[i].del:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\delete", {16, 16}, {"CENTER", 0, 0})
             cleuAuraButtons[i].del:SetPoint("RIGHT")
             cleuAuraButtons[i].del.tex:SetVertexColor(0.6, 0.6, 0.6, 1)
             cleuAuraButtons[i].del:SetScript("OnEnter", function()
@@ -4888,7 +4888,7 @@ local function CreateCleuAuraButtons(parent, auraTable, updateHeightFunc)
             -- edit
             cleuAuraButtons[i].edit = Cell.CreateButton(cleuAuraButtons[i], "", "none", {18, 20}, true, true)
             cleuAuraButtons[i].edit:SetPoint("RIGHT", cleuAuraButtons[i].del, "LEFT", 1, 0)
-            cleuAuraButtons[i].edit:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\info", {16, 16}, {"CENTER", 0, 0})
+            cleuAuraButtons[i].edit:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\info", {16, 16}, {"CENTER", 0, 0})
             cleuAuraButtons[i].edit.tex:SetVertexColor(0.6, 0.6, 0.6, 1)
             cleuAuraButtons[i].edit:SetScript("OnEnter", function()
                 cleuAuraButtons[i]:GetScript("OnEnter")(cleuAuraButtons[i])
@@ -5371,7 +5371,7 @@ local function CreateActionButtons(parent, spellTable, updateHeightFunc)
     -- new
     if not actionButtons[0] then
         actionButtons[0] = Cell.CreateButton(parent, "", "transparent-accent", {20, 20})
-        actionButtons[0]:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\new", {16, 16}, {"RIGHT", -1, 0})
+        actionButtons[0]:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\new", {16, 16}, {"RIGHT", -1, 0})
         actionButtons[0]:SetPoint("BOTTOMLEFT")
         actionButtons[0]:SetPoint("RIGHT")
     end
@@ -5477,7 +5477,7 @@ local function CreateActionButtons(parent, spellTable, updateHeightFunc)
 
             -- del
             actionButtons[i].del = Cell.CreateButton(actionButtons[i], "", "none", {18, 20}, true, true)
-            actionButtons[i].del:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\delete", {16, 16}, {"CENTER", 0, 0})
+            actionButtons[i].del:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\delete", {16, 16}, {"CENTER", 0, 0})
             actionButtons[i].del:SetPoint("RIGHT")
             actionButtons[i].del.tex:SetVertexColor(0.6, 0.6, 0.6, 1)
             actionButtons[i].del:SetScript("OnEnter", function()
@@ -5492,7 +5492,7 @@ local function CreateActionButtons(parent, spellTable, updateHeightFunc)
             -- edit
             actionButtons[i].edit = Cell.CreateButton(actionButtons[i], "", "none", {18, 20}, true, true)
             actionButtons[i].edit:SetPoint("RIGHT", actionButtons[i].del, "LEFT", 1, 0)
-            actionButtons[i].edit:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\info", {16, 16}, {"CENTER", 0, 0})
+            actionButtons[i].edit:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\info", {16, 16}, {"CENTER", 0, 0})
             actionButtons[i].edit.tex:SetVertexColor(0.6, 0.6, 0.6, 1)
             actionButtons[i].edit:SetScript("OnEnter", function()
                 actionButtons[i]:GetScript("OnEnter")(actionButtons[i])
@@ -5665,7 +5665,7 @@ local function CreateThresholdButtons(parent, thresholdTable, updateHeightFunc)
     -- new
     if not thresholdButtons[0] then
         thresholdButtons[0] = Cell.CreateButton(parent, "", "transparent-accent", {20, 20})
-        thresholdButtons[0]:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\new", {16, 16}, {"RIGHT", -1, 0})
+        thresholdButtons[0]:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\new", {16, 16}, {"RIGHT", -1, 0})
         thresholdButtons[0]:SetPoint("BOTTOMLEFT")
         thresholdButtons[0]:SetPoint("RIGHT")
     end
@@ -5749,7 +5749,7 @@ local function CreateThresholdButtons(parent, thresholdTable, updateHeightFunc)
 
             -- del
             thresholdButtons[i].del = Cell.CreateButton(thresholdButtons[i], "", "none", {18, 20}, true, true)
-            thresholdButtons[i].del:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\delete", {16, 16}, {"CENTER", 0, 0})
+            thresholdButtons[i].del:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\delete", {16, 16}, {"CENTER", 0, 0})
             thresholdButtons[i].del:SetPoint("RIGHT")
             thresholdButtons[i].del.tex:SetVertexColor(0.6, 0.6, 0.6, 1)
             thresholdButtons[i].del:SetScript("OnEnter", function()
@@ -5892,28 +5892,28 @@ local function CreateSetting_HighlightType(parent)
 
         --[[
         -- curse
-        widget.curseCP = Cell.CreateColorPicker(widget, "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\Curse:0|t "..L["Curse"], false, nil, function(r, g, b)
+        widget.curseCP = Cell.CreateColorPicker(widget, "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\Curse:0|t "..L["Curse"], false, nil, function(r, g, b)
             I.SetDebuffTypeColor("Curse", r, g, b)
             widget.func(widget.highlightType:GetSelected())
         end)
         widget.curseCP:SetPoint("TOPLEFT", widget.highlightType, "BOTTOMLEFT", 0, -7)
 
         -- disease
-        widget.diseaseCP = Cell.CreateColorPicker(widget, "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\Disease:0|t "..L["Disease"], false, nil, function(r, g, b)
+        widget.diseaseCP = Cell.CreateColorPicker(widget, "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\Disease:0|t "..L["Disease"], false, nil, function(r, g, b)
             I.SetDebuffTypeColor("Disease", r, g, b)
             widget.func(widget.highlightType:GetSelected())
         end)
         widget.diseaseCP:SetPoint("TOPLEFT", widget.curseCP, "TOPRIGHT", 110, 0)
 
         -- magic
-        widget.magicCP = Cell.CreateColorPicker(widget, "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\Magic:0|t "..L["Magic"], false, nil, function(r, g, b)
+        widget.magicCP = Cell.CreateColorPicker(widget, "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\Magic:0|t "..L["Magic"], false, nil, function(r, g, b)
             I.SetDebuffTypeColor("Magic", r, g, b)
             widget.func(widget.highlightType:GetSelected())
         end)
         widget.magicCP:SetPoint("TOPLEFT", widget.curseCP, "BOTTOMLEFT", 0, -7)
 
         -- poison
-        widget.poisonCP = Cell.CreateColorPicker(widget, "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\Poison:0|t "..L["Poison"], false, nil, function(r, g, b)
+        widget.poisonCP = Cell.CreateColorPicker(widget, "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\Poison:0|t "..L["Poison"], false, nil, function(r, g, b)
             I.SetDebuffTypeColor("Poison", r, g, b)
             widget.func(widget.highlightType:GetSelected())
         end)
@@ -6031,7 +6031,7 @@ local function CreateSetting_Shape(parent)
 
         for i, s in pairs(shapes) do
             widget.buttons[s] = Cell.CreateButton(widget, nil, "accent-hover", {22, 22})
-            widget.buttons[s]:SetTexture("Interface\\AddOns\\Cell\\Media\\Shapes\\"..shapes[i].."_filled", {18, 18}, {"CENTER", 0, 0})
+            widget.buttons[s]:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Shapes\\"..shapes[i].."_filled", {18, 18}, {"CENTER", 0, 0})
 
             -- button group
             widget.buttons[s].id = s
@@ -6051,42 +6051,42 @@ local function CreateSetting_Shape(parent)
         -- widget.shape:SetPoint("TOPLEFT", 5, -20)
         -- widget.shape:SetItems({
         --     {
-        --         ["text"] = "|TInterface\\AddOns\\Cell\\Media\\Shapes\\circle_filled:0|t",
+        --         ["text"] = "|TInterface\\AddOns\\Cell_Wrath\\Media\\Shapes\\circle_filled:0|t",
         --         ["value"] = "circle",
         --         ["onClick"] = function()
         --             widget.func("circle")
         --         end,
         --     },
         --     {
-        --         ["text"] = "|TInterface\\AddOns\\Cell\\Media\\Shapes\\square_filled:0|t",
+        --         ["text"] = "|TInterface\\AddOns\\Cell_Wrath\\Media\\Shapes\\square_filled:0|t",
         --         ["value"] = "square",
         --         ["onClick"] = function()
         --             widget.func("square")
         --         end,
         --     },
         --     {
-        --         ["text"] = "|TInterface\\AddOns\\Cell\\Media\\Shapes\\rhombus_filled:0|t",
+        --         ["text"] = "|TInterface\\AddOns\\Cell_Wrath\\Media\\Shapes\\rhombus_filled:0|t",
         --         ["value"] = "rhombus",
         --         ["onClick"] = function()
         --             widget.func("rhombus")
         --         end,
         --     },
         --     {
-        --         ["text"] = "|TInterface\\AddOns\\Cell\\Media\\Shapes\\hexagon_filled:0|t",
+        --         ["text"] = "|TInterface\\AddOns\\Cell_Wrath\\Media\\Shapes\\hexagon_filled:0|t",
         --         ["value"] = "hexagon",
         --         ["onClick"] = function()
         --             widget.func("hexagon")
         --         end,
         --     },
         --     {
-        --         ["text"] = "|TInterface\\AddOns\\Cell\\Media\\Shapes\\octagon_filled:0|t",
+        --         ["text"] = "|TInterface\\AddOns\\Cell_Wrath\\Media\\Shapes\\octagon_filled:0|t",
         --         ["value"] = "octagon",
         --         ["onClick"] = function()
         --             widget.func("octagon")
         --         end,
         --     },
         --     {
-        --         ["text"] = "|TInterface\\AddOns\\Cell\\Media\\Shapes\\star_filled:0|t",
+        --         ["text"] = "|TInterface\\AddOns\\Cell_Wrath\\Media\\Shapes\\star_filled:0|t",
         --         ["value"] = "star",
         --         ["onClick"] = function()
         --             widget.func("star")
@@ -6173,19 +6173,19 @@ local function CreateSetting_DispelFilters(parent)
         widget.dispellableByMe = Cell.CreateCheckButton(widget, L["dispellableByMe"])
         widget.dispellableByMe:SetPoint("TOPLEFT", 5, -8)
 
-        widget.curse = Cell.CreateCheckButton(widget, "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\Curse:0|t"..L["Curse"])
+        widget.curse = Cell.CreateCheckButton(widget, "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\Curse:0|t"..L["Curse"])
         widget.curse:SetPoint("TOPLEFT", widget.dispellableByMe, "BOTTOMLEFT", 0, -8)
 
-        widget.disease = Cell.CreateCheckButton(widget, "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\Disease:0|t"..L["Disease"])
+        widget.disease = Cell.CreateCheckButton(widget, "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\Disease:0|t"..L["Disease"])
         widget.disease:SetPoint("TOPLEFT", widget.curse, 135, 0)
 
-        widget.magic = Cell.CreateCheckButton(widget, "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\Magic:0|t"..L["Magic"])
+        widget.magic = Cell.CreateCheckButton(widget, "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\Magic:0|t"..L["Magic"])
         widget.magic:SetPoint("TOPLEFT", widget.curse, "BOTTOMLEFT", 0, -8)
 
-        widget.poison = Cell.CreateCheckButton(widget, "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\Poison:0|t"..L["Poison"])
+        widget.poison = Cell.CreateCheckButton(widget, "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\Poison:0|t"..L["Poison"])
         widget.poison:SetPoint("TOPLEFT", widget.magic, 135, 0)
 
-        widget.bleed = Cell.CreateCheckButton(widget, "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\Bleed:0|t"..L["Bleed"])
+        widget.bleed = Cell.CreateCheckButton(widget, "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\Bleed:0|t"..L["Bleed"])
         widget.bleed:SetPoint("TOPLEFT", widget.magic, "BOTTOMLEFT", 0, -8)
 
         -- callback
@@ -6448,11 +6448,11 @@ local function CreateSetting_IconStyle(parent)
 
             -- blizzard
             local blizzard = ""
-            local blizzard_icon = "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\%s:0|t"
+            local blizzard_icon = "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\%s:0|t"
 
             -- rhombus
             local rhombus = ""
-            local rhombus_icon = "|TInterface\\AddOns\\Cell\\Media\\Debuffs\\Rhombus:0:0:0:0:16:16:0:16:0:16:%s:%s:%s|t"
+            local rhombus_icon = "|TInterface\\AddOns\\Cell_Wrath\\Media\\Debuffs\\Rhombus:0:0:0:0:16:16:0:16:0:16:%s:%s:%s|t"
 
             for _, t in pairs(types) do
                 blizzard = blizzard .. blizzard_icon:format(t) .. " "

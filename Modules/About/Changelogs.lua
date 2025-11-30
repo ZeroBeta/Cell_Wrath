@@ -32,15 +32,26 @@ local function CreateChangelogsFrame()
     content:SetWidth(changelogsFrame:GetWidth() - 30)
     content:SetHyperlinkFormat("|H%s|h|cFFFFD100%s|r|h")
 
-    changelogsFrame:SetScript("OnShow", function()
+       changelogsFrame:SetScript("OnShow", function()
         content:SetText("<html><body>" .. L["CHANGELOGS"] .. "</body></html>")
         C_Timer.After(0, function()
-            local height = content:GetContentHeight()
+            local height
+            if content.GetContentHeight then
+                height = content:GetContentHeight()
+            else
+                -- 3.3.5 fallback: use current frame height, or a sane default
+                height = content:GetHeight()
+                if height == 0 then
+                    height = 400
+                end
+            end
+
             content:SetHeight(height)
             changelogsFrame.scrollFrame.content:SetHeight(height + 100)
             P.PixelPerfectPoint(changelogsFrame)
         end)
     end)
+
 
     content:SetScript("OnHyperlinkClick", function(self, linkData, link, button)
         if linkData == "older" then
@@ -49,12 +60,30 @@ local function CreateChangelogsFrame()
             content:SetText("<html><body>" .. L["CHANGELOGS"] .. "</body></html>")
         end
 
+            content:SetScript("OnHyperlinkClick", function(self, linkData, link, button)
+        if linkData == "older" then
+            content:SetText("<html><body>" .. L["OLDER_CHANGELOGS"] .. "</body></html>")
+        elseif linkData == "recent" then
+            content:SetText("<html><body>" .. L["CHANGELOGS"] .. "</body></html>")
+        end
+
         C_Timer.After(0, function()
-            local height = content:GetContentHeight()
+            local height
+            if content.GetContentHeight then
+                height = content:GetContentHeight()
+            else
+                height = content:GetHeight()
+                if height == 0 then
+                    height = 400
+                end
+            end
+
             content:SetHeight(height)
             changelogsFrame.scrollFrame.content:SetHeight(height + 30)
             changelogsFrame.scrollFrame:ResetScroll()
         end)
+    end)
+
     end)
 end
 

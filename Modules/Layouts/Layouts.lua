@@ -1353,7 +1353,7 @@ local function CreateLayoutPane()
     -- new
     local newBtn = Cell.CreateButton(layoutPane, nil, "green-hover", {33, 20}, nil, nil, nil, nil, nil, L["New"])
     newBtn:SetPoint("TOPLEFT", layoutDropdown, "BOTTOMLEFT", 0, -10)
-    newBtn:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\create", {16, 16}, {"CENTER", 0, 0})
+    newBtn:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\create", {16, 16}, {"CENTER", 0, 0})
     newBtn:SetScript("OnClick", function()
         local popup = Cell.CreateConfirmPopup(layoutsTab, 200, L["Create new layout"], function(self)
             local name = strtrim(self.editBox:GetText())
@@ -1417,7 +1417,7 @@ local function CreateLayoutPane()
     -- rename
     local renameBtn = Cell.CreateButton(layoutPane, nil, "blue-hover", {33, 20}, nil, nil, nil, nil, nil, L["Rename"])
     renameBtn:SetPoint("TOPLEFT", newBtn, "TOPRIGHT", P.Scale(-1), 0)
-    renameBtn:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\rename", {16, 16}, {"CENTER", 0, 0})
+    renameBtn:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\rename", {16, 16}, {"CENTER", 0, 0})
     renameBtn:SetScript("OnClick", function()
         local popup = Cell.CreateConfirmPopup(layoutsTab, 200, L["Rename layout"].." "..selectedLayout, function(self)
             local name = strtrim(self.editBox:GetText())
@@ -1498,7 +1498,7 @@ local function CreateLayoutPane()
     -- delete
     local deleteBtn = Cell.CreateButton(layoutPane, nil, "red-hover", {33, 20}, nil, nil, nil, nil, nil, L["Delete"])
     deleteBtn:SetPoint("TOPLEFT", renameBtn, "TOPRIGHT", P.Scale(-1), 0)
-    deleteBtn:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\trash", {16, 16}, {"CENTER", 0, 0})
+    deleteBtn:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\trash", {16, 16}, {"CENTER", 0, 0})
     deleteBtn:SetScript("OnClick", function()
         local popup = Cell.CreateConfirmPopup(layoutsTab, 200, L["Delete layout"].." "..selectedLayout.."?", function(self)
             -- update db
@@ -1568,7 +1568,7 @@ local function CreateLayoutPane()
     -- import
     local importBtn = Cell.CreateButton(layoutPane, nil, "accent-hover", {33, 20}, nil, nil, nil, nil, nil, L["Import"])
     importBtn:SetPoint("TOPLEFT", deleteBtn, "TOPRIGHT", P.Scale(-1), 0)
-    importBtn:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\import", {16, 16}, {"CENTER", 0, 0})
+    importBtn:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\import", {16, 16}, {"CENTER", 0, 0})
     importBtn:SetScript("OnClick", function()
         F.ShowLayoutImportFrame()
     end)
@@ -1576,7 +1576,7 @@ local function CreateLayoutPane()
     -- export
     local exportBtn = Cell.CreateButton(layoutPane, nil, "accent-hover", {33, 20}, nil, nil, nil, nil, nil, L["Export"])
     exportBtn:SetPoint("TOPLEFT", importBtn, "TOPRIGHT", P.Scale(-1), 0)
-    exportBtn:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\export", {16, 16}, {"CENTER", 0, 0})
+    exportBtn:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\export", {16, 16}, {"CENTER", 0, 0})
     exportBtn:SetScript("OnClick", function()
         F.ShowLayoutExportFrame(selectedLayout, selectedLayoutTable)
     end)
@@ -1594,7 +1594,7 @@ local function CreateLayoutPane()
     -- copy & paste
     local shareBtn = Cell.CreateButton(layoutPane, nil, "accent-hover", {33, 20}, nil, nil, nil, nil, nil, L["Share"])
     shareBtn:SetPoint("TOPLEFT", exportBtn, "TOPRIGHT", P.Scale(-1), 0)
-    shareBtn:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\share", {16, 16}, {"CENTER", 0, 0})
+    shareBtn:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\share", {16, 16}, {"CENTER", 0, 0})
     shareBtn:SetScript("OnClick", function()
         local editbox = ChatEdit_ChooseBoxForSend()
         ChatEdit_ActivateChat(editbox)
@@ -2836,9 +2836,9 @@ LoadLayoutAutoSwitchDB = function()
     elseif Cell.isCata or Cell.isWrath then
         P.Height(autoSwitchFrame, 478)
         if Cell.vars.activeTalentGroup == 1 then
-            currentProfileBox.text:SetText("|TInterface\\AddOns\\Cell\\Media\\Icons\\1:13|t "..L["Primary Talents"])
+            currentProfileBox.text:SetText("|TInterface\\AddOns\\Cell_Wrath\\Media\\Icons\\1:13|t "..L["Primary Talents"])
         else
-            currentProfileBox.text:SetText("|TInterface\\AddOns\\Cell\\Media\\Icons\\2:13|t "..L["Secondary Talents"])
+            currentProfileBox.text:SetText("|TInterface\\AddOns\\Cell_Wrath\\Media\\Icons\\2:13|t "..L["Secondary Talents"])
         end
         raid10Dropdown:SetSelectedValue(Cell.vars.layoutAutoSwitch["raid10"])
         raid25Dropdown:SetSelectedValue(Cell.vars.layoutAutoSwitch["raid25"])
@@ -2848,9 +2848,9 @@ LoadLayoutAutoSwitchDB = function()
     elseif Cell.isVanilla then
         P.Height(autoSwitchFrame, 378)
         if Cell.vars.activeTalentGroup == 1 then
-            currentProfileBox.text:SetText("|TInterface\\AddOns\\Cell\\Media\\Icons\\1:13|t "..L["Primary Talents"])
+            currentProfileBox.text:SetText("|TInterface\\AddOns\\Cell_Wrath\\Media\\Icons\\1:13|t "..L["Primary Talents"])
         else
-            currentProfileBox.text:SetText("|TInterface\\AddOns\\Cell\\Media\\Icons\\2:13|t "..L["Secondary Talents"])
+            currentProfileBox.text:SetText("|TInterface\\AddOns\\Cell_Wrath\\Media\\Icons\\2:13|t "..L["Secondary Talents"])
         end
         raidInstanceDropdown:SetSelectedValue(Cell.vars.layoutAutoSwitch["raid_instance"])
         bgDropdown:SetSelectedValue(Cell.vars.layoutAutoSwitch["battleground"])

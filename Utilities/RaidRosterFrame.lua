@@ -47,7 +47,7 @@ raidRosterFrame:SetFrameLevel(5)
 local function CreateWidgets()
     -- mode
     modeBtn = Cell.CreateButton(raidRosterFrame, L["Instant Mode"], "accent", {127, 17})
-    modeBtn:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\instant", {13, 13}, {"LEFT", 4, 0})
+    modeBtn:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\instant", {13, 13}, {"LEFT", 4, 0})
     modeBtn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     modeBtn:SetScript("OnClick", function(self, button)
         if button == "LeftButton" then -- switch mode / apply changes
@@ -108,12 +108,12 @@ UpdateMode = function()
     if isInstantMode then
         raidRosterFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
         modeBtn:SetText(L["Instant Mode"])
-        modeBtn.tex:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\instant")
+        modeBtn.tex:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\instant")
         LCG.PixelGlow_Stop(modeBtn)
     else
         raidRosterFrame:UnregisterEvent("GROUP_ROSTER_UPDATE")
         modeBtn:SetText(L["Premade Mode"])
-        modeBtn.tex:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\premade")
+        modeBtn.tex:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\premade")
         LCG.PixelGlow_Start(modeBtn, Cell.GetAccentColorTable(1), 12, 0.25, 10, 1)
     end
 end
@@ -150,7 +150,7 @@ local function CreateProcessingFrame()
     A.CreateFadeOut(processingFrame, 1, 0, 0.5, 0.5)
 
     -- progress bar
-    progressBar = Cell.CreateStatusBar(nil, processingFrame, 1, 1, 100, true, nil, true, "Interface\\AddOns\\Cell\\Media\\statusbar", Cell.GetAccentColorTable())
+    progressBar = Cell.CreateStatusBar(nil, processingFrame, 1, 1, 100, true, nil, true, "Interface\\AddOns\\Cell_Wrath\\Media\\statusbar", Cell.GetAccentColorTable())
     progressBar:SetPoint("TOPLEFT", 10, -103)
     progressBar:SetPoint("BOTTOMRIGHT", -10, 102)
 

@@ -308,8 +308,8 @@ local function UpdateTools(which)
     end
 
     if not which or which == "readyAndPull" then
-        if not pullBtn.tex then CreateTexture(pullBtn, "Interface\\AddOns\\Cell\\Media\\Icons\\pull") end
-        if not readyBtn.tex then CreateTexture(readyBtn, "Interface\\AddOns\\Cell\\Media\\Icons\\ready") end
+        if not pullBtn.tex then CreateTexture(pullBtn, "Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\pull") end
+        if not readyBtn.tex then CreateTexture(readyBtn, "Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\ready") end
 
         pullBtn:UnregisterAllEvents()
         pullBtn:SetScript("OnMouseUp", pullBtn.onMouseUp)

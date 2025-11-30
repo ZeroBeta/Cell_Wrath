@@ -1046,7 +1046,7 @@ local function UnitButton_UpdateDebuffs(self)
 
     for i = 1, 40 do
         -- name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod, ...
-        local name, icon, count, debuffType, duration, expirationTime, source, _, _, spellId = UnitDebuff(unit, i)
+        local name, icon, count, debuffType, duration, expirationTime, source, _, _, spellId = Cell.UnitDebuff(unit, i)
         if not name then
             break
         end
@@ -1151,7 +1151,7 @@ local function UnitButton_UpdateDebuffs(self)
         for i = 1, indicatorNums["raidDebuffs"] do
             local index = self._debuffs_raid[i]
             if index then
-                local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId = UnitDebuff(unit, self._debuffs_raid[i])
+                local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId = Cell.UnitDebuff(unit, self._debuffs_raid[i])
                 if name then
                     self.indicators.raidDebuffs[i]:SetCooldown(
                         expirationTime - duration,
@@ -1211,7 +1211,7 @@ local function UnitButton_UpdateDebuffs(self)
     if enabledIndicators["debuffs"] then
         -- bigDebuffs first
         for debuffIndex, refreshing in pairs(self._debuffs_big) do
-            local name, icon, count, debuffType, duration, expirationTime, _, _, _, spellId = UnitDebuff(unit, debuffIndex)
+            local name, icon, count, debuffType, duration, expirationTime, _, _, _, spellId = Cell.UnitDebuff(unit, debuffIndex)
             if name and startIndex <= indicatorNums["debuffs"] then
                 -- start, duration, debuffType, texture, count, refreshing
                 self.indicators.debuffs[startIndex]:SetCooldown(expirationTime - duration, duration, debuffType or "", icon, count, refreshing, true)
@@ -1222,7 +1222,7 @@ local function UnitButton_UpdateDebuffs(self)
         end
         -- then normal debuffs
         for debuffIndex, refreshing in pairs(self._debuffs_normal) do
-            local name, icon, count, debuffType, duration, expirationTime, _, _, _, spellId = UnitDebuff(unit, debuffIndex)
+            local name, icon, count, debuffType, duration, expirationTime, _, _, _, spellId = Cell.UnitDebuff(unit, debuffIndex)
             if name and startIndex <= indicatorNums["debuffs"] then
                 -- start, duration, debuffType, texture, count, refreshing
                 self.indicators.debuffs[startIndex]:SetCooldown(expirationTime - duration, duration, debuffType or "", icon, count, refreshing)
@@ -1290,7 +1290,7 @@ local function UnitButton_UpdateBuffs(self)
 
     for i = 1, 40 do
         -- name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod, ...
-        local name, icon, count, debuffType, duration, expirationTime, source, _, _, spellId, _, _, _, _, _, arg16 = UnitBuff(unit, i)
+        local name, icon, count, debuffType, duration, expirationTime, source, _, _, spellId, _, _, _, _, _, arg16 = Cell.UnitBuff(unit, i)
         if not name then
             break
         end
@@ -3294,6 +3294,9 @@ function B.UpdateHighlightSize(button)
     local targetHighlight = button.widgets.targetHighlight
     local mouseoverHighlight = button.widgets.mouseoverHighlight
 
+    -- WotLK Fix: Some button types don't have highlight widgets
+    if not targetHighlight or not mouseoverHighlight then return end
+
     local size = CellDB["appearance"]["highlightSize"]
 
     if size ~= 0 then
@@ -3466,7 +3469,10 @@ function B.UpdatePixelPerfect(button, updateIndicators)
         end
     end
 
-    button.widgets.srIcon:UpdatePixelPerfect()
+    -- WotLK Fix: Some button types don't have srIcon widget
+    if button.widgets.srIcon then
+        button.widgets.srIcon:UpdatePixelPerfect()
+    end
 end
 
 B.UpdateAll = UnitButton_UpdateAll
@@ -3602,7 +3608,7 @@ function CellUnitButton_OnLoad(button)
     -- shield bar
     local shieldBar = midLevelFrame:CreateTexture(name.."ShieldBar", "ARTWORK", nil, -5)
     button.widgets.shieldBar = shieldBar
-    shieldBar:SetTexture("Interface\\AddOns\\Cell\\Media\\shield.tga", "REPEAT", "REPEAT")
+    shieldBar:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\shield.tga", "REPEAT", "REPEAT")
     shieldBar:SetHorizTile(true)
     shieldBar:SetVertTile(true)
     shieldBar:SetVertexColor(1, 1, 1, 0.4)
@@ -3611,7 +3617,7 @@ function CellUnitButton_OnLoad(button)
 
     local shieldBarR = midLevelFrame:CreateTexture(name.."ShieldBarR", "ARTWORK", nil, -5)
     button.widgets.shieldBarR = shieldBarR
-    shieldBarR:SetTexture("Interface\\AddOns\\Cell\\Media\\shield", "REPEAT", "REPEAT")
+    shieldBarR:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\shield", "REPEAT", "REPEAT")
     shieldBarR:SetHorizTile(true)
     shieldBarR:SetVertTile(true)
     shieldBarR:Hide()
@@ -3620,14 +3626,14 @@ function CellUnitButton_OnLoad(button)
     -- over-shield glow
     local overShieldGlow = midLevelFrame:CreateTexture(name.."OverShieldGlow", "ARTWORK", nil, -4)
     button.widgets.overShieldGlow = overShieldGlow
-    overShieldGlow:SetTexture("Interface\\AddOns\\Cell\\Media\\overshield")
+    overShieldGlow:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\overshield")
     overShieldGlow:Hide()
     shieldBar.overShieldGlow = overShieldGlow
 
     -- over-shield glow reversed
     local overShieldGlowR = midLevelFrame:CreateTexture(name.."OverShieldGlowR", "ARTWORK", nil, -4)
     button.widgets.overShieldGlowR = overShieldGlowR
-    overShieldGlowR:SetTexture("Interface\\AddOns\\Cell\\Media\\overshield_reversed")
+    overShieldGlowR:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\overshield_reversed")
     -- overShieldGlowR:SetBlendMode("ADD")
     overShieldGlowR:Hide()
     shieldBar.overShieldGlowR = overShieldGlowR

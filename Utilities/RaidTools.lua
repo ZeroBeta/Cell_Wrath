@@ -217,7 +217,7 @@ local function CreateRTPane()
             end,
         },
         {
-            ["text"] = "|TInterface\\AddOns\\Cell\\Media\\Icons\\ready:14|t / |TInterface\\AddOns\\Cell\\Media\\Icons\\pull:14|t A",
+            ["text"] = "|TInterface\\AddOns\\Cell_Wrath\\Media\\Icons\\ready:14|t / |TInterface\\AddOns\\Cell_Wrath\\Media\\Icons\\pull:14|t A",
             ["value"] = "icon_button_h",
             ["onClick"] = function()
                 CellDB["tools"]["readyAndPull"][2] = "icon_button_h"
@@ -225,7 +225,7 @@ local function CreateRTPane()
             end,
         },
         {
-            ["text"] = "|TInterface\\AddOns\\Cell\\Media\\Icons\\ready:14|t / |TInterface\\AddOns\\Cell\\Media\\Icons\\pull:14|t B",
+            ["text"] = "|TInterface\\AddOns\\Cell_Wrath\\Media\\Icons\\ready:14|t / |TInterface\\AddOns\\Cell_Wrath\\Media\\Icons\\pull:14|t B",
             ["value"] = "icon_button_v",
             ["onClick"] = function()
                 CellDB["tools"]["readyAndPull"][2] = "icon_button_v"

@@ -241,7 +241,7 @@ local function LoadIndicators(layout)
                 b:GetFontString():SetPoint("LEFT", 5, 0)
                 b:GetFontString():SetPoint("RIGHT", b.typeIcon, "LEFT", -2, 0)
             end
-            b.typeIcon:SetTexture("Interface\\AddOns\\Cell\\Media\\Indicators\\indicator-"..t["type"])
+            b.typeIcon:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Indicators\\indicator-"..t["type"])
         end
 
         b:SetPoint("RIGHT")

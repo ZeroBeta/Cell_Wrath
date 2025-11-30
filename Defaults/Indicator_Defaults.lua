@@ -162,7 +162,7 @@ function I.GetDefaultCustomIndicatorTable(name, indicatorName, type, auraType)
             ["position"] = {"TOP", "button", "TOP", 0, 0},
             ["size"] = {16, 16},
             ["frameLevel"] = 10,
-            ["texture"] = {"Interface\\AddOns\\Cell\\Media\\Shapes\\circle_blurred.tga", 0, {1, 1, 1, 1}},
+            ["texture"] = {"Interface\\AddOns\\Cell_Wrath\\Media\\Shapes\\circle_blurred.tga", 0, {1, 1, 1, 1}},
             ["auraType"] = auraType,
             ["auras"] = {},
             ["fadeOut"] = true,

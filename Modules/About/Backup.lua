@@ -47,7 +47,7 @@ local function CreateItem(index)
 
     -- delete
     b.del = Cell.CreateButton(b, "", "none", {20, 20}, true, true)
-    b.del:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\delete2", {18, 18}, {"CENTER", 0, 0})
+    b.del:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\delete2", {18, 18}, {"CENTER", 0, 0})
     b.del:SetPoint("RIGHT")
     b.del.tex:SetVertexColor(0.6, 0.6, 0.6, 1)
     b.del:SetScript("OnEnter", function()
@@ -76,7 +76,7 @@ local function CreateItem(index)
     -- rename
     b.rename = Cell.CreateButton(b, "", "none", {20, 20}, true, true)
     b.rename:SetPoint("RIGHT", b.del, "LEFT", 1, 0)
-    b.rename:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\rename", {18, 18}, {"CENTER", 0, 0})
+    b.rename:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\rename", {18, 18}, {"CENTER", 0, 0})
     b.rename.tex:SetVertexColor(0.6, 0.6, 0.6, 1)
     b.rename:SetScript("OnEnter", function()
         b:GetScript("OnEnter")(b)
@@ -145,7 +145,7 @@ local function CreateBackupFrame()
 
     -- create new
     buttons[0] = Cell.CreateButton(listFrame.scrollFrame.content, " ", "accent-hover", {20, 20})
-    buttons[0]:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\create", {18, 18}, {"LEFT", 2, 0})
+    buttons[0]:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\create", {18, 18}, {"LEFT", 2, 0})
     buttons[0]:SetScript("OnClick", function(self)
         local popup = Cell.CreatePopupEditBox(backupFrame, function(text)
             if strtrim(text) == "" then text = date(DATE_FORMAT) end

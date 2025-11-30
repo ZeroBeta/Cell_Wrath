@@ -45,9 +45,222 @@ Cell.isCata    = (Cell.flavor == "cata")
 Cell.isMists   = (Cell.flavor == "mists")
 Cell.isTWW     = false -- definitely not TWW on 3.3.5a
 
+-- Initialize supporters tables if not present
+Cell.supporters1 = Cell.supporters1 or {}
+Cell.supporters2 = Cell.supporters2 or {}
+
 -------------------------------------------------
 -- Polyfills for WotLK 3.3.5a
 -------------------------------------------------
+
+-------------------------------------------------
+-- Screen size polyfill for WotLK
+-------------------------------------------------
+if not GetPhysicalScreenSize then
+    -- WotLK uses GetScreenWidth() and GetScreenHeight() instead
+    function GetPhysicalScreenSize()
+        return GetScreenWidth(), GetScreenHeight()
+    end
+end
+
+-------------------------------------------------
+-- PixelUtil polyfill (doesn't exist in WotLK)
+-------------------------------------------------
+if not PixelUtil then
+    PixelUtil = {}
+
+    -- Polyfill for GetNearestPixelSize
+    -- Returns a pixel-perfect size based on the desired size and scale
+    function PixelUtil.GetNearestPixelSize(desiredSize, scale)
+        if not desiredSize or desiredSize == 0 then
+            return 0
+        end
+
+        -- Handle nil or zero scale
+        if not scale or scale == 0 then
+            scale = 1
+        end
+
+        -- Round to nearest pixel
+        local pixelSize = desiredSize * scale
+        if pixelSize >= 0 then
+            pixelSize = math.floor(pixelSize + 0.5)
+        else
+            pixelSize = math.ceil(pixelSize - 0.5)
+        end
+
+        -- Ensure minimum size of 1 pixel
+        if desiredSize > 0 and pixelSize < 1 then
+            pixelSize = 1
+        elseif desiredSize < 0 and pixelSize > -1 then
+            pixelSize = -1
+        end
+
+        return pixelSize / scale
+    end
+
+    -- Polyfill for SetPoint
+    -- Just wraps the standard SetPoint method
+    function PixelUtil.SetPoint(frame, ...)
+        if frame and frame.SetPoint then
+            frame:SetPoint(...)
+        end
+    end
+
+    -- Polyfill for GetPixelToUIUnitFactor (used in some addons)
+    function PixelUtil.GetPixelToUIUnitFactor()
+        local scale = UIParent:GetEffectiveScale()
+        return 1 / (768 / GetScreenHeight()) / scale
+    end
+end
+
+-- Mouse click / motion polyfill for Wrath
+do
+    local region = CreateFrame("Frame")
+    local mt = getmetatable(region)
+    if not mt or not mt.__index then return end
+
+    local idx = mt.__index
+
+    -- Retail: ScriptRegion:SetMouseClickEnabled(bool)
+    if not idx.SetMouseClickEnabled then
+        function idx:SetMouseClickEnabled(enabled)
+            -- Wrath only has EnableMouse(bool) for both hover+click
+            if self.EnableMouse then
+                self:EnableMouse(not not enabled)
+            end
+        end
+    end
+
+    -- Retail: ScriptRegion:SetMouseMotionEnabled(bool)
+    if not idx.SetMouseMotionEnabled then
+        function idx:SetMouseMotionEnabled(enabled)
+            if self.EnableMouse then
+                self:EnableMouse(not not enabled)
+            end
+        end
+    end
+end
+
+
+
+
+-- FontString IsTruncated polyfill for WotLK
+do
+    local fs = UIParent:CreateFontString()
+    local mt = getmetatable(fs)
+
+    if mt and mt.__index and not mt.__index.IsTruncated then
+        function mt.__index:IsTruncated()
+            -- Check if text width exceeds the font string's width
+            local stringWidth = self:GetStringWidth()
+            local frameWidth = self:GetWidth()
+
+            -- If width is 0, assume not truncated
+            if frameWidth == 0 then
+                return false
+            end
+
+            -- Check if string width exceeds available width
+            return stringWidth > frameWidth
+        end
+    end
+end
+
+-------------------------------------------------
+-- FontString SetRotation polyfill for WotLK
+-- Text rotation doesn't exist in WotLK, so this is a no-op
+-------------------------------------------------
+do
+    local fs = UIParent:CreateFontString()
+    local mt = getmetatable(fs)
+
+    if mt and mt.__index and not mt.__index.SetRotation then
+        function mt.__index:SetRotation(angle)
+            -- WotLK doesn't support text rotation, no-op to prevent errors
+            -- Alternative: use vertical text with newlines at the call site
+        end
+    end
+end
+
+-------------------------------------------------
+-- CreateColor polyfill for WotLK
+-- In retail, CreateColor creates a Color object with helper methods
+-- In WotLK, we need to create a table with the same interface
+-------------------------------------------------
+if not CreateColor then
+    function CreateColor(r, g, b, a)
+        local color = {r = r or 1, g = g or 1, b = b or 1, a = a or 1}
+
+        function color:GetRGB()
+            return self.r, self.g, self.b
+        end
+
+        function color:GetRGBA()
+            return self.r, self.g, self.b, self.a
+        end
+
+        function color:WrapTextInColorCode(text)
+            -- Format: |cAARRGGBB + text + |r
+            -- AA = alpha (255 for opaque), RR = red, GG = green, BB = blue
+            local a = math.floor((self.a or 1) * 255)
+            local r = math.floor(self.r * 255)
+            local g = math.floor(self.g * 255)
+            local b = math.floor(self.b * 255)
+            return string.format("|c%02x%02x%02x%02x%s|r", a, r, g, b, text)
+        end
+
+        return color
+    end
+else
+    -- CreateColor exists, but WrapTextInColorCode might not
+    -- Add WrapTextInColorCode to existing Color objects if missing
+    local testColor = CreateColor(1, 1, 1, 1)
+    if testColor and not testColor.WrapTextInColorCode then
+        local mt = getmetatable(testColor)
+        if mt and mt.__index then
+            function mt.__index:WrapTextInColorCode(text)
+                local a = math.floor((self.a or 1) * 255)
+                local r = math.floor(self.r * 255)
+                local g = math.floor(self.g * 255)
+                local b = math.floor(self.b * 255)
+                return string.format("|c%02x%02x%02x%02x%s|r", a, r, g, b, text)
+            end
+        end
+    end
+end
+
+-------------------------------------------------
+-- Frame CreateFontString polyfill for WotLK
+-- Ensures all created font strings have a default font set
+-- This prevents "Font not set" errors when calling SetText
+-------------------------------------------------
+do
+    local frame = CreateFrame("Frame")
+    local mt = getmetatable(frame)
+
+    if mt and mt.__index and not mt.__index._CellFontStringCreationPolyfill then
+        local origCreateFontString = mt.__index.CreateFontString
+
+        if origCreateFontString then
+            function mt.__index:CreateFontString(name, layer, inheritsFrom)
+                local fontString = origCreateFontString(self, name, layer, inheritsFrom)
+
+                -- WotLK Fix: If no font object was inherited, set a default font to prevent errors
+                -- Check if font is already set (from inheritsFrom)
+                local currentFont, currentSize, currentFlags = fontString:GetFont()
+                if not currentFont then
+                    -- Set a safe default font
+                    fontString:SetFont(STANDARD_TEXT_FONT, 12, "")
+                end
+
+                return fontString
+            end
+
+            mt.__index._CellFontStringCreationPolyfill = true
+        end
+    end
+end
 
 -- SmoothStatusBarMixin polyfill for WotLK
 if not SmoothStatusBarMixin then
@@ -78,6 +291,42 @@ if not SmoothStatusBarMixin then
 end
 
 -------------------------------------------------
+-- StatusBar GetStatusBarTexture polyfill for WotLK
+-- In WotLK, GetStatusBarTexture() can return nil immediately after SetStatusBarTexture
+-- We wrap it to ensure it always returns a valid texture
+-------------------------------------------------
+do
+    local sb = CreateFrame("StatusBar")
+    local mt = getmetatable(sb)
+
+    if mt and mt.__index then
+        local origGetStatusBarTexture = mt.__index.GetStatusBarTexture
+        local origSetStatusBarTexture = mt.__index.SetStatusBarTexture
+
+        -- Wrap SetStatusBarTexture to cache the texture path
+        if origSetStatusBarTexture then
+            function mt.__index:SetStatusBarTexture(texture, layer, sublayer)
+                self._cellCachedTexturePath = texture
+                return origSetStatusBarTexture(self, texture, layer, sublayer)
+            end
+        end
+
+        -- Wrap GetStatusBarTexture to ensure it returns a texture
+        if origGetStatusBarTexture then
+            function mt.__index:GetStatusBarTexture()
+                local tex = origGetStatusBarTexture(self)
+                -- If texture is nil but we have a cached path, try setting it again
+                if not tex and self._cellCachedTexturePath then
+                    origSetStatusBarTexture(self, self._cellCachedTexturePath)
+                    tex = origGetStatusBarTexture(self)
+                end
+                return tex
+            end
+        end
+    end
+end
+
+-------------------------------------------------
 -- Retail unit API polyfills
 -------------------------------------------------
 
@@ -86,6 +335,24 @@ if not UnitInOtherParty then
     -- WotLK/Ascension doesn't have that concept, so just say "no".
     function UnitInOtherParty(unit)
         return false
+    end
+end
+
+-- UnitHasIncomingResurrection
+if not UnitHasIncomingResurrection then
+    -- Retail API: returns true if unit has an incoming resurrection (like Battle Res)
+    -- WotLK doesn't have this API, always return false
+    function UnitHasIncomingResurrection(unit)
+        return false
+    end
+end
+
+-- UnitInPhase
+if not UnitInPhase then
+    -- Retail API: returns true if unit is in the same phase as player
+    -- WotLK doesn't have this API or handles phasing differently, assume always in phase
+    function UnitInPhase(unit)
+        return true
     end
 end
 
@@ -571,38 +838,27 @@ if not C_Item then
 end
 
 -------------------------------------------------
--- UnitBuff/UnitDebuff API polyfills for WotLK
--- WotLK returns: name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId (11 values)
--- Retail returns: name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, ... (10+ values, no rank)
--- We need to remove rank and reorder to match retail
+-- UnitBuff/UnitDebuff wrappers for Cell (NOT global overrides)
+-- WotLK returns: name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId
+-- Retail returns: name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, ...
+-- We create Cell-specific wrappers instead of modifying the global API
 -------------------------------------------------
-if not _G._CellOriginalUnitBuff then
-    _G._CellOriginalUnitBuff = UnitBuff
+-- Store original functions for Cell to use
+_G._CellOriginalUnitBuff = _G._CellOriginalUnitBuff or UnitBuff
+_G._CellOriginalUnitDebuff = _G._CellOriginalUnitDebuff or UnitDebuff
 
-    function UnitBuff(unit, index, filter)
-        -- WotLK: name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId
+-- Create Cell namespace wrappers (don't override global)
+if Cell then
+    Cell.UnitBuff = function(unit, index, filter)
         local name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = _G._CellOriginalUnitBuff(unit, index, filter)
-
-        if not name then
-            return nil
-        end
-
-        -- Retail format: name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, ...
-        -- Skip rank, add spellId at position 10
+        if not name then return nil end
+        -- Return in retail format: name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId
         return name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nil, spellId, nil, nil, nil, nil, nil, nil
     end
-end
 
-if not _G._CellOriginalUnitDebuff then
-    _G._CellOriginalUnitDebuff = UnitDebuff
-
-    function UnitDebuff(unit, index, filter)
+    Cell.UnitDebuff = function(unit, index, filter)
         local name, rank, icon, count, debuffType, duration, expirationTime, caster, isStealable, shouldConsolidate, spellId = _G._CellOriginalUnitDebuff(unit, index, filter)
-
-        if not name then
-            return nil
-        end
-
+        if not name then return nil end
         return name, icon, count, debuffType, duration, expirationTime, caster, isStealable, nil, spellId, nil, nil, nil, nil, nil, nil
     end
 end
@@ -1090,15 +1346,461 @@ if not Mixin then
     end
 end
 
+-------------------------------------------------
+-- Frame/Widget SetEnabled polyfill for WotLK
+-- In retail, frames/widgets have SetEnabled(bool) to enable/disable
+-- In WotLK, use Enable() and Disable() methods instead
+-------------------------------------------------
+do
+    local function addSetEnabled(obj)
+        if not obj then return end
+        local mt = getmetatable(obj)
+        if mt and mt.__index and not mt.__index.SetEnabled then
+            function mt.__index:SetEnabled(enabled)
+                if enabled then
+                    if self.Enable then
+                        self:Enable()
+                    end
+                else
+                    if self.Disable then
+                        self:Disable()
+                    end
+                end
+            end
+        end
+    end
+
+    -- Add to various frame types (wrapped in pcall for safety)
+    local function safeAdd(frameType)
+        local ok, frame = pcall(CreateFrame, frameType)
+        if ok and frame then
+            addSetEnabled(frame)
+        end
+    end
+
+    safeAdd("Frame")
+    safeAdd("Slider")
+    safeAdd("Button")
+    safeAdd("CheckButton")
+end
+
+-------------------------------------------------
+-- SimpleHTML GetContentHeight polyfill for WotLK
+-- In retail, SimpleHTML frames have GetContentHeight() to get rendered height
+-- In WotLK, we approximate this with GetHeight()
+-------------------------------------------------
+do
+    -- Create a test SimpleHTML frame to get its metatable
+    local testHTML = CreateFrame("SimpleHTML")
+    local mt = getmetatable(testHTML)
+
+    if mt and mt.__index and not mt.__index.GetContentHeight then
+        function mt.__index:GetContentHeight()
+            -- WotLK: SimpleHTML doesn't have GetContentHeight
+            -- Fall back to GetHeight() which should give us the frame height
+            return self:GetHeight() or 0
+        end
+    end
+end
+
+-------------------------------------------------
+-- Slider OnValueChanged userChanged parameter polyfill for WotLK
+-- In WotLK 3.3.5a, the userChanged parameter in OnValueChanged is always nil
+-- We wrap SetValue to flag programmatic changes so callbacks can distinguish
+-------------------------------------------------
+do
+    local slider = CreateFrame("Slider")
+    local mt = getmetatable(slider)
+
+    if mt and mt.__index and not mt.__index._CellSliderPolyfillApplied then
+        local origSetValue = mt.__index.SetValue
+        local origSetScript = mt.__index.SetScript
+
+        -- Wrap SetValue to flag programmatic changes
+        function mt.__index:SetValue(value)
+            self._isProgrammaticChange = true
+            origSetValue(self, value)
+            self._isProgrammaticChange = false
+        end
+
+        -- Wrap SetScript to intercept OnValueChanged and fix userChanged parameter
+        function mt.__index:SetScript(scriptType, handler)
+            if scriptType == "OnValueChanged" and handler then
+                local wrappedHandler = function(self, value, userChanged)
+                    -- WRATH FIX: userChanged is nil in 3.3.5
+                    if userChanged == nil then
+                        userChanged = not self._isProgrammaticChange
+                    end
+                    return handler(self, value, userChanged)
+                end
+                return origSetScript(self, scriptType, wrappedHandler)
+            end
+            return origSetScript(self, scriptType, handler)
+        end
+
+        mt.__index._CellSliderPolyfillApplied = true
+    end
+end
+
+-------------------------------------------------
+-- Font object helper for polyfills
+-------------------------------------------------
+local function getFontObject(fontOrName)
+    if not fontOrName then
+        return nil
+    end
+
+    if type(fontOrName) == "string" then
+        local fontObj = _G[fontOrName]
+        if not fontObj then
+            -- Font doesn't exist yet, return nil
+            return nil
+        end
+        return fontObj
+    end
+    return fontOrName
+end
+
+-------------------------------------------------
+-- Button font object setters polyfill for WotLK
+-- In WotLK, SetDisabledFontObject/SetNormalFontObject/SetHighlightFontObject
+-- require font objects, but retail allows string font names.
+-- This polyfill makes WotLK accept both.
+-------------------------------------------------
+do
+    local btn = CreateFrame("Button")
+    local mt = getmetatable(btn)
+
+    if mt and mt.__index and not mt.__index._CellFontSetterPolyfill then
+        -- Wrap SetDisabledFontObject
+        if type(mt.__index.SetDisabledFontObject) == "function" then
+            local origSetDisabledFontObject = mt.__index.SetDisabledFontObject
+            function mt.__index:SetDisabledFontObject(font)
+                local fontObj = getFontObject(font)
+                if not fontObj then
+                    -- Skip if font doesn't exist to avoid errors
+                    return
+                end
+                return origSetDisabledFontObject(self, fontObj)
+            end
+        end
+
+        -- Wrap SetNormalFontObject
+        if type(mt.__index.SetNormalFontObject) == "function" then
+            local origSetNormalFontObject = mt.__index.SetNormalFontObject
+            function mt.__index:SetNormalFontObject(font)
+                local fontObj = getFontObject(font)
+                if not fontObj then
+                    return
+                end
+                return origSetNormalFontObject(self, fontObj)
+            end
+        end
+
+        -- Wrap SetHighlightFontObject
+        if type(mt.__index.SetHighlightFontObject) == "function" then
+            local origSetHighlightFontObject = mt.__index.SetHighlightFontObject
+            function mt.__index:SetHighlightFontObject(font)
+                local fontObj = getFontObject(font)
+                if not fontObj then
+                    return
+                end
+                return origSetHighlightFontObject(self, fontObj)
+            end
+        end
+
+        mt.__index._CellFontSetterPolyfill = true
+    end
+end
+
+-------------------------------------------------
+-- FontString SetFontObject polyfill for WotLK
+-- Same issue: WotLK requires font objects, not string names
+-------------------------------------------------
+do
+    local fs = UIParent:CreateFontString()
+    local mt = getmetatable(fs)
+
+    if mt and mt.__index and not mt.__index._CellFontStringPolyfill then
+        if type(mt.__index.SetFontObject) == "function" then
+            local origSetFontObject = mt.__index.SetFontObject
+            function mt.__index:SetFontObject(font)
+                local fontObj = getFontObject(font)
+                if not fontObj then
+                    -- Skip if font doesn't exist to avoid errors
+                    return
+                end
+                return origSetFontObject(self, fontObj)
+            end
+        end
+
+        mt.__index._CellFontStringPolyfill = true
+    end
+end
+
 -- Fonts
+-- Create default fonts in case they're needed before Widgets.lua loads
+-- These match the fonts created in Widgets.lua
 if not _G["CELL_FONT_WIDGET"] then
     local font = CreateFont("CELL_FONT_WIDGET")
-    font:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
+    font:SetFont(STANDARD_TEXT_FONT, 13, "")
     font:SetTextColor(1, 1, 1, 1)
+    font:SetJustifyH("CENTER")
 end
 
 if not _G["CELL_FONT_WIDGET_TITLE"] then
     local font = CreateFont("CELL_FONT_WIDGET_TITLE")
-    font:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
-    font:SetTextColor(1, 0.82, 0, 1)
+    font:SetFont(STANDARD_TEXT_FONT, 14, "")
+    font:SetTextColor(1, 1, 1, 1)
+    font:SetJustifyH("CENTER")
 end
+
+if not _G["CELL_FONT_WIDGET_TITLE_DISABLE"] then
+    local font = CreateFont("CELL_FONT_WIDGET_TITLE_DISABLE")
+    font:SetFont(STANDARD_TEXT_FONT, 14, "")
+    font:SetTextColor(0.4, 0.4, 0.4, 1)
+    font:SetJustifyH("CENTER")
+end
+
+if not _G["CELL_FONT_WIDGET_SMALL"] then
+    local font = CreateFont("CELL_FONT_WIDGET_SMALL")
+    font:SetFont(STANDARD_TEXT_FONT, 11, "")
+    font:SetTextColor(1, 1, 1, 1)
+    font:SetJustifyH("CENTER")
+end
+
+if not _G["CELL_FONT_CHINESE"] then
+    local font = CreateFont("CELL_FONT_CHINESE")
+    font:SetFont(UNIT_NAME_FONT_CHINESE, 14, "")
+    font:SetTextColor(1, 1, 1, 1)
+    font:SetJustifyH("CENTER")
+end
+
+if not _G["CELL_FONT_WIDGET_DISABLE"] then
+    local font = CreateFont("CELL_FONT_WIDGET_DISABLE")
+    font:SetFont(STANDARD_TEXT_FONT, 13, "")
+    font:SetTextColor(0.4, 0.4, 0.4, 1)
+    font:SetJustifyH("CENTER")
+end
+
+if not _G["CELL_FONT_SPECIAL"] then
+    local font = CreateFont("CELL_FONT_SPECIAL")
+    font:SetFont(STANDARD_TEXT_FONT, 12, "")
+    font:SetTextColor(1, 1, 1, 1)
+    font:SetJustifyH("CENTER")
+    font:SetJustifyV("MIDDLE")
+end
+
+if not _G["CELL_FONT_CLASS_TITLE"] then
+    local font = CreateFont("CELL_FONT_CLASS_TITLE")
+    font:SetFont(STANDARD_TEXT_FONT, 14, "")
+    font:SetTextColor(1, 0.82, 0, 1)
+    font:SetJustifyH("CENTER")
+end
+
+if not _G["CELL_FONT_CLASS"] then
+    local font = CreateFont("CELL_FONT_CLASS")
+    font:SetFont(STANDARD_TEXT_FONT, 13, "")
+    font:SetTextColor(1, 1, 1, 1)
+    font:SetJustifyH("CENTER")
+end
+
+-------------------------------------------------
+-- Frame :Run() polyfill for WotLK
+-- In retail, frames in restricted execution have :Run() to execute Lua snippets
+-- In WotLK, this doesn't exist, so we polyfill it
+-------------------------------------------------
+do
+    local frame = CreateFrame("Frame")
+    local mt = getmetatable(frame)
+
+    if mt and mt.__index and not mt.__index.Run then
+        function mt.__index:Run(snippet)
+            if not snippet then return end
+
+            -- In restricted execution, we need to execute the snippet
+            -- Using loadstring with the restricted environment
+            local func, err = loadstring(snippet)
+            if func then
+                -- Set the environment to use 'self' as the frame
+                setfenv(func, setmetatable({self = self}, {__index = _G}))
+                local success, execErr = pcall(func)
+                if not success then
+                    -- Silently fail in restricted context, just like retail
+                    return
+                end
+            end
+        end
+    end
+end
+
+-------------------------------------------------
+-- Ensure CellMainFrame is always shown
+-- In WotLK, child frames won't show if parent is hidden
+-------------------------------------------------
+local function EnsureCellMainFrameShown()
+    if CellMainFrame and not CellMainFrame:IsShown() then
+        CellMainFrame:Show()
+    end
+end
+
+-- Check immediately when addon loads and on events
+local checkFrame = CreateFrame("Frame")
+checkFrame:RegisterEvent("ADDON_LOADED")
+checkFrame:RegisterEvent("PLAYER_LOGIN")
+checkFrame:SetScript("OnEvent", function(self, event, addonName)
+    if event == "ADDON_LOADED" and addonName == "Cell_Wrath" then
+        -- Check after Cell loads
+        C_Timer.After(0.1, EnsureCellMainFrameShown)
+    elseif event == "PLAYER_LOGIN" then
+        -- Check after login
+        C_Timer.After(0.1, EnsureCellMainFrameShown)
+    end
+end)
+
+-- Also check immediately
+C_Timer.After(0.5, EnsureCellMainFrameShown)
+
+-------------------------------------------------
+-- Wrap PixelPerfect functions to handle nil frames gracefully
+-- Some widgets may not exist in WotLK that exist in retail
+-------------------------------------------------
+C_Timer.After(0.1, function()
+    if Cell and Cell.pixelPerfectFuncs then
+        local P = Cell.pixelPerfectFuncs
+
+        -- List of functions that take a frame as first parameter
+        local frameFunctions = {
+            "Repoint", "Resize", "ClearPoints", "Size", "Point",
+            "Reborder", "Width", "Height", "PixelPerfectPoint"
+        }
+
+        for _, funcName in ipairs(frameFunctions) do
+            if P[funcName] then
+                local originalFunc = P[funcName]
+                P[funcName] = function(frame, ...)
+                    if not frame then return end
+                    return originalFunc(frame, ...)
+                end
+            end
+        end
+    end
+end)
+
+-------------------------------------------------
+-- Wrap Cell.funcs.RotateTexture to handle nil textures
+-- Some widgets may not exist in WotLK that exist in retail
+-------------------------------------------------
+C_Timer.After(0.1, function()
+    if Cell and Cell.funcs and Cell.funcs.RotateTexture then
+        local originalRotateTexture = Cell.funcs.RotateTexture
+        Cell.funcs.RotateTexture = function(texture, angle)
+            if not texture then return end
+            return originalRotateTexture(texture, angle)
+        end
+    end
+end)
+
+-------------------------------------------------
+-- Wrap Cell.bFuncs.SetOrientation to handle nil widgets
+-- SpotlightFrame and other special frames may not have all widgets
+-------------------------------------------------
+local function WrapSetOrientation()
+    if Cell and Cell.bFuncs and Cell.bFuncs.SetOrientation then
+        local originalSetOrientation = Cell.bFuncs.SetOrientation
+        Cell.bFuncs.SetOrientation = function(button, orientation, rotateTexture)
+            -- Get all the widgets (some may be nil)
+            local widgets = button.widgets
+            if not widgets then return end
+
+            local healthBar = widgets.healthBar
+            local powerBar = widgets.powerBar
+            local gapTexture = widgets.gapTexture
+
+            -- Check if this button has the minimum required widgets
+            -- SpotlightFrame buttons don't have powerBar or gapTexture
+            if not healthBar or not powerBar or not gapTexture then
+                -- Skip SetOrientation for buttons without basic widgets
+                print("Cell_Wrath: Skipping SetOrientation for button without required widgets")
+                return
+            end
+
+            -- Call original function
+            return originalSetOrientation(button, orientation, rotateTexture)
+        end
+        print("Cell_Wrath: SetOrientation wrapper applied successfully")
+    else
+        print("Cell_Wrath: WARNING - Cell.bFuncs.SetOrientation not found, retrying...")
+        C_Timer.After(0.5, WrapSetOrientation)
+    end
+end
+
+-- Try to wrap after a delay, and retry if not ready
+C_Timer.After(1, WrapSetOrientation)
+
+-------------------------------------------------
+-- AnimationGroup CreateAnimation compatibility wrapper
+-- Ensures compatibility with DetailsWotlkPort and other addons
+-- This prevents conflicts when other addons expect animation type to be a string
+-------------------------------------------------
+do
+    local ag = UIParent:CreateAnimationGroup()
+    local mt = getmetatable(ag)
+
+    if mt and mt.__index and not mt.__index._CellAnimationPolyfillApplied then
+        local origCreateAnimation = mt.__index.CreateAnimation
+
+        if origCreateAnimation then
+            function mt.__index:CreateAnimation(animationType, ...)
+                -- Ensure animationType is always a string to prevent conflicts with other addon polyfills
+                -- Some addons (like DetailsWotlkPort) expect this to never be nil
+                animationType = animationType or "Animation"
+
+                return origCreateAnimation(self, animationType, ...)
+            end
+
+            mt.__index._CellAnimationPolyfillApplied = true
+        end
+    end
+end
+
+-------------------------------------------------
+-- Fix LibCustomGlow AutoCastGlow info initialization
+-- Ensure info table is properly initialized before use
+-------------------------------------------------
+C_Timer.After(0.5, function()
+    if LibStub then
+        local LCG = LibStub("LibCustomGlow-1.0", true)
+        if LCG and LCG.AutoCastGlow_Start then
+            local origStart = LCG.AutoCastGlow_Start
+            LCG.AutoCastGlow_Start = function(r, color, N, frequency, scale, xOffset, yOffset, key, frameLevel)
+                -- Call original function
+                origStart(r, color, N, frequency, scale, xOffset, yOffset, key, frameLevel)
+
+                -- Ensure info fields are initialized
+                key = key or ""
+                local f = r["_AutoCastGlow"..key]
+                if f and f.info then
+                    -- Force initial size calculation
+                    local width, height = f:GetSize()
+                    if width and height and width > 0 and height > 0 then
+                        f.info.width = width
+                        f.info.height = height
+                        f.info.perimeter = 2 * (width + height)
+                        f.info.bottomlim = height * 2 + width
+                        f.info.rightlim = height + width
+                        f.info.space = f.info.perimeter / f.info.N
+                    else
+                        -- Frame not sized yet, set safe defaults to prevent nil errors
+                        f.info.width = 0
+                        f.info.height = 0
+                        f.info.perimeter = 0
+                        f.info.bottomlim = 0
+                        f.info.rightlim = 0
+                        f.info.space = 0
+                    end
+                end
+            end
+        end
+    end
+end)

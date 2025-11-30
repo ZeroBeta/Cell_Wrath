@@ -468,7 +468,7 @@ function eventFrame:ADDON_LOADED(arg1)
         Cell.vars.actions = I.ConvertActions(CellDB["actions"])
 
         -- misc -----------------------------------------------------------------------------------
-        Cell.version = GetAddOnMetadata("Cell", "version")
+        Cell.version = GetAddOnMetadata("Cell_Wrath", "version")
         Cell.versionNum = tonumber(string.match(Cell.version, "%d+"))
         if not CellDB["revise"] then CellDB["firstRun"] = true end
         F.Revise()

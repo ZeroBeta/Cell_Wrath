@@ -60,7 +60,7 @@ LoadList = function()
 
             -- del
             customs[i].del = Cell.CreateButton(customs[i], "", "none", {18, 20}, true, true)
-            customs[i].del:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\delete", {16, 16}, {"CENTER", 0, 0})
+            customs[i].del:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\delete", {16, 16}, {"CENTER", 0, 0})
             customs[i].del:SetPoint("RIGHT")
             customs[i].del.tex:SetVertexColor(0.6, 0.6, 0.6, 1)
             customs[i].del:SetScript("OnEnter", function()

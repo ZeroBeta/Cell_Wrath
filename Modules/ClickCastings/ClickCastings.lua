@@ -296,7 +296,8 @@ else
         b:SetAttribute("_onenter", [[
             -- print("_onenter")
             self:ClearBindings()
-            self:Run(self:GetAttribute("snippet"))
+            -- WotLK Fix: :Run() doesn't exist in WotLK's restricted execution
+            -- self:Run(self:GetAttribute("snippet"))
 
             -- self:SetBindingClick(true, "SHIFT-MOUSEWHEELUP", self, "shiftSCROLLUP")
             -- FIXME: --! 如果游戏按键设置（比如“视角”“载具控制”）中绑定了滚轮，那么 self:SetBindingClick(true, "MOUSEWHEELUP", self, "SCROLLUP") 会失效
@@ -1414,18 +1415,18 @@ local function CreateListPane()
     hint:SetPoint("TOPRIGHT")
     hint.tex = hint:CreateTexture(nil, "ARTWORK")
     hint.tex:SetAllPoints(hint)
-    hint.tex:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\info2.tga")
+    hint.tex:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\info2.tga")
 
     local export = Cell.CreateButton(listPane, nil, "accent-hover", {27, 17}, nil, nil, nil, nil, nil, L["Export"])
     export:SetPoint("TOPRIGHT", hint, "TOPLEFT", -1, 0)
-    export:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\export", {15, 15}, {"CENTER", 0, 0})
+    export:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\export", {15, 15}, {"CENTER", 0, 0})
     export:SetScript("OnClick", function()
         F.ShowClickCastingExportFrame(clickCastingTable)
     end)
 
     local import = Cell.CreateButton(listPane, nil, "accent-hover", {27, 17}, nil, nil, nil, nil, nil, L["Import"])
     import:SetPoint("TOPRIGHT", export, "TOPLEFT", -1, 0)
-    import:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\import", {15, 15}, {"CENTER", 0, 0})
+    import:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\import", {15, 15}, {"CENTER", 0, 0})
     import:SetScript("OnClick", function()
         F.ShowClickCastingImportFrame()
     end)

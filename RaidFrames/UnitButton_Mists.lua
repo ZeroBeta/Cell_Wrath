@@ -3769,7 +3769,7 @@ function CellUnitButton_OnLoad(button)
     -- shield bar
     local shieldBar = midLevelFrame:CreateTexture(name.."ShieldBar", "ARTWORK", nil, -5)
     button.widgets.shieldBar = shieldBar
-    shieldBar:SetTexture("Interface\\AddOns\\Cell\\Media\\shield", "REPEAT", "REPEAT")
+    shieldBar:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\shield", "REPEAT", "REPEAT")
     shieldBar:SetHorizTile(true)
     shieldBar:SetVertTile(true)
     shieldBar:Hide()
@@ -3777,7 +3777,7 @@ function CellUnitButton_OnLoad(button)
 
     local shieldBarR = midLevelFrame:CreateTexture(name.."ShieldBarR", "ARTWORK", nil, -5)
     button.widgets.shieldBarR = shieldBarR
-    shieldBarR:SetTexture("Interface\\AddOns\\Cell\\Media\\shield", "REPEAT", "REPEAT")
+    shieldBarR:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\shield", "REPEAT", "REPEAT")
     shieldBarR:SetHorizTile(true)
     shieldBarR:SetVertTile(true)
     shieldBarR:Hide()
@@ -3786,7 +3786,7 @@ function CellUnitButton_OnLoad(button)
     -- over-shield glow
     local overShieldGlow = midLevelFrame:CreateTexture(name.."OverShieldGlow", "ARTWORK", nil, -4)
     button.widgets.overShieldGlow = overShieldGlow
-    overShieldGlow:SetTexture("Interface\\AddOns\\Cell\\Media\\overshield")
+    overShieldGlow:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\overshield")
     -- overShieldGlow:SetBlendMode("ADD")
     overShieldGlow:Hide()
     shieldBar.overShieldGlow = overShieldGlow
@@ -3794,7 +3794,7 @@ function CellUnitButton_OnLoad(button)
     -- over-shield glow reversed
     local overShieldGlowR = midLevelFrame:CreateTexture(name.."OverShieldGlowR", "ARTWORK", nil, -4)
     button.widgets.overShieldGlowR = overShieldGlowR
-    overShieldGlowR:SetTexture("Interface\\AddOns\\Cell\\Media\\overshield_reversed")
+    overShieldGlowR:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\overshield_reversed")
     -- overShieldGlowR:SetBlendMode("ADD")
     overShieldGlowR:Hide()
     shieldBar.overShieldGlowR = overShieldGlowR
@@ -3802,7 +3802,7 @@ function CellUnitButton_OnLoad(button)
     -- over-absorb glow
     local overAbsorbGlow = midLevelFrame:CreateTexture(name.."OverAbsorbGlow", "ARTWORK", nil, -2)
     button.widgets.overAbsorbGlow = overAbsorbGlow
-    overAbsorbGlow:SetTexture("Interface\\AddOns\\Cell\\Media\\overabsorb")
+    overAbsorbGlow:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\overabsorb")
     -- overAbsorbGlow:SetBlendMode("ADD")
     overAbsorbGlow:Hide()
 
@@ -3810,7 +3810,7 @@ function CellUnitButton_OnLoad(button)
     local absorbsBar = midLevelFrame:CreateTexture(name.."AbsorbsBar", "ARTWORK", nil, 1)
     button.widgets.absorbsBar = absorbsBar
     absorbsBar.healthBar = healthBar
-    absorbsBar:SetTexture("Interface\\AddOns\\Cell\\Media\\shield.tga", "REPEAT", "REPEAT")
+    absorbsBar:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\shield.tga", "REPEAT", "REPEAT")
     absorbsBar:SetHorizTile(true)
     absorbsBar:SetVertTile(true)
     absorbsBar:SetVertexColor(1, 0.1, 0.1, 1)

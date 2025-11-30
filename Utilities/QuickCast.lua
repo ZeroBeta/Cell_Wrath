@@ -357,7 +357,7 @@ end
 -- ----------------------------------------------------------------------- --
 local function CreateSpellButton(parent, func)
     local b = Cell.CreateButton(parent, " ", "accent-hover", {195, 20})
-    b:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\create", {16, 16}, {"LEFT", 2, 0})
+    b:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\create", {16, 16}, {"LEFT", 2, 0})
     b:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     b:GetFontString():SetJustifyH("LEFT")
 
@@ -385,7 +385,7 @@ local function CreateSpellButton(parent, func)
             b.id = nil
             b.icon = nil
             b:SetText("")
-            b.tex:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\create")
+            b.tex:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\create")
             b.tex:SetTexCoord(0, 1, 0, 1)
             func(0)
             Cell.Fire("UpdateQuickCast")
@@ -418,7 +418,7 @@ local function CreateOuterPane()
     local tip = qcOuterPane:CreateTexture(nil, "ARTWORK")
     tip:SetPoint("BOTTOMRIGHT", qcOuterPane.line, "TOPRIGHT", 0, P.Scale(2))
     tip:SetSize(16, 16)
-    tip:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\left-click")
+    tip:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\left-click")
 
     qcOuterCP = Cell.CreateColorPicker(qcOuterPane, L["Color"], false, nil, function(r, g, b)
         quickCastTable["outerColor"][1] = r
@@ -446,7 +446,7 @@ local function CreateInnerPane()
     local tip = qcInnerPane:CreateTexture(nil, "ARTWORK")
     tip:SetPoint("BOTTOMRIGHT", qcInnerPane.line, "TOPRIGHT", 0, P.Scale(2))
     tip:SetSize(16, 16)
-    tip:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\right-click")
+    tip:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\right-click")
 
     qcInnerCP = Cell.CreateColorPicker(qcInnerPane, L["Color"], false, nil, function(r, g, b)
         quickCastTable["innerColor"][1] = r
@@ -579,7 +579,7 @@ local function CreateGlowBuffsPane()
     -- buffs ------------------------------------------------------------------------
     qcGlowBuffsAddBtn = Cell.CreateButton(qcGlowBuffsPane, nil, "accent-hover", {20, 20})
     qcGlowBuffsAddBtn:SetPoint("TOPLEFT", qcGlowBuffsCP, "BOTTOMLEFT", 0, -10)
-    qcGlowBuffsAddBtn:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\create", {16, 16}, {"CENTER", 0, 0})
+    qcGlowBuffsAddBtn:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\create", {16, 16}, {"CENTER", 0, 0})
     qcGlowBuffsAddBtn:SetScript("OnClick", function()
         local popup = Cell.CreatePopupEditBox(qcPane, function(text)
             local spellId = tonumber(text)
@@ -646,7 +646,7 @@ local function CreateGlowCastsPane()
     -- casts ------------------------------------------------------------------------
     qcGlowCastsAddBtn = Cell.CreateButton(qcGlowCastsPane, nil, "accent-hover", {20, 20})
     qcGlowCastsAddBtn:SetPoint("TOPLEFT", qcGlowCastsCP, "BOTTOMLEFT", 0, -10)
-    qcGlowCastsAddBtn:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\create", {16, 16}, {"CENTER", 0, 0})
+    qcGlowCastsAddBtn:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\create", {16, 16}, {"CENTER", 0, 0})
     qcGlowCastsAddBtn:SetScript("OnClick", function()
         local popup = Cell.CreateDualPopupEditBox(qcGlowCastsPane, "ID", L["Duration"], true, function(spellId, duration)
             local spellName = F.GetSpellInfo(spellId)
@@ -674,7 +674,7 @@ local function LoadSpellButton(b, value)
     b.icon = nil
     if value == 0 then
         b:SetText("")
-        b.tex:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\create")
+        b.tex:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\create")
         b.tex:SetTexCoord(0, 1, 0, 1)
     else
         local name, icon = F.GetSpellInfo(value)
@@ -1066,7 +1066,7 @@ CreateQuickCastButton = function(parent, name, isPreview)
     local invalidTex = b:CreateTexture(nil, "ARTWORK")
     b.invalidTex = invalidTex
     invalidTex:Hide()
-    invalidTex:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\close")
+    invalidTex:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\close")
     invalidTex:SetVertexColor(0.7, 0.7, 0.7, 1)
 
     -- glow buff --------------------------------------------------------------------

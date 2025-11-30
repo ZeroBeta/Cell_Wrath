@@ -32,6 +32,8 @@ local tooltipPoint, tooltipRelativePoint, tooltipX, tooltipY
 -------------------------------------------------
 local cellMainFrame = CreateFrame("Frame", "CellMainFrame", CellParent, "SecureFrameTemplate")
 Cell.frames.mainFrame = cellMainFrame
+-- WotLK Fix: Explicitly show the frame (in WotLK, SecureFrameTemplate frames may start hidden)
+cellMainFrame:Show()
 
 local hoverFrame = CreateFrame("Frame", "CellMenuHoverDetector", cellMainFrame, "BackdropTemplate")
 -- Cell.StylizeFrame(hoverFrame, {1,0,0,0.3}, {0,0,0,0})
@@ -290,10 +292,10 @@ local function GetRaidSetupDetail(role)
 
             for i = 1, Cell.vars.raidSetup[role][class] do
                 if line ~= "  " then
-                    line = line .. "|TInterface\\AddOns\\Cell\\Media\\white:10:1:0:0:1:10:1:1:1:10:0:0:0|t"
+                    line = line .. "|TInterface\\AddOns\\Cell_Wrath\\Media\\white:10:1:0:0:1:10:1:1:1:10:0:0:0|t"
                 end
 
-                line = line .. "|TInterface\\AddOns\\Cell\\Media\\white:10:2:0:0:2:10:1:2:1:10:"..r..":"..g..":"..b.."|t"
+                line = line .. "|TInterface\\AddOns\\Cell_Wrath\\Media\\white:10:2:0:0:2:10:1:2:1:10:"..r..":"..g..":"..b.."|t"
             end
         end
     end
@@ -500,7 +502,8 @@ local function MainFrame_UpdateLayout(layout, which)
 
     if not init then
         --! NOTE: a reload during pet battle prevents HEADER from CREATING CHILDs (unit buttons), this hide delay is a MUST
-        RegisterStateDriver(cellMainFrame, "visibility", "[petbattle] hide; show")
+        -- WotLK Fix: Pet battles don't exist in WotLK, so just keep frame visible
+        RegisterStateDriver(cellMainFrame, "visibility", "show")
         init = true
     end
 

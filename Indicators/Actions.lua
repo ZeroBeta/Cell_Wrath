@@ -238,7 +238,7 @@ local function CreateAnimationGroup_TypeC()
     -- texture
     local tex = f:CreateTexture(nil, "ARTWORK")
     tex:SetAllPoints(f)
-    tex:SetTexture("Interface\\AddOns\\Cell\\Media\\Icons\\upgrade.tga")
+    tex:SetTexture("Interface\\AddOns\\Cell_Wrath\\Media\\Icons\\upgrade.tga")
 
     -- animation
     local ag = f:CreateAnimationGroup()
