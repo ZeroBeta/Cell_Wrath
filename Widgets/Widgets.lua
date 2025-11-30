@@ -2910,6 +2910,13 @@ function Cell.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
         menu.text:SetJustifyH("LEFT")
     end
 
+    -- Enable clicking on the main frame to toggle the dropdown
+    menu:SetScript("OnMouseDown", function()
+        if menu.button:IsEnabled() then
+            menu.button:Click()
+        end
+    end)
+
     -- selected item
     menu.text:SetJustifyV("MIDDLE")
     menu.text:SetWordWrap(false)
@@ -3349,7 +3356,7 @@ end
 
 function Cell.CreateBindingListButton(parent, modifier, bindKey, bindType, bindAction)
     local b = CreateFrame("Button", nil, parent, "BackdropTemplate")
-    b:SetFrameLevel(5)
+    b:SetFrameLevel(parent:GetFrameLevel() + 5)
     P.Size(b, 100, 20)
     b:SetBackdrop({bgFile = Cell.vars.whiteTexture, edgeFile = Cell.vars.whiteTexture, edgeSize = P.Scale(1)})
     b:SetBackdropColor(0.115, 0.115, 0.115, 1)

@@ -3,6 +3,7 @@ local addonName, ns = ...
 _G.Cell = _G.Cell or ns or {}
 local Cell = _G.Cell
 
+
 -------------------------------------------------
 -- PROJECT / FLAVOR SHIM FOR 3.3.5a
 -------------------------------------------------
@@ -113,6 +114,22 @@ if not PixelUtil then
         return 1 / (768 / GetScreenHeight()) / scale
     end
 end
+
+
+
+
+
+-------------------------------------------------
+-- CellDropdownList shim
+-- Retail has a shared dropdown list frame; Wrath port just needs a dummy to hide.
+-------------------------------------------------
+if not CellDropdownList then
+    local f = CreateFrame("Frame", "CellDropdownList", UIParent)
+    f:Hide()
+    _G.CellDropdownList = f
+end
+
+
 
 -- Mouse click / motion polyfill for Wrath
 do
@@ -499,6 +516,8 @@ do
         end
     end
 end
+
+
 
 
 -------------------------------------------------
@@ -975,7 +994,7 @@ if not C_TooltipInfo then
     C_TooltipInfo = {}
     function C_TooltipInfo.GetSpellByID(spellId)
         -- Placeholder, returns empty table or minimal info
-        return { lines = {} } 
+        return { lines = {} }
     end
 end
 
@@ -1261,25 +1280,26 @@ end
 do
     -- Track frames that have registered GROUP_ROSTER_UPDATE handlers
     local groupRosterFrames = setmetatable({}, {__mode = "k"}) -- weak keys
-    
+
     -- The proxy frame that listens to actual WotLK events
     local proxyFrame = CreateFrame("Frame", "CellGroupRosterProxy")
     proxyFrame:RegisterEvent("PARTY_MEMBERS_CHANGED")
     proxyFrame:RegisterEvent("RAID_ROSTER_UPDATE")
     proxyFrame:RegisterEvent("PARTY_MEMBER_ENABLE")
     proxyFrame:RegisterEvent("PARTY_MEMBER_DISABLE")
-    
-    -- Debounce to avoid firing multiple times per frame
-    local lastFireTime = 0
-    local DEBOUNCE_TIME = 0.1
-    
-    proxyFrame:SetScript("OnEvent", function(self, event, ...)
+
+    proxyFrame:SetScript("OnEvent", function(self, event)
+
+        -- Debounce to avoid firing multiple times per frame
+        local lastFireTime = 0
+        local DEBOUNCE_TIME = 0.1
+
         local now = GetTime()
         if now - lastFireTime < DEBOUNCE_TIME then
             return
         end
         lastFireTime = now
-        
+
         -- Fire GROUP_ROSTER_UPDATE on all registered frames
         for frame in pairs(groupRosterFrames) do
             if frame and frame:IsVisible() then
