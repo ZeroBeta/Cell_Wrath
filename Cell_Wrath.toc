@@ -10,11 +10,13 @@
 ## X-Wago-ID: qv63LLKb
 ## X-WoWI-ID: 26244
 
+Polyfills.lua
+
 Locales\LoadLocales.xml
 
 Libs\LoadLibs_Classic.xml
 
-Polyfills.lua
+
 
 Core_Wrath.lua
 Utils.lua

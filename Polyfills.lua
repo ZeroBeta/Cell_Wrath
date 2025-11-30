@@ -1,7 +1,383 @@
-local _, Cell = ...
-local L = Cell.L
+local addonName, ns = ...
+-- Use a single global Cell table for everything
+_G.Cell = _G.Cell or ns or {}
+local Cell = _G.Cell
 
+-------------------------------------------------
+-- PROJECT / FLAVOR SHIM FOR 3.3.5a
+-------------------------------------------------
+-- On real Retail/Classic, WOW_PROJECT_ID is a number.
+-- On 3.3.5a private clients, it's usually nil, which breaks addons
+-- that rely on it. So we fake the constants and pretend to be Wrath Classic.
+if type(WOW_PROJECT_ID) ~= "number" then
+    -- Fake Blizzard project constants
+    WOW_PROJECT_MAINLINE          = 1
+    WOW_PROJECT_CLASSIC           = 2
+    WOW_PROJECT_WRATH_CLASSIC     = 11
+    WOW_PROJECT_CATACLYSM_CLASSIC = 12
+    WOW_PROJECT_MISTS_CLASSIC     = 13
+
+    -- Tell the addon we're Wrath Classic
+    WOW_PROJECT_ID = WOW_PROJECT_WRATH_CLASSIC
+end
+
+-- Initialize flavor + flags once based on WOW_PROJECT_ID
+if not Cell.flavor then
+    if WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then
+        Cell.flavor = "wrath"
+    elseif WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+        Cell.flavor = "retail"
+    elseif WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+        Cell.flavor = "vanilla"
+    elseif WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC then
+        Cell.flavor = "cata"
+    elseif WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC then
+        Cell.flavor = "mists"
+    else
+        Cell.flavor = "retail"
+    end
+end
+
+Cell.isRetail  = (Cell.flavor == "retail")
+Cell.isWrath   = (Cell.flavor == "wrath")
+Cell.isVanilla = (Cell.flavor == "vanilla")
+Cell.isCata    = (Cell.flavor == "cata")
+Cell.isMists   = (Cell.flavor == "mists")
+Cell.isTWW     = false -- definitely not TWW on 3.3.5a
+
+-------------------------------------------------
 -- Polyfills for WotLK 3.3.5a
+-------------------------------------------------
+
+-- SmoothStatusBarMixin polyfill for WotLK
+if not SmoothStatusBarMixin then
+    SmoothStatusBarMixin = {}
+
+    -- Retail calls this from XML, we don't need animation logic here
+    function SmoothStatusBarMixin:OnLoad()
+        -- no-op on 3.3.5
+    end
+
+    -- Retail "smooths" the change over time; we just set the value directly
+    function SmoothStatusBarMixin:SetSmoothedValue(value)
+        if self.SetValue then
+            self:SetValue(value)
+        end
+    end
+
+    function SmoothStatusBarMixin:SetMinMaxSmoothedValue(minVal, maxVal)
+        if self.SetMinMaxValues then
+            self:SetMinMaxValues(minVal, maxVal)
+        end
+    end
+end
+
+-- Alpha animation SetFromAlpha / SetToAlpha polyfill for 3.3.5a
+do
+    -- create a sample alpha animation to grab its metatable
+    local f  = CreateFrame("Frame")
+    local ag = f:CreateAnimationGroup()
+    local a  = ag:CreateAnimation("Alpha")
+    local mt = getmetatable(a)
+
+    if mt and mt.__index and not mt.__index.SetFromAlpha then
+        -- weak tables to remember from/to per animation
+        local alphaFrom = setmetatable({}, { __mode = "k" })
+        local alphaTo   = setmetatable({}, { __mode = "k" })
+
+        function mt.__index:SetFromAlpha(value)
+            alphaFrom[self] = value
+            local to = alphaTo[self]
+            -- On WotLK, Alpha uses SetChange; approximate from/to with delta
+            if to ~= nil and self.SetChange then
+                self:SetChange(to - value)
+            end
+        end
+
+        function mt.__index:SetToAlpha(value)
+            alphaTo[self] = value
+            local from = alphaFrom[self]
+            if from ~= nil and self.SetChange then
+                self:SetChange(value - from)
+            end
+        end
+    end
+end
+
+-- HookScript polyfill for 3.3.5a
+
+-- 1) Real hook for Frames (they have GetScript/SetScript)
+do
+    local f  = CreateFrame("Frame")
+    local mt = getmetatable(f)
+
+    if mt and mt.__index and not mt.__index.HookScript then
+        function mt.__index:HookScript(scriptType, handler)
+            if not self or type(scriptType) ~= "string" or type(handler) ~= "function" then
+                return
+            end
+
+            -- Only makes sense if this object actually supports scripts
+            local getScript = self.GetScript
+            local setScript = self.SetScript
+            if type(getScript) ~= "function" or type(setScript) ~= "function" then
+                return
+            end
+
+            local prev = getScript(self, scriptType)
+            if prev then
+                setScript(self, scriptType, function(...)
+                    prev(...)
+                    handler(...)
+                end)
+            else
+                setScript(self, scriptType, handler)
+            end
+        end
+    end
+end
+
+-- 2) Delegate Texture:HookScript to its parent frame
+do
+    local tex = UIParent:CreateTexture()
+    local mt  = getmetatable(tex)
+
+    if mt and mt.__index and not mt.__index.HookScript then
+        function mt.__index:HookScript(scriptType, handler)
+            if type(scriptType) ~= "string" or type(handler) ~= "function" then
+                return
+            end
+
+            local parent = self:GetParent()
+            if parent then
+                -- If parent already has a proper HookScript (either native or from the frame polyfill), use it
+                if type(parent.HookScript) == "function" then
+                    parent:HookScript(scriptType, handler)
+                    return
+                end
+
+                -- If parent only has SetScript/GetScript, hook manually
+                local getScript = parent.GetScript
+                local setScript = parent.SetScript
+                if type(getScript) == "function" and type(setScript) == "function" then
+                    local prev = getScript(parent, scriptType)
+                    if prev then
+                        setScript(parent, scriptType, function(...)
+                            prev(...)
+                            handler(...)
+                        end)
+                    else
+                        setScript(parent, scriptType, handler)
+                    end
+                    return
+                end
+            end
+
+            -- Worst case: no scripts anywhere, just fire once so stuff like blink:Play() runs at least once
+            handler(self)
+        end
+    end
+end
+
+
+-- Cooldown swipe API polyfill for 3.3.5a (no-op)
+do
+    local cd = CreateFrame("Cooldown")
+    local mt = getmetatable(cd)
+
+    if mt and mt.__index then
+        if not mt.__index.SetSwipeTexture then
+            function mt.__index:SetSwipeTexture(texture)
+                -- No swipe layer in WotLK, ignore
+            end
+        end
+
+        if not mt.__index.SetSwipeColor then
+            function mt.__index:SetSwipeColor(r, g, b, a)
+                -- Ignore
+            end
+        end
+
+        if not mt.__index.SetDrawEdge then
+            function mt.__index:SetDrawEdge(flag)
+                -- Ignore
+            end
+        end
+
+        if not mt.__index.SetDrawBling then
+            function mt.__index:SetDrawBling(flag)
+                -- Ignore
+            end
+        end
+
+        if not mt.__index.SetHideCountdownNumbers then
+            function mt.__index:SetHideCountdownNumbers(flag)
+                -- Just ignore; WotLK cooldown text is separate anyway
+            end
+        end
+    end
+end
+
+
+-- Cooldown OnCooldownDone polyfill for 3.3.5a (ignore unsupported script type)
+do
+    local cd = CreateFrame("Cooldown")
+    local mt = getmetatable(cd)
+
+    if mt and mt.__index and not mt.__index._CellOnCooldownDoneShim then
+        local origSetScript = mt.__index.SetScript
+
+        function mt.__index:SetScript(scriptType, handler)
+            -- Retail-only script type; WotLK cooldowns don't support it
+            if scriptType == "OnCooldownDone" then
+                -- No native support in 3.3.5a; safely ignore
+                return
+            end
+
+            return origSetScript(self, scriptType, handler)
+        end
+
+        mt.__index._CellOnCooldownDoneShim = true
+    end
+end
+
+
+-- StatusBar:SetReverseFill polyfill for 3.3.5a (no-op)
+do
+    local f = CreateFrame("StatusBar")
+    local mt = getmetatable(f)
+    if mt and mt.__index and not mt.__index.SetReverseFill then
+        function mt.__index:SetReverseFill(reverse)
+            -- 3.3.5 has no reverse fill; ignore request
+        end
+    end
+end
+
+
+-------------------------------------------------
+-- FlipBook / ParentKey / ChildKey polyfills
+-------------------------------------------------
+
+-- Textures: SetParentKey is Retail-only
+do
+    local tex = UIParent:CreateTexture()
+    local mt  = getmetatable(tex)
+
+    if mt and mt.__index and not mt.__index.SetParentKey then
+        function mt.__index:SetParentKey(key)
+            -- Retail uses this to bind the texture to a named child
+            -- of a flipbook animation. WotLK has no concept of this,
+            -- so just ignore it.
+        end
+    end
+end
+
+-- Animations: ChildKey + FlipBook-specific methods
+do
+    local f  = CreateFrame("Frame")
+    local ag = f:CreateAnimationGroup()
+    local a  = ag:CreateAnimation("Alpha")
+    local mt = getmetatable(a)
+
+    if mt and mt.__index then
+        if not mt.__index.SetChildKey then
+            function mt.__index:SetChildKey(key)
+                -- No child-key routing in WotLK. Ignore.
+            end
+        end
+
+        if not mt.__index.SetFlipBookFrames then
+            function mt.__index:SetFlipBookFrames(frames)
+                -- No flipbook system; ignore.
+            end
+        end
+
+        if not mt.__index.SetFlipBookFrameWidth then
+            function mt.__index:SetFlipBookFrameWidth(width)
+                -- Ignore.
+            end
+        end
+
+        if not mt.__index.SetFlipBookFrameHeight then
+            function mt.__index:SetFlipBookFrameHeight(height)
+                -- Ignore.
+            end
+        end
+
+        if not mt.__index.SetFlipBookRows then
+            function mt.__index:SetFlipBookRows(rows)
+                -- Ignore; 3.3.5 doesn't know rows/columns.
+            end
+        end
+
+        if not mt.__index.SetFlipBookColumns then
+            function mt.__index:SetFlipBookColumns(columns)
+                -- Ignore.
+            end
+        end
+    end
+end
+
+
+-- AnimationGroup: map "FlipBook" → "Alpha" so CreateAnimation doesn't explode
+do
+    local f  = CreateFrame("Frame")
+    local ag = f:CreateAnimationGroup()
+    local mt = getmetatable(ag)
+
+    if mt and mt.__index and type(mt.__index.CreateAnimation) == "function"
+       and not mt.__index._CellFlipBookShim
+    then
+        local origCreateAnimation = mt.__index.CreateAnimation
+
+        function mt.__index:CreateAnimation(animType, ...)
+            if animType == "FlipBook" then
+                -- 3.3.5 only knows Alpha/Translation/Scale/Rotation.
+                animType = "Alpha"
+            end
+            return origCreateAnimation(self, animType, ...)
+        end
+
+        mt.__index._CellFlipBookShim = true
+    end
+end
+
+
+-- CreateMaskTexture polyfill for 3.3.5a (Frame / StatusBar / Cooldown / Texture)
+do
+    local function addCreateMaskTexture(obj)
+        local mt = getmetatable(obj)
+        if not mt or type(mt.__index) ~= "table" then
+            return
+        end
+
+        if not mt.__index.CreateMaskTexture then
+            function mt.__index:CreateMaskTexture()
+                -- 3.3.5a has no real mask textures; fake it with a normal texture
+                return self:CreateTexture(nil, "ARTWORK")
+            end
+        end
+    end
+
+    -- Patch the types we care about
+    addCreateMaskTexture(CreateFrame("Frame"))
+    addCreateMaskTexture(CreateFrame("StatusBar"))
+    addCreateMaskTexture(CreateFrame("Cooldown"))
+    addCreateMaskTexture(UIParent:CreateTexture())
+end
+
+
+
+-- Texture:AddMaskTexture polyfill for 3.3.5a (no-op)
+do
+    local t = UIParent:CreateTexture()
+    local mt = getmetatable(t)
+    if mt and mt.__index and not mt.__index.AddMaskTexture then
+        function mt.__index:AddMaskTexture(mask)
+            -- Ignore; real masking doesn't exist on 3.3.5
+        end
+    end
+end
 
 -- C_Timer
 if not C_Timer then
@@ -57,25 +433,56 @@ end
 -- C_Spell
 if not C_Spell then
     C_Spell = {}
+end
+
+-- Retail: C_Spell.GetSpellInfo(spellID) → table { name, iconID, ... }
+if not C_Spell.GetSpellInfo then
     function C_Spell.GetSpellInfo(spellId)
-        return GetSpellInfo(spellId)
+        local name, _, icon = GetSpellInfo(spellId)
+        if not name then
+            return nil
+        end
+        return {
+            name   = name,
+            iconID = icon,
+        }
     end
+end
+
+if not C_Spell.GetSpellTexture then
     function C_Spell.GetSpellTexture(spellId)
-        return GetSpellTexture(spellId)
+        local _, _, icon = GetSpellInfo(spellId)
+        return icon
     end
+end
+
+if not C_Spell.IsSpellInRange then
     function C_Spell.IsSpellInRange(spellId, unit)
-        return IsSpellInRange(GetSpellInfo(spellId), unit)
+        -- Retail uses spellID directly; 3.3.5 IsSpellInRange wants name
+        local name = GetSpellInfo(spellId)
+        if not name then return nil end
+        return IsSpellInRange(name, unit)
     end
+end
+
+if not C_Spell.GetSpellCooldown then
     function C_Spell.GetSpellCooldown(spellId)
-        return GetSpellCooldown(spellId)
+        -- Old API: start, duration, enabled
+        -- Retail C_Spell: start, duration, enabled, modRate
+        local start, duration, enabled = GetSpellCooldown(spellId)
+        return start, duration, enabled, 1
     end
+end
+
+if not C_Spell.GetSpellLink then
     function C_Spell.GetSpellLink(spellId)
         return GetSpellLink(spellId)
     end
+end
+
+if not C_Spell.GetSpellCharges then
     function C_Spell.GetSpellCharges(spellId)
-        -- WotLK doesn't have spell charge system (added in Legion)
-        -- Return nil to indicate no charges available
-        -- Retail format: currentCharges, maxCharges, cooldownStartTime, cooldownDuration, chargeModRate
+        -- 3.3.5 has no real charges → emulate “no charges” behavior
         return nil
     end
 end
@@ -112,8 +519,8 @@ if not C_UnitAuras then
     end
 
     function C_UnitAuras.GetAuraDataBySpellName(unit, spellName, filter)
-         local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, spellName, nil, filter)
-         if name then
+        local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, spellName, nil, filter)
+        if name then
             return {
                 name = name,
                 icon = icon,
@@ -274,7 +681,6 @@ if not UnregisterAttributeDriver and UnregisterStateDriver then
         return UnregisterStateDriver(frame, attribute)
     end
 end
-
 
 -- GetNumClasses (doesn't exist in WotLK 3.3.5a)
 if not GetNumClasses then
@@ -450,10 +856,6 @@ end
 -- GROUP_ROSTER_UPDATE Event Compatibility Layer
 -- In WotLK 3.3.5a, GROUP_ROSTER_UPDATE doesn't exist.
 -- Instead, we have PARTY_MEMBERS_CHANGED and RAID_ROSTER_UPDATE.
---
--- IMPORTANT: Individual files that need GROUP_ROSTER_UPDATE should
--- also register for PARTY_MEMBERS_CHANGED and RAID_ROSTER_UPDATE
--- and handle them the same way as GROUP_ROSTER_UPDATE.
 --
 -- This global proxy provides a fallback for frames that may not
 -- have been updated yet.
