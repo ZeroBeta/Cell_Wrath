@@ -356,6 +356,100 @@ local function SetOnEnterLeave(frame)
 end
 
 -------------------------------------------------
+-- texture helpers
+-------------------------------------------------
+local fallbackTexture = "Interface\\Icons\\INV_Misc_QuestionMark"
+local instanceTexCoord = {0.015, 0.666, 0.03, 0.72}
+local portraitTexCoord = {0.08, 0.92, 0.08, 0.92}
+local textureDebug, textureDebugLimit = false, 0
+-- instanceId -> ordered list of texture paths known to exist on 3.3.5a (loading screens, etc.)
+local instanceTextureCandidates = {
+    -- WotLK raids
+    [759] = { -- Ulduar
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenUlduarRaid",
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenUlduar",
+    },
+    [757] = { -- Trial of the Crusader
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenArgentTournament",
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenCrusadersColiseum",
+    },
+    [758] = { -- Icecrown Citadel
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenIcecrownCitadel",
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenIcecrownCitadelRaid",
+    },
+    [755] = { -- Obsidian Sanctum
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenObsidianSanctum",
+    },
+    [756] = { -- Eye of Eternity
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenEyeOfEternity",
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenTheEyeOfEternity",
+    },
+    [754] = { -- Naxxramas
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenNaxxramas",
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenNaxxramasRaid",
+    },
+    [753] = { -- Vault of Archavon
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenVaultofArchavon",
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenWintergrasp",
+    },
+    [760] = { -- Onyxia
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenOnyxiasLair",
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenOnyxia",
+    },
+    [761] = { -- Ruby Sanctum
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenRubySanctum",
+        "Interface\\GLUES\\LoadingScreens\\LoadScreenTheRubySanctum",
+    },
+}
+local defaultTextureCandidates = {
+    "Interface\\GLUES\\LoadingScreens\\LoadScreenNorthrend",
+    "Interface\\GLUES\\Common\\Glues-WoW-Logo",
+}
+local textureDebugAnnounced
+local ApplyTexture -- forward declaration so helpers can reference
+
+local function DebugTexture(msg, ...)
+    if not textureDebug or textureDebugLimit <= 0 then return end
+    textureDebugLimit = textureDebugLimit - 1
+    F.Print("[RaidDebuffs tex] "..msg:format(...))
+end
+
+local function ApplyTexture(tex, asset, coords)
+    if not asset then return false end
+    -- reset coord so stale state doesn't leak through failures
+    tex:SetTexCoord(0, 1, 0, 1)
+    local ok = tex:SetTexture(asset)
+    local current = tex:GetTexture()
+    -- SetTexture may return true even when the asset is missing; rely on GetTexture not being nil
+    if not ok or not current then
+        return false
+    end
+    -- if the game gave us a generic filler (question mark or SolidTexture), treat as failure
+    if asset ~= fallbackTexture then
+        if current == fallbackTexture or current == 134400 or current == "SolidTexture" then
+            return false
+        end
+    end
+
+    if coords then
+        tex:SetTexCoord(unpack(coords))
+    end
+    tex:SetVertexColor(1, 1, 1, 1)
+    return true
+end
+
+local function TryApplyCandidates(tex, candidates, coords)
+    if not candidates then return false end
+    for _, asset in ipairs(candidates) do
+        if ApplyTexture(tex, asset, coords) then
+            DebugTexture("candidate succeeded asset=%s", tostring(asset))
+            return true
+        end
+    end
+    return false
+end
+
+-------------------------------------------------
 -- instances frame
 -------------------------------------------------
 local instancesFrame
@@ -386,19 +480,10 @@ local function CreateInstanceFrame()
     imageFrame.bg:SetPoint("TOPLEFT", imageFrame, -2, 0)
     imageFrame.bg:SetPoint("BOTTOMRIGHT", instanceNameText, 0, -1)
 
-    ShowInstanceImage = function(image, b)
-        imageFrame.tex:SetTexture(image)
-        imageFrame.tex:SetTexCoord(0.015, 0.666, 0.03, 0.72)
-        instanceNameText:SetText(b:GetFontString():GetText())
-
-        imageFrame:ClearAllPoints()
-        imageFrame:SetPoint("BOTTOMRIGHT", b, "BOTTOMLEFT", -5, 2)
-        imageFrame:Show()
-    end
-
-    HideInstanceImage = function()
-        imageFrame:Hide()
-    end
+    -- disable hover popup
+    imageFrame:Hide()
+    ShowInstanceImage = function() end
+    HideInstanceImage = function() end
 end
 
 ShowInstances = function(eName)
@@ -460,14 +545,6 @@ ShowInstances = function(eName)
             popup:SetPoint("TOPLEFT", 100, -170)
         end
         ShowBosses(id)
-    end, nil, nil, function(b)
-        local _, iIndex = F.SplitToNumber("-", b.id)
-        ShowInstanceImage(encounterJournalList[loadedExpansion][iIndex]["image"], b)
-
-        instancesFrame:GetScript("OnEnter")()
-    end, function(b)
-        HideInstanceImage()
-        instancesFrame:GetScript("OnLeave")()
     end)
 
     -- show the first boss
@@ -506,18 +583,10 @@ local function CreateBossesFrame()
     imageFrame.bg:SetPoint("TOPLEFT", imageFrame, -2, 0)
     imageFrame.bg:SetPoint("BOTTOMRIGHT", bossNameText, 0, -1)
 
-    ShowBossImage = function(image, b)
-        imageFrame.tex:SetTexture(image)
-        bossNameText:SetText(b:GetFontString():GetText())
-
-        imageFrame:ClearAllPoints()
-        imageFrame:SetPoint("BOTTOMRIGHT", b, "BOTTOMLEFT", -5, 0)
-        imageFrame:Show()
-    end
-
-    HideBossImage = function()
-        imageFrame:Hide()
-    end
+    -- disable hover popup
+    imageFrame:Hide()
+    ShowBossImage = function() end
+    HideBossImage = function() end
 end
 
 ShowBosses = function(instanceId, forceRefresh)
@@ -610,15 +679,6 @@ ShowBosses = function(instanceId, forceRefresh)
             popup:SetPoint("TOPLEFT", 100, -170)
         end
         ShowDebuffs(id)
-    end, nil, nil, function(b)
-        if b.id ~= iId then -- not General
-            local _, bIndex = F.SplitToNumber("-", b.id)
-            ShowBossImage(encounterJournalList[loadedExpansion][iIndex]["bosses"][bIndex]["image"], b)
-        end
-        bossesFrame:GetScript("OnEnter")()
-    end, function(b)
-        HideBossImage()
-        bossesFrame:GetScript("OnLeave")()
     end)
 
     -- show General by default
@@ -2313,6 +2373,11 @@ local function ShowTab(tab)
             CreateDebuffsFrame()
             CreateDetailsFrame()
             if Cell.isVanilla then CreateNoticeFrame() end
+            if textureDebug and not textureDebugAnnounced then
+                textureDebugAnnounced = true
+                textureDebugLimit = 200 -- give us more headroom for this session
+                F.Print("[RaidDebuffs tex] debug logging enabled (up to "..textureDebugLimit.." messages). Hover instances/bosses to log texture ids.")
+            end
         end
 
         debuffsTab:Show()
