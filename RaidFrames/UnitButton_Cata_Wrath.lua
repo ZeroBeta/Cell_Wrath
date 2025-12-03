@@ -1106,11 +1106,12 @@ local function UnitButton_UpdateDebuffs(self)
             self._debuffs_current[auraInstanceID] = i
 
             if enabledIndicators["dispels"] and debuffType and debuffType ~= "" then
-                -- all dispels / only dispellableByMe
-                if not indicatorBooleans["dispels"]["dispellableByMe"] or I.CanDispel(debuffType) then
-                    if indicatorBooleans["dispels"][debuffType] then
+                local filters = indicatorBooleans["dispels"]
+                if filters and filters[debuffType] then
+                    local canDispel = I.CanDispel(debuffType)
+                    -- when "only show dispellable by me" is checked, require a positive match
+                    if not filters["dispellableByMe"] or canDispel then
                         if Cell.vars.dispelBlacklist[spellId] then
-                            -- no highlight
                             self._debuffs_dispel[debuffType] = false
                         else
                             self._debuffs_dispel[debuffType] = true

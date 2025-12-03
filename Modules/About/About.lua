@@ -17,27 +17,25 @@ local UpdateFont
 -------------------------------------------------
 local descriptionPane
 local function CreateDescriptionPane()
-    descriptionPane = Cell.CreateTitledPane(aboutTab, "Cell", 422, 120)
+    -- taller pane to avoid cutting text
+    descriptionPane = Cell.CreateTitledPane(aboutTab, "Cell", 422, 320)
     descriptionPane:SetPoint("TOPLEFT", aboutTab, "TOPLEFT", 5, -5)
-
-    local changelogsBtn = Cell.CreateButton(descriptionPane, L["Changelogs"], "accent", {100, 17})
-    changelogsBtn:SetPoint("TOPRIGHT")
-    changelogsBtn:SetScript("OnClick", function()
-        F.CheckWhatsNew(true)
-    end)
-
-    local snippetsBtn = Cell.CreateButton(descriptionPane, L["Code Snippets"], "accent", {120, 17})
-    snippetsBtn:SetPoint("TOPRIGHT", changelogsBtn, "TOPLEFT", 1, 0)
-    snippetsBtn:SetScript("OnClick", function()
-        F.ShowCodeSnippets()
-    end)
 
     local descText = descriptionPane:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
     descText:SetPoint("TOPLEFT", 5, -27)
-    descText:SetPoint("RIGHT", -10, 0)
+    descText:SetPoint("BOTTOMRIGHT", -10, 5)
     descText:SetJustifyH("LEFT")
-    descText:SetSpacing(5)
-    descText:SetText(L["ABOUT"])
+    descText:SetSpacing(7)
+    descText:SetText(
+        "|cfffabd2fCell Wrath (Ascension)|r\n"..
+        "|cffffffffFast, compact raid and party frames with crisp debuff tracking, healer-friendly indicators, and a no-fuss setup tuned for Ascension WoW.|r\n\n"..
+        "|cff78d5ffPorted by|r |cffffffffZB|r\n"..
+        "|cffa6e22ePort date|r |cffffffff2025-12-03|r\n\n"..
+        "|cff66ff99Reach me|r\n"..
+        " • |cffffffffDiscord|r: |cff9aedffZB#08374|r\n"..
+        " • |cffffffffBronzebeard|r: |cff9aedffZeruto|r / |cff9aedffZeruta|r / |cff9aedffReana|r\n"..
+        " • |cffffffffImprovements & bugs|r: ping me on Discord or in-game and I’ll take a look."
+    )
 end
 
 
@@ -543,13 +541,6 @@ local function ShowTab(tab)
         if not init then
             init = true
             CreateDescriptionPane()
-            CreateAuthorPane()
-            CreateSlashPane()
-            CreateSpecialThanksPane()
-            CreateTranslatorsPane()
-            CreateLinksPane()
-            CreateImportExportPane()
-            CreateSupportersPane()
         end
         aboutTab:Show()
         descriptionPane:SetTitle("Cell "..Cell.version)
