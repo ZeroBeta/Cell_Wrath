@@ -143,11 +143,7 @@ local function ResetIndicators()
     for _, t in pairs(Cell.vars.currentLayoutTable["indicators"]) do
         -- update enabled
         if t["enabled"] then
-            if t["indicatorName"] == "powerWordShield" then
-                enabledIndicators[t["indicatorName"]] = Cell.vars.playerClass == "PRIEST"
-            else
-                enabledIndicators[t["indicatorName"]] = true
-            end
+            enabledIndicators[t["indicatorName"]] = true
         end
         -- update num
         if t["num"] then
@@ -1067,10 +1063,6 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
             -- only Actions indicator has this option for now
             F.IterateAllUnitButtons(function(b)
                 b.indicators[indicatorName]:SetSpeed(value)
-            end, true)
-        elseif setting == "shape" then
-            F.IterateAllUnitButtons(function(b)
-                b.indicators[indicatorName]:SetShape(value)
             end, true)
         end
     end
