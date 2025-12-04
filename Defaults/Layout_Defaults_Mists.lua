@@ -336,7 +336,6 @@ Cell.defaults.layout = {
             ["frameLevel"] = 20,
             ["size"] = {4, 0},
             ["shieldByMe"] = true,
-            ["shape"] = "circle",
         }, --17
         {
             ["name"] = "AoE Healing",
