@@ -515,7 +515,7 @@ local function RaidFrame_UpdateLayout(layout, which)
         end
 
     else
-        if not which or which == "header" or which == "main-arrangement" or which == "rows_columns" or which == "groupSpacing" or which == "groupFilter" then
+        if not which or which == "header" or which == "main-arrangement" or which == "main-size" or which == "rows_columns" or which == "groupSpacing" or which == "groupFilter" then
             for i, group in ipairs(shownGroups) do
                 local header = separatedHeaders[group]
                 header:ClearAllPoints()
@@ -530,14 +530,21 @@ local function RaidFrame_UpdateLayout(layout, which)
                     for j = 1, 5 do
                         header[j]:ClearAllPoints()
                         if j == 1 then
-                            -- First button anchors to header
-                            header[j]:SetPoint(point, header, headerPoint, 0, 0)
+                            -- First button anchors to header at same corner
+                            header[j]:SetPoint(point, header, point, 0, 0)
                         else
                             -- Subsequent buttons anchor to previous button
                             header[j]:SetPoint(point, header[j-1], anchorPoint, 0, unitSpacing)
                         end
                     end
                     header:SetAttribute("unitsPerColumn", 5)
+
+                    --! WotLK 3.3.5a: Explicitly size the header to contain all buttons
+                    local width, height = unpack(layout["main"]["size"])
+                    local spacingY = layout["main"]["spacingY"] or 0
+                    local headerWidth = width
+                    local headerHeight = height * 5 + spacingY * 4
+                    P.Size(header, headerWidth, headerHeight)
 
                     if i == 1 then
                         header:SetPoint(point)
@@ -547,9 +554,25 @@ local function RaidFrame_UpdateLayout(layout, which)
                         headerCol = headerCol == 0 and headersPerRow or headerCol
 
                         if headerCol == 1 then -- first column on each row
-                            header:SetPoint(point, separatedHeaders[shownGroups[i-headersPerRow]], 0, verticalSpacing)
+                            -- Anchor to previous row's first header
+                            local prevRowHeader = separatedHeaders[shownGroups[i-headersPerRow]]
+                            -- Get the last button (button 5) from that header to anchor below it
+                            local lastButton = prevRowHeader[5]
+                            if lastButton then
+                                header:SetPoint(point, lastButton, anchorPoint, 0, unitSpacing)
+                            else
+                                header:SetPoint(point, prevRowHeader, 0, verticalSpacing)
+                            end
                         else
-                            header:SetPoint(point, separatedHeaders[shownGroups[i-1]], groupAnchorPoint, groupSpacing, 0)
+                            --! WotLK 3.3.5a: Anchor to previous group's FIRST BUTTON (not header)
+                            --! because headers have wrong size, but buttons have correct size
+                            local prevHeader = separatedHeaders[shownGroups[i-1]]
+                            local firstButton = prevHeader[1]
+                            if firstButton then
+                                header:SetPoint(point, firstButton, groupAnchorPoint, groupSpacing, 0)
+                            else
+                                header:SetPoint(point, prevHeader, groupAnchorPoint, groupSpacing, 0)
+                            end
                         end
                     end
                 else
@@ -562,14 +585,21 @@ local function RaidFrame_UpdateLayout(layout, which)
                     for j = 1, 5 do
                         header[j]:ClearAllPoints()
                         if j == 1 then
-                            -- First button anchors to header
-                            header[j]:SetPoint(point, header, headerPoint, 0, 0)
+                            -- First button anchors to header at same corner
+                            header[j]:SetPoint(point, header, point, 0, 0)
                         else
                             -- Subsequent buttons anchor to previous button
                             header[j]:SetPoint(point, header[j-1], anchorPoint, unitSpacing, 0)
                         end
                     end
                     header:SetAttribute("unitsPerColumn", 5)
+
+                    --! WotLK 3.3.5a: Explicitly size the header to contain all buttons (horizontal)
+                    local width, height = unpack(layout["main"]["size"])
+                    local spacingX = layout["main"]["spacingX"] or 0
+                    local headerWidth = width * 5 + spacingX * 4
+                    local headerHeight = height
+                    P.Size(header, headerWidth, headerHeight)
 
                     if i == 1 then
                         header:SetPoint(point)
@@ -579,9 +609,23 @@ local function RaidFrame_UpdateLayout(layout, which)
                         headerRow = headerRow == 0 and headersPerCol or headerRow
 
                         if headerRow == 1 then -- first row on each column
-                            header:SetPoint(point, separatedHeaders[shownGroups[i-headersPerCol]], point, horizontalSpacing, 0)
+                            -- Anchor to previous column's first header's last button
+                            local prevColHeader = separatedHeaders[shownGroups[i-headersPerCol]]
+                            local lastButton = prevColHeader[5]
+                            if lastButton then
+                                header:SetPoint(point, lastButton, anchorPoint, unitSpacing, 0)
+                            else
+                                header:SetPoint(point, prevColHeader, point, horizontalSpacing, 0)
+                            end
                         else
-                            header:SetPoint(point, separatedHeaders[shownGroups[i-1]], groupAnchorPoint, 0, groupSpacing)
+                            --! WotLK 3.3.5a: Anchor to previous group's FIRST BUTTON (not header)
+                            local prevHeader = separatedHeaders[shownGroups[i-1]]
+                            local firstButton = prevHeader[1]
+                            if firstButton then
+                                header:SetPoint(point, firstButton, groupAnchorPoint, 0, groupSpacing)
+                            else
+                                header:SetPoint(point, prevHeader, groupAnchorPoint, 0, groupSpacing)
+                            end
                         end
                     end
                 end
