@@ -153,10 +153,13 @@ local function Shared_CreateCooldown_Vertical(frame)
     spark:SetPoint("TOPLEFT", texture, "BOTTOMLEFT")
     spark:SetPoint("TOPRIGHT", texture, "BOTTOMRIGHT")
 
-    local mask = cooldown:CreateMaskTexture()
-    mask:SetTexture(Cell.vars.whiteTexture, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
-    mask:SetPoint("TOPLEFT")
-    mask:SetPoint("BOTTOMRIGHT", texture)
+    local mask
+    if not Cell.isWrath then
+        mask = cooldown:CreateMaskTexture()
+        mask:SetTexture(Cell.vars.whiteTexture, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+        mask:SetPoint("TOPLEFT")
+        mask:SetPoint("BOTTOMRIGHT", texture)
+    end
 
     local icon = cooldown:CreateTexture(nil, "ARTWORK")
     cooldown.icon = icon
@@ -164,7 +167,9 @@ local function Shared_CreateCooldown_Vertical(frame)
     icon:SetDesaturated(false)
     icon:SetAllPoints(frame.icon)
     icon:SetVertexColor(1, 1, 1, 1)
-    icon:AddMaskTexture(mask)
+    if mask then
+        icon:AddMaskTexture(mask)
+    end
 end
 
 local function Shared_CreateCooldown_Vertical_NoIcon(frame)
