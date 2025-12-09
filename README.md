@@ -15,7 +15,7 @@ Clean, responsive raid and party frames designed to surface the information you 
 **Ascension Wrath port**
 
 - Ported by ZB.
-- Improvements & bugs: Discord `ZB#08374` or in-game on Bronzebeard (`Zeruto` / `Zeruta` / `Reana`).
+- Improvements & bugs: Discord Username `08374` or in-game on Bronzebeard (`Zeruto` / `Zeruta` / `Reana`).
 - Port date: 2025-12-03.
 
 *
@@ -57,3 +57,4 @@ Use **/cell** for more information.
 - [Healer UI & Addon Guide for Dragonflight Season 4 (yumytv)](https://www.youtube.com/watch?v=XcXvXxFipOE)
 
 &nbsp;
+
