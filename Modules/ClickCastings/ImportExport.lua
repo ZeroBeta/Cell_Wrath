@@ -23,7 +23,7 @@ local function DoImport()
 end
 
 local function CreateClickCastingImportExportFrame()
-    importExportFrame = CreateFrame("Frame", "CellOptionsFrame_ClickCastingsImportExport", Cell.frames.clickCastingsTab, "BackdropTemplate")
+    importExportFrame = CreateFrame("Frame", "CellOptionsFrame_ClickCastingsImportExport", Cell.frames.clickCastingsTab, nil)
     importExportFrame:Hide()
     Cell.StylizeFrame(importExportFrame, nil, Cell.GetAccentColorTable())
     importExportFrame:EnableMouse(true)

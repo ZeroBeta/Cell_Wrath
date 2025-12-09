@@ -1014,7 +1014,7 @@ end
 --                            create quick cast                            --
 -- ----------------------------------------------------------------------- --
 local function CreatePreviewButton(b)
-    local p = CreateFrame("Frame", nil, CellMainFrame, "BackdropTemplate")
+    local p = CreateFrame("Frame", nil, CellMainFrame, nil)
     p:SetBackdrop({bgFile = Cell.vars.whiteTexture})
     p:SetBackdropColor(0.5, 0.5, 0.5, 0.7)
     p:SetAllPoints(b)
@@ -1047,9 +1047,9 @@ end
 CreateQuickCastButton = function(parent, name, isPreview)
     local b
     if isPreview then
-        b = CreateFrame("Button", name, parent, "BackdropTemplate")
+        b = CreateFrame("Button", name, parent, nil)
     else
-        b = CreateFrame("Button", name, parent, "BackdropTemplate,SecureUnitButtonTemplate")
+        b = CreateFrame("Button", name, parent, "SecureUnitButtonTemplate")
         CreatePreviewButton(b)
     end
     b:RegisterForClicks("AnyDown")
@@ -1092,7 +1092,7 @@ CreateQuickCastButton = function(parent, name, isPreview)
     end)
 
     -- outer ------------------------------------------------------------------------
-    local outerCD = CreateFrame("Cooldown", name.."OuterCD", b, "BackdropTemplate,CooldownFrameTemplate")
+    local outerCD = CreateFrame("Cooldown", name.."OuterCD", b, "CooldownFrameTemplate")
     b.outerCD = outerCD
     outerCD:SetFrameLevel(b:GetFrameLevel() + 1)
     outerCD:SetSwipeTexture(Cell.vars.whiteTexture)
@@ -1113,7 +1113,7 @@ CreateQuickCastButton = function(parent, name, isPreview)
     end)
 
     -- inner ------------------------------------------------------------------------
-    local innerCD = CreateFrame("Cooldown", name.."InnerCD", b, "BackdropTemplate,CooldownFrameTemplate")
+    local innerCD = CreateFrame("Cooldown", name.."InnerCD", b, "CooldownFrameTemplate")
     b.innerCD = innerCD
     innerCD:SetFrameLevel(b:GetFrameLevel() + 2)
     innerCD:SetSwipeTexture(Cell.vars.whiteTexture)

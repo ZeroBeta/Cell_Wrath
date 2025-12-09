@@ -3197,7 +3197,7 @@ function CellUnitButton_OnLoad(button)
     Mixin(powerBar, SmoothStatusBarMixin)
 
     -- target highlight
-    local targetHighlight = CreateFrame("Frame", name.."TargetHighlight", button, "BackdropTemplate")
+    local targetHighlight = CreateFrame("Frame", name.."TargetHighlight", button, nil)
     button.widgets.targetHighlight = targetHighlight
     targetHighlight:EnableMouse(false)
     targetHighlight:SetFrameLevel(button:GetFrameLevel()+3)
@@ -3207,7 +3207,7 @@ function CellUnitButton_OnLoad(button)
     targetHighlight:Hide()
 
     -- mouseover highlight
-    local mouseoverHighlight = CreateFrame("Frame", name.."MouseoverHighlight", button, "BackdropTemplate")
+    local mouseoverHighlight = CreateFrame("Frame", name.."MouseoverHighlight", button, nil)
     button.widgets.mouseoverHighlight = mouseoverHighlight
     mouseoverHighlight:EnableMouse(false)
     mouseoverHighlight:SetFrameLevel(button:GetFrameLevel()+4)

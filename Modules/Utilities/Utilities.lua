@@ -24,7 +24,7 @@ local function UpdateFontString(b)
 end
 
 function F.CreateUtilityList(anchor)
-    listFrame = CreateFrame("Frame", nil, Cell.frames.optionsFrame, "BackdropTemplate")
+    listFrame = CreateFrame("Frame", nil, Cell.frames.optionsFrame, nil)
     Cell.StylizeFrame(listFrame, {0,1,0,0.1}, {0,0,0,1})
     listFrame:SetPoint("TOPLEFT", anchor, "TOPRIGHT", 1, 0)
     listFrame:Hide()

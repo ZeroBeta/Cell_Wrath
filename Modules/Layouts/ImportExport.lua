@@ -75,7 +75,7 @@ local function DoImport(overwriteExisting)
 end
 
 local function CreateLayoutImportExportFrame()
-    importExportFrame = CreateFrame("Frame", "CellOptionsFrame_LayoutsImportExport", Cell.frames.layoutsTab, "BackdropTemplate")
+    importExportFrame = CreateFrame("Frame", "CellOptionsFrame_LayoutsImportExport", Cell.frames.layoutsTab, nil)
     importExportFrame:Hide()
     Cell.StylizeFrame(importExportFrame, nil, Cell.GetAccentColorTable())
     importExportFrame:EnableMouse(true)

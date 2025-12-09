@@ -19,7 +19,7 @@ local function DoImport()
 end
 
 local function CreateQuickAssistImportExportFrame()
-    importExportFrame = CreateFrame("Frame", "CellOptionsFrame_QuickAssistImportExport", Cell.frames.quickAssistTab, "BackdropTemplate")
+    importExportFrame = CreateFrame("Frame", "CellOptionsFrame_QuickAssistImportExport", Cell.frames.quickAssistTab, nil)
     importExportFrame:Hide()
     Cell.StylizeFrame(importExportFrame, nil, Cell.GetAccentColorTable())
     importExportFrame:EnableMouse(true)

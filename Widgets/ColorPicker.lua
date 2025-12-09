@@ -152,7 +152,7 @@ local function CreateColorPicker()
     --------------------------------------------------
     -- current
     --------------------------------------------------
-    current = CreateFrame("Frame", name.."Current", colorPicker, "BackdropTemplate")
+    current = CreateFrame("Frame", name.."Current", colorPicker)
     Cell.StylizeFrame(current)
     P.Size(current, 97, 27)
     current:SetPoint("TOPLEFT", 7, -7)
@@ -173,7 +173,7 @@ local function CreateColorPicker()
     --------------------------------------------------
     -- original
     --------------------------------------------------
-    original = CreateFrame("Frame", name.."Original", colorPicker, "BackdropTemplate")
+    original = CreateFrame("Frame", name.."Original", colorPicker)
     Cell.StylizeFrame(original)
     P.Size(original, 97, 27)
     original:SetPoint("TOPRIGHT", -7, -7)
@@ -194,7 +194,7 @@ local function CreateColorPicker()
     --------------------------------------------------
     -- hue, saturation
     --------------------------------------------------
-    hueSaturationBG = CreateFrame("Frame", name.."HueSaturation", colorPicker, "BackdropTemplate")
+    hueSaturationBG = CreateFrame("Frame", name.."HueSaturation", colorPicker)
     Cell.StylizeFrame(hueSaturationBG)
     P.Size(hueSaturationBG, 130, 130)
     hueSaturationBG:SetPoint("TOPLEFT", current, "BOTTOMLEFT", 0, -7)
@@ -243,7 +243,7 @@ local function CreateColorPicker()
     --------------------------------------------------
     -- brightness
     --------------------------------------------------
-    brightness = CreateFrame("Slider", nil, colorPicker, "BackdropTemplate")
+    brightness = CreateFrame("Slider", nil, colorPicker)
     Cell.StylizeFrame(brightness)
     brightness:SetValueStep(0.01)
     brightness:SetMinMaxValues(0, 1)
@@ -281,7 +281,7 @@ local function CreateColorPicker()
     --------------------------------------------------
     -- alpha
     --------------------------------------------------
-    alpha = CreateFrame("Slider", nil, colorPicker, "BackdropTemplate")
+    alpha = CreateFrame("Slider", nil, colorPicker)
     Cell.StylizeFrame(alpha)
     alpha:SetValueStep(0.01)
     alpha:SetMinMaxValues(0, 1)
@@ -327,7 +327,7 @@ local function CreateColorPicker()
     --------------------------------------------------
     -- picker
     --------------------------------------------------
-    picker = CreateFrame("Frame", name.."HSPicker", hueSaturation, "BackdropTemplate")
+    picker = CreateFrame("Frame", name.."HSPicker", hueSaturation)
     P.Size(picker, 10, 10)
     picker:SetPoint("CENTER", hueSaturation, "BOTTOMLEFT")
 

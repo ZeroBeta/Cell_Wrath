@@ -505,7 +505,7 @@ local function BorderIcon_UpdatePixelPerfect(frame)
 end
 
 function I.CreateAura_BorderIcon(name, parent, borderSize)
-    local frame = CreateFrame("Frame", name, parent, "BackdropTemplate")
+    local frame = CreateFrame("Frame", name, parent, nil)
     frame:Hide()
     -- frame:SetSize(11, 11)
     frame:SetBackdrop({bgFile = Cell.vars.whiteTexture})
@@ -647,7 +647,7 @@ local function BarIcon_UpdatePixelPerfect(frame)
 end
 
 function I.CreateAura_BarIcon(name, parent)
-    local frame = CreateFrame("Frame", name, parent, "BackdropTemplate")
+    local frame = CreateFrame("Frame", name, parent, nil)
     frame:Hide()
     -- frame:SetSize(11, 11)
     frame:SetBackdrop({bgFile = Cell.vars.whiteTexture})
@@ -1211,7 +1211,7 @@ local function Rect_UpdatePixelPerfect(frame)
 end
 
 function I.CreateAura_Rect(name, parent)
-    local frame = CreateFrame("Frame", name, parent, "BackdropTemplate")
+    local frame = CreateFrame("Frame", name, parent, nil)
     frame:Hide()
     frame.indicatorType = "rect"
     frame:SetBackdrop({edgeFile = Cell.vars.whiteTexture, edgeSize = P.Scale(CELL_BORDER_SIZE)})
@@ -2150,7 +2150,7 @@ local function Block_UpdatePixelPerfect(frame)
 end
 
 function I.CreateAura_Block(name, parent)
-    local frame = CreateFrame("Frame", name, parent, "BackdropTemplate")
+    local frame = CreateFrame("Frame", name, parent, nil)
     frame:Hide()
     frame.indicatorType = "block"
 

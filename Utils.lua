@@ -2424,7 +2424,7 @@ end
 -------------------------------------------------
 -- RangeCheck debug
 -------------------------------------------------
-local debug = CreateFrame("Frame", "CellRangeCheckDebug", CellParent, "BackdropTemplate")
+local debug = CreateFrame("Frame", "CellRangeCheckDebug", CellParent, nil)
 debug:SetBackdrop({bgFile = Cell.vars.whiteTexture})
 debug:SetBackdropColor(0.1, 0.1, 0.1, 0.9)
 debug:SetBackdropBorderColor(0, 0, 0, 1)

@@ -39,7 +39,7 @@ PixelUtil.SetPoint(anchorFrame, "TOPLEFT", CellParent, "CENTER", 1, -1)
 anchorFrame:SetMovable(true)
 anchorFrame:SetClampedToScreen(true)
 
-local hoverFrame = CreateFrame("Frame", nil, quickAssistFrame, "BackdropTemplate")
+local hoverFrame = CreateFrame("Frame", nil, quickAssistFrame, nil)
 hoverFrame:SetPoint("TOP", anchorFrame, 0, 1)
 hoverFrame:SetPoint("BOTTOM", anchorFrame, 0, -1)
 hoverFrame:SetPoint("LEFT", anchorFrame, -1, 0)
@@ -662,14 +662,14 @@ function CellQuickAssist_OnLoad(button)
     end
 
     -- targetHighlight
-    local targetHighlight = CreateFrame("Frame", nil, button, "BackdropTemplate")
+    local targetHighlight = CreateFrame("Frame", nil, button, nil)
     button.targetHighlight = targetHighlight
     targetHighlight:SetIgnoreParentAlpha(true)
     targetHighlight:SetFrameLevel(button:GetFrameLevel()+2)
     targetHighlight:Hide()
 
     -- mouseoverHighlight
-    local mouseoverHighlight = CreateFrame("Frame", nil, button, "BackdropTemplate")
+    local mouseoverHighlight = CreateFrame("Frame", nil, button, nil)
     button.mouseoverHighlight = mouseoverHighlight
     mouseoverHighlight:SetIgnoreParentAlpha(true)
     mouseoverHighlight:SetFrameLevel(button:GetFrameLevel()+3)

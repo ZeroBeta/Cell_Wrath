@@ -599,7 +599,7 @@ local function UpdateLayoutPreview()
         A.CreateFadeOut(layoutPreviewFrame, 1, 0, 0.5)
 
         for i = 1, 40 do
-            layoutPreviewButtons[i] = CreateFrame("Frame", nil, layoutPreviewFrame, "BackdropTemplate")
+            layoutPreviewButtons[i] = CreateFrame("Frame", nil, layoutPreviewFrame, nil)
             layoutPreviewButtons[i]:SetBackdrop({bgFile=Cell.vars.whiteTexture, edgeFile=Cell.vars.whiteTexture, edgeSize=P.Scale(1)})
             layoutPreviewButtons[i]:SetBackdropColor(0, 0, 0, 0.5)
             layoutPreviewButtons[i]:SetBackdropBorderColor(0, 0, 0, 1)
@@ -1162,7 +1162,7 @@ local function CreateNameFilter(parent)
     b.frameLevel = b:GetFrameLevel()
     b:Hide()
 
-    nameListFrame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    nameListFrame = CreateFrame("Frame", nil, parent, nil)
     Cell.StylizeFrame(nameListFrame, nil, Cell.GetAccentColorTable())
     nameListFrame:SetPoint("BOTTOMLEFT", b, "TOPLEFT", 0, 5)
     nameListFrame:SetFrameLevel(parent:GetFrameLevel()+50)
@@ -2214,7 +2214,7 @@ local iconOptionsFrame
 local currentIconOptionBtn, currentIconIndex
 
 local function CreateIconOptions(parent)
-    iconOptionsFrame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    iconOptionsFrame = CreateFrame("Frame", nil, parent, nil)
     Cell.StylizeFrame(iconOptionsFrame, nil, Cell.GetAccentColorTable())
     iconOptionsFrame:SetFrameLevel(parent:GetFrameLevel()+50)
     iconOptionsFrame:Hide()
@@ -2589,7 +2589,7 @@ local barOptionsFrame
 local currentBarOptionBtn, currentBarIndex
 
 local function CreateBarOptions(parent)
-    barOptionsFrame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    barOptionsFrame = CreateFrame("Frame", nil, parent, nil)
     Cell.StylizeFrame(barOptionsFrame, nil, Cell.GetAccentColorTable())
     barOptionsFrame:SetFrameLevel(parent:GetFrameLevel()+50)
     barOptionsFrame:Hide()
@@ -2743,7 +2743,7 @@ local glowOptionsFrame
 local currentGlowOptionBtn, currentGlowIndex
 
 local function CreateGlowOptions(parent)
-    glowOptionsFrame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    glowOptionsFrame = CreateFrame("Frame", nil, parent, nil)
     Cell.StylizeFrame(glowOptionsFrame, nil, Cell.GetAccentColorTable())
     glowOptionsFrame:SetFrameLevel(parent:GetFrameLevel()+50)
     glowOptionsFrame:Hide()
@@ -3263,7 +3263,7 @@ local function CreateSpellsPane()
     tip1:SetPoint("BOTTOMLEFT")
 
     if not CellDB["quickAssistHelpViewed"] then
-        local helpFrame = CreateFrame("Frame", nil, pages.spell, "BackdropTemplate")
+        local helpFrame = CreateFrame("Frame", nil, pages.spell, nil)
         helpFrame:SetAllPoints(pages.spell)
         helpFrame:SetHeight(310)
         helpFrame:EnableMouse(true)

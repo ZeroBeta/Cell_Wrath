@@ -1325,7 +1325,7 @@ local function CreateSyncPane()
     syncDropdown:SetPoint("TOPLEFT", 0, -25)
 
     -- sync status
-    syncStatus = CreateFrame("Frame", "CellIndicatorsSyncStatus", indicatorsTab, "BackdropTemplate")
+    syncStatus = CreateFrame("Frame", "CellIndicatorsSyncStatus", indicatorsTab)
     Cell.StylizeFrame(syncStatus, nil, Cell.GetAccentColorTable())
     syncStatus:SetSize(150, 30)
     syncStatus:SetPoint("TOPRIGHT", syncPane, "TOPLEFT", -10, 3)

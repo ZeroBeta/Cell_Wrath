@@ -41,7 +41,7 @@ local function CreateIndicatorsExportFrame()
     from = listParent:CreateFontString(nil, "OVERLAY", "CELL_FONT_CLASS")
     from:SetPoint("TOPLEFT", 5, -5)
 
-    listFrame = CreateFrame("Frame", nil, listParent, "BackdropTemplate")
+    listFrame = CreateFrame("Frame", nil, listParent, nil)
     Cell.StylizeFrame(listFrame)
     listFrame:SetPoint("TOPLEFT", 5, -20)
     listFrame:SetPoint("TOPRIGHT", -5, -5)

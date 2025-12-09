@@ -4739,7 +4739,7 @@ local function CreateCleuAuraButtons(parent, auraTable, updateHeightFunc)
 
     -- tooltip
     if not parent.inputs then
-        local inputs = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+        local inputs = CreateFrame("Frame", nil, parent, nil)
         Cell.StylizeFrame(inputs, {0.115, 0.115, 0.115, 1})
         inputs:SetFrameStrata("DIALOG")
         inputs:Hide()
@@ -5095,7 +5095,7 @@ local function CreateSpellButtons(parent, class, spells, disableds)
     local n = 1
     for spellId in pairs(spells) do
         if not spellButtons[buttonIndex] then
-            spellButtons[buttonIndex] = CreateFrame("Button", "CellIndicatorSettings_BuiltIns_SpellButton"..buttonIndex, parent:GetParent(), "BackdropTemplate")
+            spellButtons[buttonIndex] = CreateFrame("Button", "CellIndicatorSettings_BuiltIns_SpellButton"..buttonIndex, parent:GetParent(), nil)
             spellButtons[buttonIndex]:SetBackdrop({bgFile = Cell.vars.whiteTexture})
             P.Size(spellButtons[buttonIndex], 20, 20)
 
@@ -5247,7 +5247,7 @@ local function CreateSetting_BuiltIns(parent)
 end
 
 local function CreateActionPreview(parent, style)
-    local f = CreateFrame("Frame", "CellIndicatorSettings_ActionsPreview_Type"..style, parent, "BackdropTemplate")
+    local f = CreateFrame("Frame", "CellIndicatorSettings_ActionsPreview_Type"..style, parent, nil)
     f:SetBackdrop({bgFile = Cell.vars.whiteTexture, edgeFile = Cell.vars.whiteTexture, edgeSize = P.Scale(1)})
     f:SetBackdropColor(0.2, 0.2, 0.2, 1)
     f:SetBackdropBorderColor(0, 0, 0, 1)
@@ -6557,7 +6557,7 @@ end
 
 
 local function CreateRoleFilter(parent, class, roles)
-    local filter = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    local filter = CreateFrame("Frame", nil, parent, nil)
     Cell.StylizeFrame(filter)
     P.Size(filter, 170, 20)
 

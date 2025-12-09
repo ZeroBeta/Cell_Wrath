@@ -48,7 +48,7 @@ local function CreateIndicatorsCopyFrame()
     toText:SetText(L["To"])
 
     -- list
-    fromList = CreateFrame("Frame", nil, copyFrame, "BackdropTemplate")
+    fromList = CreateFrame("Frame", nil, copyFrame, nil)
     Cell.StylizeFrame(fromList)
     fromList:SetPoint("TOPLEFT", toDropdown, "BOTTOMLEFT", 0, -5)
     fromList:SetPoint("TOPRIGHT", toDropdown, "BOTTOMRIGHT", 0, -5)

@@ -1942,7 +1942,7 @@ end
 -- aggro border
 -------------------------------------------------
 function I.CreateAggroBorder(parent)
-    local aggroBorder = CreateFrame("Frame", parent:GetName().."AggroBorder", parent, "BackdropTemplate")
+    local aggroBorder = CreateFrame("Frame", parent:GetName().."AggroBorder", parent, nil)
     parent.indicators.aggroBorder = aggroBorder
     P.Point(aggroBorder, "TOPLEFT", parent, "TOPLEFT", 1, -1)
     P.Point(aggroBorder, "BOTTOMRIGHT", parent, "BOTTOMRIGHT", -1, 1)
@@ -2002,7 +2002,7 @@ end
 -- aggro blink
 -------------------------------------------------
 function I.CreateAggroBlink(parent)
-    local aggroBlink = CreateFrame("Frame", parent:GetName().."AggroBlink", parent.widgets.indicatorFrame, "BackdropTemplate")
+    local aggroBlink = CreateFrame("Frame", parent:GetName().."AggroBlink", parent.widgets.indicatorFrame, nil)
     parent.indicators.aggroBlink = aggroBlink
     -- aggroBlink:SetPoint("TOPLEFT")
     -- aggroBlink:SetSize(10, 10)
@@ -2088,7 +2088,7 @@ local function ShieldBar_SetPoint(bar, point, anchorTo, anchorPoint, x, y)
 end
 
 function I.CreateShieldBar(parent)
-    local shieldBar = CreateFrame("Frame", parent:GetName().."ShieldBar", parent.widgets.indicatorFrame, "BackdropTemplate")
+    local shieldBar = CreateFrame("Frame", parent:GetName().."ShieldBar", parent.widgets.indicatorFrame, nil)
     parent.indicators.shieldBar = shieldBar
     -- shieldBar:SetSize(4, 4)
     shieldBar:Hide()

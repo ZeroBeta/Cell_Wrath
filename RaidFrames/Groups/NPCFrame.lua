@@ -27,7 +27,7 @@ end
 -------------------------------------------------
 local tooltipPoint, tooltipRelativePoint, tooltipX, tooltipY
 
-local separateAnchor = CreateFrame("Frame", "CellSeparateNPCFrameAnchor", Cell.frames.mainFrame, "BackdropTemplate")
+local separateAnchor = CreateFrame("Frame", "CellSeparateNPCFrameAnchor", Cell.frames.mainFrame, nil)
 Cell.frames.separateNpcFrameAnchor = separateAnchor
 separateAnchor:SetMovable(true)
 separateAnchor:SetClampedToScreen(true)

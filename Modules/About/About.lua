@@ -391,7 +391,7 @@ end
 -------------------------------------------------
 local links = {}
 local function CreateLink(parent, id, icon, onEnter)
-    local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    local f = CreateFrame("Frame", nil, parent, nil)
     P.Size(f, 34, 34)
     f:SetBackdrop({bgFile = Cell.vars.whiteTexture})
     f:SetBackdropColor(0, 0, 0, 1)

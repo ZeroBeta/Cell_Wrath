@@ -32,7 +32,7 @@ local function CreateIndicatorsImportFrame()
     title:SetPoint("TOPLEFT", 5, -5)
 
     -- list
-    local listFrame = CreateFrame("Frame", nil, importFrame, "BackdropTemplate")
+    local listFrame = CreateFrame("Frame", nil, importFrame, nil)
     Cell.StylizeFrame(listFrame, {0, 0, 0, 0}, Cell.GetAccentColorTable())
     listFrame:SetPoint("TOPLEFT", 5, -20)
     listFrame:SetPoint("BOTTOMRIGHT", importFrame, "BOTTOMLEFT", 139, 29)

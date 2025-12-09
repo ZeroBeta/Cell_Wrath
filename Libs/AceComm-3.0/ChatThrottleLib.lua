@@ -250,9 +250,11 @@ function ChatThrottleLib:Init()
 	-- v26: Hook SendAddonMessageLogged for traffic logging
 	if not self.securelyHookedLogged then
 		self.securelyHookedLogged = true
-		hooksecurefunc(_G.C_ChatInfo, "SendAddonMessageLogged", function(...)
-			return ChatThrottleLib.Hook_SendAddonMessageLogged(...)
-		end)
+		if _G.C_ChatInfo and _G.C_ChatInfo.SendAddonMessageLogged then
+			hooksecurefunc(_G.C_ChatInfo, "SendAddonMessageLogged", function(...)
+				return ChatThrottleLib.Hook_SendAddonMessageLogged(...)
+			end)
+		end
 	end
 
 	-- v29: Hook BNSendGameData for traffic logging
@@ -262,7 +264,7 @@ function ChatThrottleLib:Init()
 			hooksecurefunc(_G.C_BattleNet, "SendGameData", function(...)
 				return ChatThrottleLib.Hook_BNSendGameData(...)
 			end)
-		else
+		elseif _G.BNSendGameData then
 			hooksecurefunc("BNSendGameData", function(...)
 				return ChatThrottleLib.Hook_BNSendGameData(...)
 			end)

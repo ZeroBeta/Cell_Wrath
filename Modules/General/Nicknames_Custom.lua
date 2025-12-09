@@ -9,7 +9,7 @@ local LoadList
 local customs = {}
 
 local function CreateCustomNicknamesFrame()
-    customNicknamesFrame = CreateFrame("Frame", "CellOptionsFrame_Nicknames", Cell.frames.generalTab, "BackdropTemplate")
+    customNicknamesFrame = CreateFrame("Frame", "CellOptionsFrame_Nicknames", Cell.frames.generalTab, nil)
     Cell.StylizeFrame(customNicknamesFrame, nil, Cell.GetAccentColorTable())
     customNicknamesFrame:SetFrameLevel(Cell.frames.generalTab:GetFrameLevel() + 50)
     customNicknamesFrame:Hide()

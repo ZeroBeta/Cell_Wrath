@@ -203,7 +203,7 @@ end
 -- import confirmation
 ---------------------------------------------------------------------
 local function CreateImportConfirmationFrame()
-    confirmationFrame = CreateFrame("Frame", nil, Cell.frames.aboutTab, "BackdropTemplate")
+    confirmationFrame = CreateFrame("Frame", nil, Cell.frames.aboutTab, nil)
     confirmationFrame:SetSize(361, 165)
     Cell.StylizeFrame(confirmationFrame, {0.1, 0.1, 0.1, 0.95}, Cell.GetAccentColorTable())
     confirmationFrame:EnableMouse(true)
@@ -346,7 +346,7 @@ end
 -- import/export frame
 ---------------------------------------------------------------------
 local function CreateImportExportFrame()
-    importExportFrame = CreateFrame("Frame", "CellOptionsFrame_ImportExport", Cell.frames.aboutTab, "BackdropTemplate")
+    importExportFrame = CreateFrame("Frame", "CellOptionsFrame_ImportExport", Cell.frames.aboutTab, nil)
     importExportFrame:Hide()
     Cell.StylizeFrame(importExportFrame, nil, Cell.GetAccentColorTable())
     importExportFrame:EnableMouse(true)

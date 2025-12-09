@@ -80,6 +80,9 @@ function F.LoadBuiltInDebuffs(debuffs)
     end
 end
 
+-- WotLK Fix: Fire callback so deferred LoadBuiltInDebuffs calls can execute
+Cell.Fire("RaidDebuffsReady")
+
 local loadedDebuffs = {
     -- [instanceId] = {
     --     ["general"] = {
@@ -1434,7 +1437,7 @@ local function CreateDetailsFrame()
         }
     })
 
-    conditionFrame = CreateFrame("Frame", nil, detailsContentFrame, "BackdropTemplate")
+    conditionFrame = CreateFrame("Frame", nil, detailsContentFrame, nil)
     conditionFrame:SetPoint("TOPLEFT", conditionDropDown, "BOTTOMLEFT", 0, -5)
     conditionFrame:SetPoint("RIGHT")
     conditionFrame:SetHeight(20)
@@ -2318,7 +2321,7 @@ end
 local function CreateNoticeFrame()
     if CellDB["raidDebuffsNoticeViewed"] then return end
 
-    local noticeFrame = CreateFrame("Frame", nil, debuffsTab, "BackdropTemplate")
+    local noticeFrame = CreateFrame("Frame", nil, debuffsTab, nil)
     noticeFrame:SetAllPoints(debuffsTab)
     noticeFrame:EnableMouse(true)
     noticeFrame:SetFrameLevel(debuffsTab:GetFrameLevel()+25)

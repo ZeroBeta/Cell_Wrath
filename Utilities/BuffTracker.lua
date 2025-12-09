@@ -386,7 +386,7 @@ end
 -------------------------------------------------
 -- frame
 -------------------------------------------------
-local buffTrackerFrame = CreateFrame("Frame", "CellBuffTrackerFrame", Cell.frames.mainFrame, "BackdropTemplate")
+local buffTrackerFrame = CreateFrame("Frame", "CellBuffTrackerFrame", Cell.frames.mainFrame, nil)
 Cell.frames.buffTrackerFrame = buffTrackerFrame
 P.Size(buffTrackerFrame, 102, 50)
 PixelUtil.SetPoint(buffTrackerFrame, "BOTTOMLEFT", CellParent, "CENTER", 1, 1)
@@ -478,7 +478,7 @@ local function UpdateSendChannel()
 end
 
 local function CreateBuffButton(parent, buff)
-    local b = CreateFrame("Button", nil, parent, "SecureActionButtonTemplate,BackdropTemplate")
+    local b = CreateFrame("Button", nil, parent, "SecureActionButtonTemplate")
     if parent then b:SetFrameLevel(parent:GetFrameLevel() + 1) end
     P.Size(b, 32, 32)
 

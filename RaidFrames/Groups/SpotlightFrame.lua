@@ -26,7 +26,7 @@ PixelUtil.SetPoint(anchorFrame, "TOPLEFT", CellParent, "CENTER", 1, -1)
 anchorFrame:SetMovable(true)
 anchorFrame:SetClampedToScreen(true)
 
-local hoverFrame = CreateFrame("Frame", nil, spotlightFrame, "BackdropTemplate")
+local hoverFrame = CreateFrame("Frame", nil, spotlightFrame, nil)
 hoverFrame:SetPoint("TOP", anchorFrame, 0, 1)
 hoverFrame:SetPoint("BOTTOM", anchorFrame, 0, -1)
 hoverFrame:SetPoint("LEFT", anchorFrame, -1, 0)
@@ -218,7 +218,7 @@ end
 -- placeholders
 -------------------------------------------------
 local function CreatePlaceHolder(index)
-    local placeholder = CreateFrame("Frame", "CellSpotlightFramePlaceholder"..index, spotlightFrame, "BackdropTemplate")
+    local placeholder = CreateFrame("Frame", "CellSpotlightFramePlaceholder"..index, spotlightFrame, nil)
     placeholder:Hide()
     Cell.StylizeFrame(placeholder, {0, 0, 0, 0.27})
 
@@ -284,7 +284,7 @@ end
 -------------------------------------------------
 -- menu
 -------------------------------------------------
-menu = CreateFrame("Frame", "CellSpotlightAssignmentMenu", spotlightFrame, "BackdropTemplate,SecureHandlerAttributeTemplate,SecureHandlerShowHideTemplate")
+menu = CreateFrame("Frame", "CellSpotlightAssignmentMenu", spotlightFrame, "SecureHandlerAttributeTemplate,SecureHandlerShowHideTemplate")
 menu:SetFrameStrata("FULLSCREEN_DIALOG")
 menu:SetToplevel(true)
 menu:SetClampedToScreen(true)

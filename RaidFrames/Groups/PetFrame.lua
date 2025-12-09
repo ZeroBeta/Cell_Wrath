@@ -13,7 +13,7 @@ Cell.frames.petFrame = petFrame
 -------------------------------------------------
 -- anchor
 -------------------------------------------------
-local anchorFrame = CreateFrame("Frame", "CellPetAnchorFrame", petFrame, "BackdropTemplate")
+local anchorFrame = CreateFrame("Frame", "CellPetAnchorFrame", petFrame, nil)
 Cell.frames.petFrameAnchor = anchorFrame
 anchorFrame:SetPoint("TOPLEFT", CellParent, "CENTER")
 anchorFrame:SetMovable(true)

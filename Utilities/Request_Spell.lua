@@ -434,7 +434,7 @@ local spellId, buffId, spellName, spellIcon
 local spellEditFrame, title, spellIdEB, buffIdEB, addBtn, cancelBtn
 
 local function CreateSpellEditFrame()
-    spellEditFrame = CreateFrame("Frame", nil, Cell.frames.utilitiesTab, "BackdropTemplate")
+    spellEditFrame = CreateFrame("Frame", nil, Cell.frames.utilitiesTab, nil)
     spellEditFrame:Hide()
     Cell.StylizeFrame(spellEditFrame, {0.1, 0.1, 0.1, 0.95}, Cell.GetAccentColorTable())
     spellEditFrame:SetFrameLevel(Cell.frames.utilitiesTab:GetFrameLevel() + 50)

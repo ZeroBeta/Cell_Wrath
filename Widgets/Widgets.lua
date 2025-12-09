@@ -276,7 +276,7 @@ end
 function Cell.CreateTitledPane(parent, text, width, height, color)
     if not color then color = {["r"]=accentColor.t[1], ["g"]=accentColor.t[2], ["b"]=accentColor.t[3], ["a"]=0.777, ["s"]=accentColor.s} end
 
-    local pane = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    local pane = CreateFrame("Frame", nil, parent)
     P.Size(pane, width, height)
     -- Cell.StylizeFrame(pane, {0,1,0,0.1}, {0,0,0,0})
 
@@ -323,7 +323,7 @@ function Cell.StylizeFrame(frame, color, borderColor)
 end
 
 function Cell.CreateFrame(name, parent, width, height, isTransparent, template)
-    local f = CreateFrame("Frame", name, parent, template and template..",BackdropTemplate" or "BackdropTemplate")
+    local f = CreateFrame("Frame", name, parent, template)
     f:Hide()
     if not isTransparent then Cell.StylizeFrame(f) end
     f:EnableMouse(true)
@@ -341,7 +341,7 @@ end
 
 
 function Cell.CreateMovableFrame(title, name, width, height, frameStrata, frameLevel, notUserPlaced)
-    local f = CreateFrame("Frame", name, CellParent, "BackdropTemplate")
+    local f = CreateFrame("Frame", name, CellParent)
     f:EnableMouse(true)
     -- f:SetResizable(false)
     f:SetMovable(true)
@@ -356,7 +356,7 @@ function Cell.CreateMovableFrame(title, name, width, height, frameStrata, frameL
     Cell.StylizeFrame(f)
 
     -- header
-    local header = CreateFrame("Frame", nil, f, "BackdropTemplate")
+    local header = CreateFrame("Frame", nil, f)
     f.header = header
     header:EnableMouse(true)
     header:SetClampedToScreen(true)
@@ -479,7 +479,7 @@ end
 -- Button
 -----------------------------------------
 function Cell.CreateButton(parent, text, buttonColor, size, noBorder, noBackground, fontNormal, fontDisable, template, ...)
-    local b = CreateFrame("Button", nil, parent, template and template..",BackdropTemplate" or "BackdropTemplate")
+    local b = CreateFrame("Button", nil, parent, template)
     if parent then b:SetFrameLevel(parent:GetFrameLevel()+1) end
     b:SetText(text)
     P.Size(b, size[1], size[2])
@@ -791,7 +791,7 @@ function Cell.CreateCheckButton(parent, label, onClick, ...)
     -- InterfaceOptionsCheckButtonTemplate --> FrameXML\InterfaceOptionsPanels.xml line 19
     -- OptionsBaseCheckButtonTemplate -->  FrameXML\OptionsPanelTemplates.xml line 10
 
-    local cb = CreateFrame("CheckButton", nil, parent, "BackdropTemplate")
+    local cb = CreateFrame("CheckButton", nil, parent)
     cb.onClick = onClick
     cb:SetScript("OnClick", function(self)
         PlaySound(self:GetChecked() and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
@@ -856,7 +856,7 @@ end
 -- colorpicker
 -----------------------------------------
 function Cell.CreateColorPicker(parent, label, hasOpacity, onChange, onConfirm)
-    local cp = CreateFrame("Button", nil, parent, "BackdropTemplate")
+    local cp = CreateFrame("Button", nil, parent, nil)
     P.Size(cp, 14, 14)
     cp:SetBackdrop({bgFile = Cell.vars.whiteTexture, edgeFile = Cell.vars.whiteTexture, edgeSize = P.Scale(1)})
     cp:SetBackdropBorderColor(0, 0, 0, 1)
@@ -1016,7 +1016,7 @@ local function EditBox_AddConfirmButton(self, func, mode)
 end
 
 function Cell.CreateEditBox(parent, width, height, isTransparent, isMultiLine, isNumeric, font)
-    local eb = CreateFrame("EditBox", nil, parent, "BackdropTemplate")
+    local eb = CreateFrame("EditBox", nil, parent, nil)
     if not isTransparent then Cell.StylizeFrame(eb, {0.115, 0.115, 0.115, 0.9}) end
     eb:SetFontObject(font or font_name)
     eb:SetMultiLine(isMultiLine)
@@ -1108,7 +1108,7 @@ end
 -- Interface\FrameXML\OptionsPanelTemplates.xml, line 76, OptionsSliderTemplate
 function Cell.CreateSlider(name, parent, low, high, width, step, onValueChangedFn, afterValueChangedFn, isPercentage, ...)
     local tooltips = {...}
-    local slider = CreateFrame("Slider", nil, parent, "BackdropTemplate")
+    local slider = CreateFrame("Slider", nil, parent, nil)
     slider:SetValueStep(step)
     if slider.SetObeyStepOnDrag then
         slider:SetObeyStepOnDrag(true)
@@ -1288,7 +1288,7 @@ end
 -- switch
 -----------------------------------------
 function Cell.CreateSwitch(parent, size, leftText, leftValue, rightText, rightValue, func)
-    local switch = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    local switch = CreateFrame("Frame", nil, parent, nil)
     P.Size(switch, size[1], size[2])
     Cell.StylizeFrame(switch, {0.115, 0.115, 0.115, 1})
 
@@ -1382,7 +1382,7 @@ function Cell.CreateSwitch(parent, size, leftText, leftValue, rightText, rightVa
 end
 
 function Cell.CreateTripleSwitch(parent, size, func)
-    local switch = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    local switch = CreateFrame("Frame", nil, parent, nil)
     P.Size(switch, size[1], size[2])
     Cell.StylizeFrame(switch, {0.115, 0.115, 0.115, 1})
 
@@ -1475,7 +1475,7 @@ function Cell.CreateTripleSwitch(parent, size, func)
 end
 
 function Cell.CreateFourfoldSwitch(parent, size, func)
-    local switch = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    local switch = CreateFrame("Frame", nil, parent, nil)
     P.Size(switch, size[1], size[2])
     Cell.StylizeFrame(switch, {0.115, 0.115, 0.115, 1})
 
@@ -1566,7 +1566,7 @@ end
 -- status bar
 -----------------------------------------
 function Cell.CreateStatusBar(name, parent, width, height, maxValue, smooth, func, showText, texture, color)
-    local bar = CreateFrame("StatusBar", name, parent, "BackdropTemplate")
+    local bar = CreateFrame("StatusBar", name, parent, nil)
 
     if not color then color = {accentColor.t[1], accentColor.t[2], accentColor.t[3], 1} end
     if not texture then texture = Cell.vars.whiteTexture end
@@ -1641,7 +1641,7 @@ function Cell.CreateStatusBarButton(parent, text, size, maxValue, template)
         b:SetBackdropBorderColor(0, 0, 0, 1)
     end)
 
-    local bar = CreateFrame("StatusBar", nil, b, "BackdropTemplate")
+    local bar = CreateFrame("StatusBar", nil, b, nil)
     b.bar = bar
     bar:SetPoint("TOPLEFT", b)
     bar:SetPoint("BOTTOMRIGHT", b)
@@ -1703,7 +1703,7 @@ end
 -----------------------------------------
 function Cell.CreateMask(parent, text, points) -- points = {topleftX, topleftY, bottomrightX, bottomrightY}
     if not parent.mask then -- not init
-        parent.mask = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+        parent.mask = CreateFrame("Frame", nil, parent, nil)
         Cell.StylizeFrame(parent.mask, {0.15, 0.15, 0.15, 0.7}, {0, 0, 0, 0})
         -- parent.mask:SetFrameStrata("HIGH")
         parent.mask:SetFrameLevel(parent:GetFrameLevel()+30)
@@ -1737,7 +1737,7 @@ function Cell.CreateMask(parent, text, points) -- points = {topleftX, topleftY, 
 end
 
 function Cell.CreateCombatMask(parent, x1, y1, x2, y2)
-    local mask = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    local mask = CreateFrame("Frame", nil, parent, nil)
     parent.combatMask = mask
 
     mask:SetPoint("TOPLEFT", P.Scale(x1 or 1), P.Scale(y1 or -1))
@@ -1763,7 +1763,7 @@ end
 -----------------------------------------
 function Cell.CreateConfirmPopup(parent, width, text, onAccept, onReject, mask, hasEditBox, dropdowns)
     if not parent.confirmPopup then -- not init
-        parent.confirmPopup = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+        parent.confirmPopup = CreateFrame("Frame", nil, parent, nil)
         parent.confirmPopup:SetSize(width, 100)
         Cell.StylizeFrame(parent.confirmPopup, {0.1, 0.1, 0.1, 0.95}, {accentColor.t[1], accentColor.t[2], accentColor.t[3], 1})
         parent.confirmPopup:EnableMouse(true)
@@ -1895,7 +1895,7 @@ end
 -----------------------------------------
 function Cell.CreateNotificationPopup(parent, width, text, mask)
     if not parent.notificationPopup then -- not init
-        parent.notificationPopup = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+        parent.notificationPopup = CreateFrame("Frame", nil, parent, nil)
         parent.notificationPopup:SetSize(width, 100)
         Cell.StylizeFrame(parent.notificationPopup, {0.1, 0.1, 0.1, 0.95}, {accentColor.t[1], accentColor.t[2], accentColor.t[3], 1})
         parent.notificationPopup:EnableMouse(true)
@@ -1958,7 +1958,7 @@ end
 -----------------------------------------
 function Cell.CreatePopupEditBox(parent, func, multiLine)
     if not parent.popupEditBox then
-        local eb = CreateFrame("EditBox", nil, parent, "BackdropTemplate")
+        local eb = CreateFrame("EditBox", nil, parent, nil)
         parent.popupEditBox = eb
         eb:Hide()
         eb:SetAutoFocus(true)
@@ -2038,7 +2038,7 @@ function Cell.CreateDualPopupEditBox(parent, leftTip, rightTip, isNumeric, func)
         ok:SetPoint("TOPRIGHT")
 
         -- left
-        local left = CreateFrame("EditBox", nil, f, "BackdropTemplate")
+        local left = CreateFrame("EditBox", nil, f, nil)
         f.left = left
         left:SetPoint("TOPLEFT")
         P.Size(left, 100, 20)
@@ -2072,7 +2072,7 @@ function Cell.CreateDualPopupEditBox(parent, leftTip, rightTip, isNumeric, func)
         left.tip:SetPoint("LEFT", 5, 0)
 
         -- right
-        local right = CreateFrame("EditBox", nil, f, "BackdropTemplate")
+        local right = CreateFrame("EditBox", nil, f, nil)
         f.right = right
         right:SetPoint("TOPLEFT", left, "TOPRIGHT", P.Scale(1), 0)
         right:SetPoint("TOPRIGHT", ok, "TOPLEFT", P.Scale(-1), 0)
@@ -2591,7 +2591,7 @@ end
 -----------------------------------------------------------------------------------
 function Cell.CreateScrollFrame(parent, top, bottom, color, border)
     -- create scrollFrame & scrollbar seperately (instead of UIPanelScrollFrameTemplate), in order to custom it
-    local scrollFrame = CreateFrame("ScrollFrame", parent:GetName() and parent:GetName().."ScrollFrame" or nil, parent, "BackdropTemplate")
+    local scrollFrame = CreateFrame("ScrollFrame", parent:GetName() and parent:GetName().."ScrollFrame" or nil, parent, nil)
     parent.scrollFrame = scrollFrame
     top = top or 0
     bottom = bottom or 0
@@ -2610,14 +2610,14 @@ function Cell.CreateScrollFrame(parent, top, bottom, color, border)
     end
 
     -- content
-    local content = CreateFrame("Frame", nil, scrollFrame, "BackdropTemplate")
+    local content = CreateFrame("Frame", nil, scrollFrame, nil)
     content:SetSize(scrollFrame:GetWidth(), 2)
     scrollFrame:SetScrollChild(content)
     scrollFrame.content = content
     -- content:SetFrameLevel(2)
 
     -- scrollbar
-    local scrollbar = CreateFrame("Frame", nil, scrollFrame, "BackdropTemplate")
+    local scrollbar = CreateFrame("Frame", nil, scrollFrame, nil)
     scrollbar:SetPoint("TOPLEFT", scrollFrame, "TOPRIGHT", 2, 0)
     scrollbar:SetPoint("BOTTOMRIGHT", scrollFrame, 7, 0)
     scrollbar:Hide()
@@ -2625,7 +2625,7 @@ function Cell.CreateScrollFrame(parent, top, bottom, color, border)
     scrollFrame.scrollbar = scrollbar
 
     -- scrollbar thumb
-    local scrollThumb = CreateFrame("Frame", nil, scrollbar, "BackdropTemplate")
+    local scrollThumb = CreateFrame("Frame", nil, scrollbar, nil)
     scrollThumb:SetWidth(5) -- scrollbar's width is 5
     scrollThumb:SetHeight(scrollbar:GetHeight())
     scrollThumb:SetPoint("TOP")
@@ -2814,7 +2814,7 @@ end
 -- dropdown menu
 ------------------------------------------------
 local listInit, list, highlightTexture
-list = CreateFrame("Frame", addonName.."DropdownList", CellParent, "BackdropTemplate")
+list = CreateFrame("Frame", addonName.."DropdownList", CellParent, nil)
 -- list:SetIgnoreParentScale(true)
 list:SetClampedToScreen(true)
 -- Cell.StylizeFrame(list, {0.115, 0.115, 0.115, 1})
@@ -2824,7 +2824,7 @@ list:Hide()
 list.items = {}
 
 -- highlight
-highlightTexture = CreateFrame("Frame", nil, list, "BackdropTemplate")
+highlightTexture = CreateFrame("Frame", nil, list, nil)
 -- highlightTexture:SetBackdrop({edgeFile = Cell.vars.whiteTexture, edgeSize = P.Scale(1)})
 -- highlightTexture:SetBackdropBorderColor(unpack(accentColor.t))
 highlightTexture:Hide()
@@ -2862,7 +2862,7 @@ local function SetHighlightItem(i)
 end
 
 function Cell.CreateDropdown(parent, width, dropdownType, isMini, isHorizontal)
-    local menu = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    local menu = CreateFrame("Frame", nil, parent, nil)
     P.Size(menu, width, 20)
     menu:EnableMouse(true)
     -- menu:SetFrameLevel(5)
@@ -3292,7 +3292,7 @@ end
 -- binding list button
 -----------------------------------------
 local function CreateGrid(parent, text, width)
-    local grid = CreateFrame("Button", nil, parent, "BackdropTemplate")
+    local grid = CreateFrame("Button", nil, parent, nil)
     grid:SetFrameLevel(6)
     grid:SetSize(width, P.Scale(20))
     grid:SetBackdrop({bgFile = Cell.vars.whiteTexture, edgeFile = Cell.vars.whiteTexture, edgeSize = P.Scale(1)})
@@ -3357,7 +3357,7 @@ local function CreateGrid(parent, text, width)
 end
 
 function Cell.CreateBindingListButton(parent, modifier, bindKey, bindType, bindAction)
-    local b = CreateFrame("Button", nil, parent, "BackdropTemplate")
+    local b = CreateFrame("Button", nil, parent, nil)
     b:SetFrameLevel(parent:GetFrameLevel() + 5)
     P.Size(b, 100, 20)
     b:SetBackdrop({bgFile = Cell.vars.whiteTexture, edgeFile = Cell.vars.whiteTexture, edgeSize = P.Scale(1)})
@@ -3466,7 +3466,7 @@ end
 -- receiving frame
 -----------------------------------------
 function Cell.CreateReceivingFrame(parent)
-    local f = CreateFrame("Frame", "CellReceivingFrame", parent, "BackdropTemplate")
+    local f = CreateFrame("Frame", "CellReceivingFrame", parent, nil)
     f:EnableMouse(true)
     f:SetMovable(true)
     f:SetUserPlaced(true)

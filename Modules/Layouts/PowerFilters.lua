@@ -68,7 +68,7 @@ local function UpdateButton(b, enabled)
 end
 
 local function CreatePowerFilter(parent, class, buttons, color, bgColor)
-    local filter = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    local filter = CreateFrame("Frame", nil, parent, nil)
     Cell.StylizeFrame(filter, color, bgColor)
     P.Size(filter, 135, 20)
 

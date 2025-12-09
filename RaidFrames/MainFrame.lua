@@ -35,7 +35,7 @@ Cell.frames.mainFrame = cellMainFrame
 -- WotLK Fix: Explicitly show the frame (in WotLK, SecureFrameTemplate frames may start hidden)
 cellMainFrame:Show()
 
-local hoverFrame = CreateFrame("Frame", "CellMenuHoverDetector", cellMainFrame, "BackdropTemplate")
+local hoverFrame = CreateFrame("Frame", "CellMenuHoverDetector", cellMainFrame)
 -- Cell.StylizeFrame(hoverFrame, {1,0,0,0.3}, {0,0,0,0})
 
 local anchorFrame = CreateFrame("Frame", "CellAnchorFrame", cellMainFrame)
@@ -133,7 +133,7 @@ end)
 
 -- REVIEW: raid tool button
 --[===[
-local frame = CreateFrame("Frame", nil, cellMainFrame, "BackdropTemplate")
+local frame = CreateFrame("Frame", nil, cellMainFrame, nil)
 Cell.StylizeFrame(frame)
 frame:SetSize(100, 100)
 frame:SetPoint("BOTTOMLEFT", cellMainFrame, "TOPLEFT", 0, 30)
@@ -149,7 +149,7 @@ mark:SetAttribute("type", "worldmarker")
 mark:SetAttribute("marker", 1)
 
 -- local tools = Cell.CreateButton(menuFrame, "", "chartreuse", {20, 10}, false, true, nil, nil, "SecureHandlerAttributeTemplate,SecureHandlerClickTemplate")
-local tools = CreateFrame("Frame", nil, menuFrame, "BackdropTemplate,SecureHandlerMouseUpDownTemplate")
+local tools = CreateFrame("Frame", nil, menuFrame, "SecureHandlerMouseUpDownTemplate")
 Cell.StylizeFrame(tools)
 tools:SetSize(20, 10)
 tools:EnableMouse(true)

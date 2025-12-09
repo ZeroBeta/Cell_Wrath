@@ -9,7 +9,7 @@ local battleResMover
 -------------------------------------------------
 -- battle res
 -------------------------------------------------
-local battleResFrame = CreateFrame("Frame", "CellBattleResFrame", Cell.frames.mainFrame, "BackdropTemplate")
+local battleResFrame = CreateFrame("Frame", "CellBattleResFrame", Cell.frames.mainFrame, nil)
 Cell.frames.battleResFrame = battleResFrame
 battleResFrame:SetFrameLevel(5)
 P.Size(battleResFrame, 80, 20)
@@ -220,7 +220,7 @@ end)
 -------------------------------------------------
 -- mover
 -------------------------------------------------
-battleResMover = CreateFrame("Frame", nil, Cell.frames.mainFrame, "BackdropTemplate")
+battleResMover = CreateFrame("Frame", nil, Cell.frames.mainFrame, nil)
 P.Size(battleResMover, 80, 40)
 Cell.StylizeFrame(battleResMover, {0, 1, 0, 0.4}, {0, 0, 0, 0})
 battleResMover:SetClampedToScreen(true)

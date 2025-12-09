@@ -6,7 +6,7 @@ local A = Cell.animations
 
 local marks, worldMarks
 
-local marksFrame = CreateFrame("Frame", "CellRaidMarksFrame", Cell.frames.mainFrame, "SecureFrameTemplate,BackdropTemplate")
+local marksFrame = CreateFrame("Frame", "CellRaidMarksFrame", Cell.frames.mainFrame, "SecureFrameTemplate")
 Cell.frames.raidMarksFrame = marksFrame
 marksFrame:SetSize(196, 40)
 PixelUtil.SetPoint(marksFrame, "BOTTOMRIGHT", CellParent, "CENTER", -1, 1)

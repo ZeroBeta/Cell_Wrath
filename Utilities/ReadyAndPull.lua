@@ -6,7 +6,7 @@ local A = Cell.animations
 
 local readyBtn, pullBtn
 
-local buttonsFrame = CreateFrame("Frame", "CellReadyAndPullFrame", Cell.frames.mainFrame, "SecureFrameTemplate,BackdropTemplate")
+local buttonsFrame = CreateFrame("Frame", "CellReadyAndPullFrame", Cell.frames.mainFrame, "SecureFrameTemplate")
 Cell.frames.readyAndPullFrame = buttonsFrame
 P.Size(buttonsFrame, 60, 55)
 PixelUtil.SetPoint(buttonsFrame, "TOPRIGHT", CellParent, "CENTER", -1, -1)

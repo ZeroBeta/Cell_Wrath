@@ -1481,7 +1481,7 @@ local function CreateDetailsFrame()
         }
     })
 
-    conditionFrame = CreateFrame("Frame", nil, detailsContentFrame, "BackdropTemplate")
+    conditionFrame = CreateFrame("Frame", nil, detailsContentFrame, nil)
     conditionFrame:SetPoint("TOPLEFT", conditionDropDown, "BOTTOMLEFT", 0, -5)
     conditionFrame:SetPoint("RIGHT")
     conditionFrame:SetHeight(20)

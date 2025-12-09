@@ -120,7 +120,7 @@ end
 
 local function CreateProcessingFrame()
     -- processing
-    processingFrame = CreateFrame("Frame", nil, raidRosterFrame, "BackdropTemplate")
+    processingFrame = CreateFrame("Frame", nil, raidRosterFrame, nil)
     processingFrame:SetPoint("TOPLEFT", P.Scale(1), P.Scale(-1))
     processingFrame:SetPoint("BOTTOMRIGHT", P.Scale(-1), P.Scale(1))
     Cell.StylizeFrame(processingFrame, {0.15, 0.15, 0.15, 0.7}, {0, 0, 0, 0})
@@ -300,7 +300,7 @@ end
 -------------------------------------------------
 local movingGrid
 local function CreateRaidRosterGrid(parent, index)
-    local grid = CreateFrame("Button", parent:GetName().."Unit"..index, parent, "BackdropTemplate")
+    local grid = CreateFrame("Button", parent:GetName().."Unit"..index, parent, nil)
     P.Size(grid, 100, 17)
     Cell.StylizeFrame(grid, {0.1, 0.1, 0.1, 0.5})
     grid.color = {0.5, 0.5, 0.5}
@@ -492,7 +492,7 @@ local function CreateRaidRosterGrid(parent, index)
 end
 
 local function CreateRaidRosterGroup(parent, groupIndex)
-    local group = CreateFrame("Frame", parent:GetName().."Subgroup"..groupIndex, parent, "BackdropTemplate")
+    local group = CreateFrame("Frame", parent:GetName().."Subgroup"..groupIndex, parent, nil)
     P.Size(group, 95, 81)
     Cell.StylizeFrame(group, {0.1, 0.1, 0.1, 0.5})
 

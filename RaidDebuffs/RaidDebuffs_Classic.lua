@@ -643,4 +643,14 @@ local debuffs = {
 
 }
 
-F.LoadBuiltInDebuffs(debuffs)
+-- WotLK Fix: Defer loading until F.LoadBuiltInDebuffs is available (defined in Modules/RaidDebuffs/RaidDebuffs_Classic.lua)
+if F.LoadBuiltInDebuffs then
+    F.LoadBuiltInDebuffs(debuffs)
+else
+    -- Register a callback to load debuffs once the function is available
+    Cell.RegisterCallback("RaidDebuffsReady", "RaidDebuffs_Classic_LoadBuiltIn", function()
+        if F.LoadBuiltInDebuffs then
+            F.LoadBuiltInDebuffs(debuffs)
+        end
+    end)
+end

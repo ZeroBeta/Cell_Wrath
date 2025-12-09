@@ -35,7 +35,7 @@ local function CreateCodeSnippetsFrame()
     end)
 
     -- top
-    topPane = CreateFrame("Frame", nil, codeSnippetsFrame, "BackdropTemplate")
+    topPane = CreateFrame("Frame", nil, codeSnippetsFrame, nil)
     -- Cell.StylizeFrame(topPane, {0,1,0,0.1}, {0,0,0,0})
     topPane:SetPoint("TOPLEFT", 10, -40)
     topPane:SetPoint("TOPRIGHT", -10, -40)
@@ -59,7 +59,7 @@ local function CreateCodeSnippetsFrame()
     end)
 
     -- bottom
-    bottomPane = CreateFrame("Frame", nil, codeSnippetsFrame, "BackdropTemplate")
+    bottomPane = CreateFrame("Frame", nil, codeSnippetsFrame, nil)
     -- Cell.StylizeFrame(bottomPane, {0,1,0,0.1}, {0,0,0,0})
     bottomPane:SetPoint("BOTTOMLEFT", 10, 10)
     bottomPane:SetPoint("BOTTOMRIGHT", -10, 10)
@@ -152,7 +152,7 @@ local function CreateCodeSnippetsFrame()
     Cell.IndentationLib.enable(codePane.eb)
 
     -- errorPopup
-    errorPopup = CreateFrame("Frame", nil, codePane, "BackdropTemplate")
+    errorPopup = CreateFrame("Frame", nil, codePane, nil)
     errorPopup:SetFrameStrata("TOOLTIP")
     Cell.StylizeFrame(errorPopup, {0.15, 0.1, 0.1, 0.95})
     errorPopup:SetWidth(200)

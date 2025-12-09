@@ -15,7 +15,7 @@ local ShowData
 local importExportFrame, importBtn, title, instance, boss, whichBossesBtn, textArea
 
 local function CreateDebuffsImportExportFrame()
-    importExportFrame = CreateFrame("Frame", "CellOptionsFrame_RaidDebuffsImportExport", Cell.frames.raidDebuffsTab, "BackdropTemplate")
+    importExportFrame = CreateFrame("Frame", "CellOptionsFrame_RaidDebuffsImportExport", Cell.frames.raidDebuffsTab, nil)
     importExportFrame:Hide()
     Cell.StylizeFrame(importExportFrame, nil, Cell.GetAccentColorTable())
     importExportFrame:EnableMouse(true)
