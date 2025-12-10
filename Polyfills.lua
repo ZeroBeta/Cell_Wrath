@@ -200,6 +200,32 @@ do
             end
             mt.__index._CellSetGradientAlphaPolyfill = true
         end
+
+        -- Texture:SetColorTexture polyfill for WotLK 3.3.5
+        -- In retail, SetColorTexture(r, g, b, a) creates a solid color texture
+        -- In WotLK, we use SetTexture with the RGBA values directly
+        if not mt.__index.SetColorTexture then
+            function mt.__index:SetColorTexture(r, g, b, a)
+                -- In WotLK, SetTexture with 4 numeric args creates a solid color
+                self:SetTexture(r or 1, g or 1, b or 1, a or 1)
+            end
+        end
+
+        -- Wrap Texture:SetAtlas to handle missing atlases in WotLK 3.3.5
+        -- WotLK has fewer atlases than retail, so we need to gracefully handle missing ones
+        if mt.__index.SetAtlas and not mt.__index._CellSetAtlasWrapped then
+            local originalSetAtlas = mt.__index.SetAtlas
+            function mt.__index:SetAtlas(atlasName, useAtlasSize, filterMode)
+                -- Try to call the original SetAtlas
+                local success = pcall(originalSetAtlas, self, atlasName, useAtlasSize, filterMode)
+                if not success then
+                    -- Atlas doesn't exist in WotLK, use a fallback
+                    -- Set to a blank/transparent texture to avoid errors
+                    self:SetTexture(nil)
+                end
+            end
+            mt.__index._CellSetAtlasWrapped = true
+        end
     end
 end
 
@@ -555,6 +581,35 @@ if not UnitClassBase then
     -- WotLK: UnitClass returns (localizedName, fileName, classIndex)
     function UnitClassBase(unit)
         return select(2, UnitClass(unit))
+    end
+end
+
+-- GetSpellBookItemName (doesn't exist in WotLK 3.3.5)
+-- In WotLK, use GetSpellInfo(index, bookType) which returns name as first value
+if not GetSpellBookItemName then
+    function GetSpellBookItemName(index, bookType)
+        local spellName = GetSpellInfo(index, bookType)
+        return spellName
+    end
+end
+
+-- Ambiguate (doesn't exist in WotLK 3.3.5)
+-- In retail, Ambiguate formats player names by removing/keeping realm suffixes
+-- In WotLK, we implement a simple version
+if not Ambiguate then
+    function Ambiguate(fullName, context)
+        if not fullName then return "" end
+
+        -- context values: "none", "short", "mail", "guild"
+        -- For WotLK, we'll implement basic realm removal
+        if context == "none" or context == "short" or context == "mail" then
+            -- Remove realm suffix (everything after the hyphen)
+            local name = string.match(fullName, "^([^%-]+)")
+            return name or fullName
+        end
+
+        -- Default: return full name with realm
+        return fullName
     end
 end
 
@@ -925,9 +980,10 @@ do
     end
 end
 
--- C_Timer
-if not C_Timer then
-    C_Timer = {}
+-- C_Timer - completely replace with working implementation for WotLK 3.3.5
+-- WotLK has a broken C_Timer that causes errors in C_TimerAugment.lua
+-- We completely replace it to avoid those errors
+do
     local Ticker = {}
     Ticker.__index = Ticker
 
@@ -940,6 +996,14 @@ if not C_Timer then
     end
 
     local function CreateTimer(duration, callback, isTicker)
+        -- Validate arguments to prevent errors
+        if type(duration) ~= "number" then
+            error("C_Timer: duration must be a number, got " .. type(duration))
+        end
+        if type(callback) ~= "function" then
+            error("C_Timer: callback must be a function, got " .. type(callback))
+        end
+
         local timer = setmetatable({}, Ticker)
         local total = 0
         local frame = CreateFrame("Frame")
@@ -962,18 +1026,51 @@ if not C_Timer then
         return timer
     end
 
-    function C_Timer.After(duration, callback)
-        CreateTimer(duration, callback, false)
-    end
+    -- Completely replace C_Timer (don't try to preserve native version)
+    C_Timer = {
+        After = function(durationOrSelf, callbackOrDuration, maybeCallback)
+            -- Handle both C_Timer.After(duration, callback) and C_Timer:After(duration, callback)
+            local duration, callback
+            if type(durationOrSelf) == "table" and durationOrSelf == C_Timer then
+                -- Called with colon syntax: C_Timer:After(duration, callback)
+                duration = callbackOrDuration
+                callback = maybeCallback
+            else
+                -- Called with dot syntax: C_Timer.After(duration, callback)
+                duration = durationOrSelf
+                callback = callbackOrDuration
+            end
+            CreateTimer(duration, callback, false)
+        end,
 
-    function C_Timer.NewTimer(duration, callback)
-        return CreateTimer(duration, callback, false)
-    end
+        NewTimer = function(durationOrSelf, callbackOrDuration, maybeCallback)
+            -- Handle both calling conventions
+            local duration, callback
+            if type(durationOrSelf) == "table" and durationOrSelf == C_Timer then
+                duration = callbackOrDuration
+                callback = maybeCallback
+            else
+                duration = durationOrSelf
+                callback = callbackOrDuration
+            end
+            return CreateTimer(duration, callback, false)
+        end,
 
-    function C_Timer.NewTicker(duration, callback, iterations)
-        -- iterations not fully supported in this simple polyfill, assuming infinite for now or handled by callback
-        return CreateTimer(duration, callback, true)
-    end
+        NewTicker = function(durationOrSelf, callbackOrDuration, iterationsOrCallback, maybeIterations)
+            -- Handle both calling conventions
+            local duration, callback, iterations
+            if type(durationOrSelf) == "table" and durationOrSelf == C_Timer then
+                duration = callbackOrDuration
+                callback = iterationsOrCallback
+                iterations = maybeIterations
+            else
+                duration = durationOrSelf
+                callback = callbackOrDuration
+                iterations = iterationsOrCallback
+            end
+            return CreateTimer(duration, callback, true)
+        end
+    }
 end
 
 -- C_Spell
@@ -1143,9 +1240,16 @@ end
 -- C_Map
 if not C_Map then
     C_Map = {}
+end
+
+if not C_Map.GetBestMapForUnit then
     function C_Map.GetBestMapForUnit(unit)
-        -- Very basic fallback
-        return GetCurrentMapAreaID()
+        -- Very basic fallback - try GetCurrentMapAreaID if it exists
+        if GetCurrentMapAreaID then
+            return GetCurrentMapAreaID()
+        end
+        -- Otherwise return a safe default
+        return 0
     end
 end
 
@@ -1154,6 +1258,34 @@ if not C_ChatInfo then
     C_ChatInfo = {}
     function C_ChatInfo.SendAddonMessage(prefix, text, channel, target)
         SendAddonMessage(prefix, text, channel, target)
+    end
+    function C_ChatInfo.RegisterAddonMessagePrefix(prefix)
+        -- In WotLK 3.3.5, addon message prefixes are automatically registered
+        -- when first used with SendAddonMessage, so this is a no-op
+        return true
+    end
+    function C_ChatInfo.SendAddonMessageLogged(prefix, text, channel, target)
+        -- In WotLK 3.3.5, SendAddonMessageLogged doesn't exist
+        -- Just use the regular SendAddonMessage
+        SendAddonMessage(prefix, text, channel, target)
+    end
+end
+
+-- RegisterAddonMessagePrefix polyfill (global function for WotLK)
+if not RegisterAddonMessagePrefix then
+    function RegisterAddonMessagePrefix(prefix)
+        -- In WotLK 3.3.5, addon message prefixes are automatically registered
+        -- when first used with SendAddonMessage, so this is a no-op
+        return true
+    end
+end
+
+-- BNSendGameData polyfill (Battle.net doesn't exist in WotLK 3.3.5)
+if not BNSendGameData then
+    function BNSendGameData(gameAccountID, addonPrefix, addonMessage)
+        -- Battle.net game data messaging doesn't exist in WotLK
+        -- This is a no-op to prevent errors from libraries that try to hook it
+        return
     end
 end
 
@@ -1315,6 +1447,21 @@ if not GetClassColor then
         end
         -- Fallback to white if class not found
         return 1, 1, 1, "ffffffff"
+    end
+end
+
+-- Add GetRGB and GetRGBA methods to RAID_CLASS_COLORS entries in WotLK
+-- In WotLK, these are simple tables without methods
+if RAID_CLASS_COLORS then
+    for class, color in pairs(RAID_CLASS_COLORS) do
+        if type(color) == "table" and not color.GetRGB then
+            function color:GetRGB()
+                return self.r, self.g, self.b
+            end
+            function color:GetRGBA()
+                return self.r, self.g, self.b, self.a or 1
+            end
+        end
     end
 end
 
@@ -1870,9 +2017,11 @@ C_Timer.After(0.5, EnsureCellMainFrameShown)
 -- Wrap PixelPerfect functions to handle nil frames gracefully
 -- Some widgets may not exist in WotLK that exist in retail
 -------------------------------------------------
-C_Timer.After(0.1, function()
-    if Cell and Cell.pixelPerfectFuncs then
+-- Hook immediately when Cell.pixelPerfectFuncs is created
+local function WrapPixelPerfectFunctions()
+    if Cell and Cell.pixelPerfectFuncs and not Cell.pixelPerfectFuncs._CellWrapped then
         local P = Cell.pixelPerfectFuncs
+        Cell.pixelPerfectFuncs._CellWrapped = true
 
         -- List of functions that take a frame as first parameter
         local frameFunctions = {
@@ -1884,11 +2033,28 @@ C_Timer.After(0.1, function()
             if P[funcName] then
                 local originalFunc = P[funcName]
                 P[funcName] = function(frame, ...)
-                    if not frame then return end
+                    if not frame then
+                        -- Silently ignore nil frames instead of erroring
+                        return
+                    end
                     return originalFunc(frame, ...)
                 end
             end
         end
+    end
+end
+
+-- Create event frame to wrap after addon loads
+local pixelPerfectWrapperFrame = CreateFrame("Frame")
+pixelPerfectWrapperFrame:RegisterEvent("ADDON_LOADED")
+pixelPerfectWrapperFrame:SetScript("OnEvent", function(self, event, addonName)
+    if addonName == "Cell_Wrath" then
+        -- Wrap immediately after addon loads
+        WrapPixelPerfectFunctions()
+        -- Also try with small delays
+        C_Timer.After(0.1, WrapPixelPerfectFunctions)
+        C_Timer.After(0.5, WrapPixelPerfectFunctions)
+        self:UnregisterEvent("ADDON_LOADED")
     end
 end)
 
@@ -1914,6 +2080,12 @@ local function WrapSetOrientation()
     if Cell and Cell.bFuncs and Cell.bFuncs.SetOrientation then
         local originalSetOrientation = Cell.bFuncs.SetOrientation
         Cell.bFuncs.SetOrientation = function(button, orientation, rotateTexture)
+            -- Check if button is nil first
+            if not button then
+                -- Silently return if button is nil
+                return
+            end
+
             -- Get all the widgets (some may be nil)
             local widgets = button.widgets
             if not widgets then return end
@@ -1926,7 +2098,6 @@ local function WrapSetOrientation()
             -- SpotlightFrame buttons don't have powerBar or gapTexture
             if not healthBar or not powerBar or not gapTexture then
                 -- Skip SetOrientation for buttons without basic widgets
-                print("Cell_Wrath: Skipping SetOrientation for button without required widgets")
                 return
             end
 
@@ -1938,8 +2109,44 @@ local function WrapSetOrientation()
     end
 end
 
--- Try to wrap after a delay, and retry if not ready
-C_Timer.After(1, WrapSetOrientation)
+-- Wrap Cell.bFuncs.SetPowerSize to handle nil buttons
+local function WrapSetPowerSize()
+    if Cell and Cell.bFuncs and Cell.bFuncs.SetPowerSize then
+        local originalSetPowerSize = Cell.bFuncs.SetPowerSize
+        Cell.bFuncs.SetPowerSize = function(button, size)
+            -- Check if button is nil first
+            if not button then
+                -- Silently return if button is nil (pet buttons might not exist)
+                return
+            end
+            -- Call original function
+            return originalSetPowerSize(button, size)
+        end
+    else
+        C_Timer.After(0.5, WrapSetPowerSize)
+    end
+end
+
+-- Create event frame to wrap after addon loads
+local buttonFunctionsWrapperFrame = CreateFrame("Frame")
+buttonFunctionsWrapperFrame:RegisterEvent("ADDON_LOADED")
+buttonFunctionsWrapperFrame:SetScript("OnEvent", function(self, event, addonName)
+    if addonName == "Cell_Wrath" then
+        -- Wrap SetOrientation
+        WrapSetOrientation()
+        C_Timer.After(0.1, WrapSetOrientation)
+        C_Timer.After(0.5, WrapSetOrientation)
+        C_Timer.After(1, WrapSetOrientation)
+
+        -- Wrap SetPowerSize
+        WrapSetPowerSize()
+        C_Timer.After(0.1, WrapSetPowerSize)
+        C_Timer.After(0.5, WrapSetPowerSize)
+        C_Timer.After(1, WrapSetPowerSize)
+
+        self:UnregisterEvent("ADDON_LOADED")
+    end
+end)
 
 -------------------------------------------------
 -- AnimationGroup CreateAnimation compatibility wrapper
@@ -2242,3 +2449,15 @@ end
 -------------------------------------------------
 -- WotLK 3.3.5a: Button creation and positioning now handled inline in PartyFrame.lua and RaidFrame.lua
 -------------------------------------------------
+
+-------------------------------------------------
+-- BackdropTemplate polyfill for WotLK 3.3.5a
+-- In Wrath, backdrop functions (SetBackdrop, SetBackdropColor, etc.) are natively
+-- available on all frames. However, the BackdropTemplate itself doesn't exist.
+-- In retail 9.0.1+, Blizzard moved these functions into BackdropTemplate.
+-- We create an empty template here so CreateFrame(..., "BackdropTemplate") doesn't error.
+-------------------------------------------------
+if not BackdropTemplateMixin then
+    -- Create an empty mixin (backdrop functions already exist natively in Wrath)
+    BackdropTemplateMixin = {}
+end
