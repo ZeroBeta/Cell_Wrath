@@ -116,6 +116,33 @@ end
 header:SetAttribute("startingIndex", 1)
 header:Show()
 
+-- Ensure buttons know their unit attributes (OnAttributeChanged only fires on changes)
+local function ForceSyncPartyButtons()
+    for i = 1, 5 do
+        local button = header[i]
+        if button then
+            local unit = button:GetAttribute("unit")
+            if unit and button:GetScript("OnAttributeChanged") then
+                button:GetScript("OnAttributeChanged")(button, "unit", unit)
+            end
+
+            if button.petButton then
+                local petUnit = button.petButton:GetAttribute("unit")
+                if petUnit and button.petButton:GetScript("OnAttributeChanged") then
+                    button.petButton:GetScript("OnAttributeChanged")(button.petButton, "unit", petUnit)
+                end
+            end
+
+            -- kick indicator refresh if ready
+            button._updateRequired = 1
+            button._powerUpdateRequired = 1
+            if Cell.bFuncs and Cell.bFuncs.UpdateAll then
+                Cell.bFuncs.UpdateAll(button)
+            end
+        end
+    end
+end
+
 -- Manually trigger UpdateButtonUnit for each button to populate Cell.unitButtons.party.units
 C_Timer.After(0.1, function()
     if not header.UpdateButtonUnit then return end
@@ -128,6 +155,7 @@ C_Timer.After(0.1, function()
             end
         end
     end
+    ForceSyncPartyButtons()
 end)
 
 -- Trigger layout update after button creation
@@ -179,6 +207,7 @@ local function PartyFrame_UpdateLayout(layout, which)
                 end
             end
         end
+        ForceSyncPartyButtons()
     end
 
     -- anchor
@@ -425,6 +454,8 @@ local function PartyFrame_GroupTypeChanged(groupType)
                         end
                     end
                 end
+                -- Ensure unit attributes are synced and buttons refresh even if they never received OnAttributeChanged
+                ForceSyncPartyButtons()
             end
         end)
     end

@@ -1151,6 +1151,13 @@ if not C_Item then
     function C_Item.IsItemInRange(itemId, unit)
         return IsItemInRange(itemId, unit)
     end
+    function C_Item.IsUsableItem(itemId)
+        return IsUsableItem(itemId)
+    end
+elseif not C_Item.IsUsableItem then
+    function C_Item.IsUsableItem(itemId)
+        return IsUsableItem(itemId)
+    end
 end
 
 -------------------------------------------------
@@ -1818,7 +1825,8 @@ do
 
     -- Automatically register frames that call RegisterEvent("GROUP_ROSTER_UPDATE")
     do
-        local mt = getmetatable(proxyFrame)
+        local sample = CreateFrame("Frame")
+        local mt = sample and getmetatable(sample)
         mt = mt and mt.__index
         if mt and mt.RegisterEvent and not mt._CellGroupRosterHook then
             local origRegisterEvent = mt.RegisterEvent

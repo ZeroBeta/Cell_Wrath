@@ -247,7 +247,9 @@ local function CreateColorPicker()
     Cell.StylizeFrame(brightness)
     brightness:SetValueStep(0.01)
     brightness:SetMinMaxValues(0, 1)
-    brightness:SetObeyStepOnDrag(true)
+    if brightness.SetObeyStepOnDrag then
+        brightness:SetObeyStepOnDrag(true)
+    end
     brightness:SetOrientation("VERTICAL")
     P.Size(brightness, 17, 130)
     brightness:SetPoint("TOPLEFT", hueSaturation, "TOPRIGHT", 15, 0)
@@ -285,7 +287,9 @@ local function CreateColorPicker()
     Cell.StylizeFrame(alpha)
     alpha:SetValueStep(0.01)
     alpha:SetMinMaxValues(0, 1)
-    alpha:SetObeyStepOnDrag(true)
+    if alpha.SetObeyStepOnDrag then
+        alpha:SetObeyStepOnDrag(true)
+    end
     alpha:SetOrientation("VERTICAL")
     P.Size(alpha, 17, 130)
     alpha:SetPoint("TOPLEFT", brightness, "TOPRIGHT", 15, 0)

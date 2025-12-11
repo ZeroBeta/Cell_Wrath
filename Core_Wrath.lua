@@ -831,6 +831,14 @@ function eventFrame:PLAYER_ENTERING_WORLD()
         F.Debug("PLAYER_ENTERING_WORLD: grouped; scheduling roster refresh x2")
         C_Timer.After(0.1, function() eventFrame:GROUP_ROSTER_UPDATE() end)
         C_Timer.After(0.5, function() eventFrame:GROUP_ROSTER_UPDATE() end)
+        -- And force party button sync/update shortly after (covers solo/party)
+        C_Timer.After(0.6, function()
+            if Cell.vars.groupType == "party" or Cell.vars.groupType == "solo" then
+                if Cell.frames.partyFrame and Cell.frames.partyFrame:IsShown() then
+                    Cell.Fire("GroupTypeChanged", "party")
+                end
+            end
+        end)
     end
 end
 
