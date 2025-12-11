@@ -72,7 +72,7 @@ local function CreateQCPane()
     qcPane:SetPoint("BOTTOMRIGHT", -5, 5)
     qcPane:Hide()
 
-    local qcTips = qcPane:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    local qcTips = qcPane:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     qcTips:SetPoint("TOPLEFT", 5, -25)
     qcTips:SetJustifyH("LEFT")
     qcTips:SetSpacing(5)
@@ -124,7 +124,7 @@ local function CreateQCPane()
     end
     qcNameDD:SetItems(items)
 
-    qcNameText = qcPane:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    qcNameText = qcPane:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     qcNameText:SetText(L["Name Text"])
     qcNameText:SetPoint("BOTTOMLEFT", qcNameDD, "TOPLEFT", 0, 1)
 
@@ -178,7 +178,7 @@ local function CreateQCPane()
         },
     })
 
-    qcOrientationText = qcPane:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    qcOrientationText = qcPane:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     qcOrientationText:SetText(L["Orientation"])
     qcOrientationText:SetPoint("BOTTOMLEFT", qcOrientationDD, "TOPLEFT", 0, 1)
 
@@ -244,7 +244,7 @@ local function CreateQCPane()
     end)
 
     -- tips -------------------------------------------------------------------------
-    local tips = qcPane:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    local tips = qcPane:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     tips:SetText("|cffababab"..L["Tip: right-click to delete"])
     tips:SetPoint("BOTTOMLEFT")
 end
@@ -827,7 +827,7 @@ quickCastFrame:Hide()
 --                        target frame: drag and set                       --
 -- ----------------------------------------------------------------------- --
 local targetFrame = Cell.CreateFrame(nil, quickCastFrame, 50, 20)
-targetFrame.label = targetFrame:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+targetFrame.label = targetFrame:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
 targetFrame.label:SetPoint("CENTER")
 targetFrame:EnableMouse(false)
 targetFrame:SetFrameStrata("TOOLTIP")
@@ -1022,7 +1022,7 @@ local function CreatePreviewButton(b)
     p:Hide()
     tinsert(previewButtons, p)
 
-    p.s = p:CreateFontString(nil, "OVERLAY", "CELL_FONT_CLASS_TITLE")
+    p.s = p:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_CLASS_TITLE")
     p.s:SetPoint("CENTER")
     p.s:SetText(#previewButtons)
 

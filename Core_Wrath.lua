@@ -697,6 +697,10 @@ local function UpdateSpecVars(skipTalentUpdate)
 end
 
 function eventFrame:PLAYER_LOGIN()
+    -- Register with LibSharedMedia after all addons are loaded
+    -- This prevents triggering LSM callbacks before other addons (like Quartz) are ready
+    F.RegisterWithLSM()
+
     eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
     eventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     -- WotLK 3.3.5a: Additional events for group roster changes
@@ -810,6 +814,9 @@ function eventFrame:PLAYER_TALENT_UPDATE()
 end
 
 function eventFrame:PLAYER_ENTERING_WORLD()
+    -- Register with LibSharedMedia (handles both login and /reload)
+    F.RegisterWithLSM()
+
     -- On reload/login, force a roster refresh if we're already grouped so names/indicators populate.
     if IsInRaid() or IsInGroup() then
         -- Run twice (early and after a short delay) to catch late unit name resolution.

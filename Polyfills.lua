@@ -2078,18 +2078,24 @@ end
 
 -------------------------------------------------
 -- FontString SetText/SetFormattedText fallback
--- Some addons (e.g. Quartz) call SetText before setting a font; retail tolerates
--- this but WotLK errors. Force a safe font before writing text.
+-- DISABLED: Using delayed LSM registration instead (Option 2)
+-- This global hook was affecting all addons. Delaying LSM registration until
+-- PLAYER_LOGIN prevents triggering callbacks before addons like Quartz are ready.
 -------------------------------------------------
 do
     local fs = UIParent:CreateFontString()
     local mt = getmetatable(fs)
 
     if mt and mt.__index and not mt.__index._CellFontStringTextFallback then
+        -- Get default font properties from GameFontNormal to avoid breaking other addons
+        local defaultFontPath, defaultFontSize, defaultFontFlags = GameFontNormal:GetFont()
+
         local function ensureFont(self)
             local font = self:GetFont()
             if not font then
-                self:SetFont(STANDARD_TEXT_FONT, 12, "")
+                -- Use GameFontNormal's properties instead of STANDARD_TEXT_FONT
+                -- This preserves shadows and proper sizing
+                self:SetFont(defaultFontPath, defaultFontSize, defaultFontFlags)
             end
         end
 
@@ -2112,71 +2118,9 @@ do
 end
 
 -- Fonts
--- Create default fonts in case they're needed before Widgets.lua loads
--- These match the fonts created in Widgets.lua
-if not _G["CELL_FONT_WIDGET"] then
-    local font = CreateFont("CELL_FONT_WIDGET")
-    font:SetFont(STANDARD_TEXT_FONT, 13, "")
-    font:SetTextColor(1, 1, 1, 1)
-    font:SetJustifyH("CENTER")
-end
-
-if not _G["CELL_FONT_WIDGET_TITLE"] then
-    local font = CreateFont("CELL_FONT_WIDGET_TITLE")
-    font:SetFont(STANDARD_TEXT_FONT, 14, "")
-    font:SetTextColor(1, 1, 1, 1)
-    font:SetJustifyH("CENTER")
-end
-
-if not _G["CELL_FONT_WIDGET_TITLE_DISABLE"] then
-    local font = CreateFont("CELL_FONT_WIDGET_TITLE_DISABLE")
-    font:SetFont(STANDARD_TEXT_FONT, 14, "")
-    font:SetTextColor(0.4, 0.4, 0.4, 1)
-    font:SetJustifyH("CENTER")
-end
-
-if not _G["CELL_FONT_WIDGET_SMALL"] then
-    local font = CreateFont("CELL_FONT_WIDGET_SMALL")
-    font:SetFont(STANDARD_TEXT_FONT, 11, "")
-    font:SetTextColor(1, 1, 1, 1)
-    font:SetJustifyH("CENTER")
-end
-
-if not _G["CELL_FONT_CHINESE"] then
-    local font = CreateFont("CELL_FONT_CHINESE")
-    font:SetFont(UNIT_NAME_FONT_CHINESE, 14, "")
-    font:SetTextColor(1, 1, 1, 1)
-    font:SetJustifyH("CENTER")
-end
-
-if not _G["CELL_FONT_WIDGET_DISABLE"] then
-    local font = CreateFont("CELL_FONT_WIDGET_DISABLE")
-    font:SetFont(STANDARD_TEXT_FONT, 13, "")
-    font:SetTextColor(0.4, 0.4, 0.4, 1)
-    font:SetJustifyH("CENTER")
-end
-
-if not _G["CELL_FONT_SPECIAL"] then
-    local font = CreateFont("CELL_FONT_SPECIAL")
-    font:SetFont(STANDARD_TEXT_FONT, 12, "")
-    font:SetTextColor(1, 1, 1, 1)
-    font:SetJustifyH("CENTER")
-    font:SetJustifyV("MIDDLE")
-end
-
-if not _G["CELL_FONT_CLASS_TITLE"] then
-    local font = CreateFont("CELL_FONT_CLASS_TITLE")
-    font:SetFont(STANDARD_TEXT_FONT, 14, "")
-    font:SetTextColor(1, 0.82, 0, 1)
-    font:SetJustifyH("CENTER")
-end
-
-if not _G["CELL_FONT_CLASS"] then
-    local font = CreateFont("CELL_FONT_CLASS")
-    font:SetFont(STANDARD_TEXT_FONT, 13, "")
-    font:SetTextColor(1, 1, 1, 1)
-    font:SetJustifyH("CENTER")
-end
+-- NOTE: Font objects are created in Widgets/Widgets.lua and Indicators/Built-in.lua
+-- No need to pre-create them here since no code uses them before those files load
+-- Removed redundant font creation that was causing conflicts with STANDARD_TEXT_FONT vs GameFontNormal
 
 -------------------------------------------------
 -- Frame :Run() polyfill for WotLK

@@ -1586,8 +1586,16 @@ Cell.vars.emptyTexture = "Interface\\AddOns\\Cell_Wrath\\Media\\empty.tga"
 Cell.vars.whiteTexture = "Interface\\AddOns\\Cell_Wrath\\Media\\white.tga"
 
 local LSM = LibStub("LibSharedMedia-3.0", true)
-LSM:Register("statusbar", "Cell ".._G.DEFAULT, Cell.vars.texture)
-LSM:Register("font", "Visitor", [[Interface\Addons\Cell_Wrath\Media\Fonts\visitor.ttf]], 255)
+-- NOTE: Delayed LSM registration to avoid triggering Quartz callbacks before it's ready
+-- Register on PLAYER_LOGIN instead of at file load time
+local lsmRegistered = false
+function F.RegisterWithLSM()
+    if not lsmRegistered and LSM then
+        LSM:Register("statusbar", "Cell ".._G.DEFAULT, Cell.vars.texture)
+        LSM:Register("font", "Visitor", [[Interface\Addons\Cell_Wrath\Media\Fonts\visitor.ttf]], 255)
+        lsmRegistered = true
+    end
+end
 
 function F.GetBarTexture()
     --! update Cell.vars.texture for further use in UnitButton_OnLoad

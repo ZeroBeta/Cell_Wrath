@@ -98,10 +98,10 @@ bar:SetPoint("BOTTOMRIGHT")
 --------------------------------------------------
 -- texts
 --------------------------------------------------
-local title = battleResFrame:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
-local stack = battleResFrame:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
-local rTime = battleResFrame:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
-local dummy = battleResFrame:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET") -- used for updating width of battleResFrame
+local title = battleResFrame:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
+local stack = battleResFrame:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
+local rTime = battleResFrame:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
+local dummy = battleResFrame:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET") -- used for updating width of battleResFrame
 dummy:Hide()
 
 title:SetFont(title:GetFont(), 13, "")
@@ -241,7 +241,7 @@ battleResMover:SetScript("OnDragStop", function()
     P.SavePosition(battleResMover, CellDB["tools"]["battleResTimer"][3])
 end)
 
-battleResMover.text = battleResMover:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+battleResMover.text = battleResMover:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
 battleResMover.text:SetPoint("TOP", 0, -3)
 battleResMover.text:SetText(L["Mover"])
 

@@ -640,7 +640,7 @@ function CellQuickAssist_OnLoad(button)
     deadTex:Hide()
 
     -- nameText
-    local nameText = healthBar:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    local nameText = healthBar:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     button.nameText = nameText
     nameText.width = {"percentage", 0.75}
 

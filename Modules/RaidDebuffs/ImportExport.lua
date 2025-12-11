@@ -28,20 +28,20 @@ local function CreateDebuffsImportExportFrame()
     end
 
     -- close
-    local closeBtn = Cell.CreateButton(importExportFrame, "×", "red", {18, 18}, false, false, "CELL_FONT_SPECIAL", "CELL_FONT_SPECIAL")
+    local closeBtn = Cell.CreateButton(importExportFrame, "×", "red", {18, 18}, false, false, "CELL_WRATH_FONT_SPECIAL", "CELL_WRATH_FONT_SPECIAL")
     closeBtn:SetPoint("TOPRIGHT", -5, -1)
     closeBtn:SetScript("OnClick", function() importExportFrame:Hide() end)
 
     -- title
-    title = importExportFrame:CreateFontString(nil, "OVERLAY", "CELL_FONT_CLASS")
+    title = importExportFrame:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_CLASS")
     title:SetPoint("TOPLEFT", 5, -5)
 
     -- instance name
-    instance = importExportFrame:CreateFontString(nil, "OVERLAY", "CELL_FONT_CLASS")
+    instance = importExportFrame:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_CLASS")
     instance:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -5)
 
     -- boss name
-    boss = importExportFrame:CreateFontString(nil, "OVERLAY", "CELL_FONT_CLASS")
+    boss = importExportFrame:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_CLASS")
     boss:SetPoint("TOPLEFT", instance, "BOTTOMLEFT", 0, -5)
 
     -- which bosses

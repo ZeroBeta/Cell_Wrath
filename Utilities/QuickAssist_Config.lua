@@ -432,7 +432,7 @@ local function UpdatePreviewButton()
         Cell.StylizeFrame(previewButtonBG, {0.1, 0.1, 0.1, 0.77}, {0, 0, 0, 0})
         previewButtonBG:Show()
 
-        local previewText = previewButtonBG:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET_TITLE")
+        local previewText = previewButtonBG:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET_TITLE")
         previewText:SetPoint("TOP", 0, -3)
         previewText:SetText(Cell.GetAccentColorString()..L["Preview"])
     end
@@ -604,7 +604,7 @@ local function UpdateLayoutPreview()
             layoutPreviewButtons[i]:SetBackdropColor(0, 0, 0, 0.5)
             layoutPreviewButtons[i]:SetBackdropBorderColor(0, 0, 0, 1)
             layoutPreviewButtons[i]:EnableMouse(true)
-            layoutPreviewButtons[i].text = layoutPreviewButtons[i]:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+            layoutPreviewButtons[i].text = layoutPreviewButtons[i]:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
             layoutPreviewButtons[i].text:SetPoint("CENTER")
             layoutPreviewButtons[i].text:SetText(i)
             -- drag
@@ -772,7 +772,7 @@ local function CreateQuickAssistPane()
     qaPane = Cell.CreateTitledPane(quickAssistTab, L["Quick Assist"].." |cFF777777"..L["only in group"], 422, 80)
     qaPane:SetPoint("TOPLEFT", 5, -5)
 
-    local qaTips = qaPane:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    local qaTips = qaPane:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     qaTips:SetPoint("TOPLEFT", 5, -25)
     qaTips:SetJustifyH("LEFT")
     qaTips:SetSpacing(5)
@@ -1622,7 +1622,7 @@ local function CreateLayoutPane()
         end
     end)
 
-    filterResetTips = filterPane:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    filterResetTips = filterPane:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     filterResetTips:SetPoint("LEFT", filterResetBtn, "RIGHT", 5, 0)
     filterResetTips:SetText("|cffababab"..L["Left-Click"]..": "..L["toggle"]..", "..L["Left-Drag"]..": "..L["change the order"])
 
@@ -1669,7 +1669,7 @@ local function CreateAutoSwitchFrame()
     local autoSwitchPane = Cell.CreateTitledPane(autoSwitchFrame, L["Filter Auto Switch"], 150, 171)
     autoSwitchPane:SetPoint("TOPLEFT", 5, -5)
 
-    asterisk = autoSwitchPane:CreateFontString(nil, "OVERLAY", "CELL_FONT_CLASS")
+    asterisk = autoSwitchPane:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_CLASS")
     asterisk:SetText("*")
 
     local items = {}
@@ -1699,7 +1699,7 @@ local function CreateAutoSwitchFrame()
     partyDropdown.id = "party"
     partyDropdown:SetItems(items)
 
-    partyText = autoSwitchPane:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    partyText = autoSwitchPane:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     partyText:SetPoint("LEFT", partyDropdown, "RIGHT", 5, 0)
     partyText:SetText(_G.PARTY)
 
@@ -1709,7 +1709,7 @@ local function CreateAutoSwitchFrame()
     raidDropdown.id = "raid"
     raidDropdown:SetItems(items)
 
-    raidText = autoSwitchPane:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    raidText = autoSwitchPane:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     raidText:SetPoint("LEFT", raidDropdown, "RIGHT", 5, 0)
     raidText:SetText(_G.RAID)
 
@@ -1719,7 +1719,7 @@ local function CreateAutoSwitchFrame()
     mythicDropdown.id = "mythic"
     mythicDropdown:SetItems(items)
 
-    mythicText = autoSwitchPane:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    mythicText = autoSwitchPane:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     mythicText:SetPoint("LEFT", mythicDropdown, "RIGHT", 5, 0)
     mythicText:SetText(_G.RAID.." ".._G.PLAYER_DIFFICULTY6)
 
@@ -1729,7 +1729,7 @@ local function CreateAutoSwitchFrame()
     arenaDropdown.id = "arena"
     arenaDropdown:SetItems(items)
 
-    arenaText = autoSwitchPane:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    arenaText = autoSwitchPane:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     arenaText:SetPoint("LEFT", arenaDropdown, "RIGHT", 5, 0)
     arenaText:SetText(_G.ARENA)
 
@@ -1739,7 +1739,7 @@ local function CreateAutoSwitchFrame()
     bgDropdown.id = "battleground"
     bgDropdown:SetItems(items)
 
-    bgText = autoSwitchPane:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    bgText = autoSwitchPane:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     bgText:SetPoint("LEFT", bgDropdown, "RIGHT", 5, 0)
     bgText:SetText(_G.BATTLEGROUND)
 end
@@ -1867,7 +1867,7 @@ local function CreateNameWidth(parent)
     lengthEB = Cell.CreateEditBox(f, 34, 20, false, false, true)
     lengthEB:SetPoint("TOPLEFT", dropdown, "TOPRIGHT", 30, 0)
 
-    lengthEB.text = lengthEB:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    lengthEB.text = lengthEB:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     lengthEB.text:SetText(L["En"])
     lengthEB.text:SetPoint("BOTTOMLEFT", lengthEB, "TOPLEFT", 0, 1)
 
@@ -1902,7 +1902,7 @@ local function CreateNameWidth(parent)
     lengthEB2 = Cell.CreateEditBox(f, 33, 20, false, false, true)
     lengthEB2:SetPoint("TOPLEFT", lengthEB, "TOPRIGHT", 25, 0)
 
-    lengthEB2.text = lengthEB2:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    lengthEB2.text = lengthEB2:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     lengthEB2.text:SetText(L["Non-En"])
     lengthEB2.text:SetPoint("BOTTOMLEFT", lengthEB2, "TOPLEFT", 0, 1)
 
@@ -3112,7 +3112,7 @@ local function CreateSpellsPane()
     myBarsBtn.index = "mine"
     SetBarOptions_OnClick(myBarsBtn)
 
-    local buffTrackerText = pages.spell:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    local buffTrackerText = pages.spell:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     buffTrackerText:SetPoint("BOTTOMLEFT", myIconsBtn, "TOPLEFT", 0, 1)
     buffTrackerText:SetText(L["Buffs Tracker"].." ("..L["mine"]..")")
 
@@ -3136,7 +3136,7 @@ local function CreateSpellsPane()
     offensiveGlowsBtn.index = "offensives"
     SetGlowOptions_OnClick(offensiveGlowsBtn)
 
-    local offensivesTrackerText = pages.spell:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    local offensivesTrackerText = pages.spell:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     offensivesTrackerText:SetPoint("BOTTOMLEFT", offensiveIconsBtn, "TOPLEFT", 0, 1)
     offensivesTrackerText:SetText(L["Offensives Tracker"])
 
@@ -3258,7 +3258,7 @@ local function CreateSpellsPane()
     end)
 
     -- tips ------------------------------------------------------------------ --
-    local tip1 = pages.spell:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    local tip1 = pages.spell:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     tip1:SetText("|cffababab"..L["Tip: right-click to delete"])
     tip1:SetPoint("BOTTOMLEFT")
 

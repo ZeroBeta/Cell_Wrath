@@ -406,7 +406,7 @@ end)
 -------------------------------------------------
 -- mover
 -------------------------------------------------
-buffTrackerFrame.moverText = buffTrackerFrame:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+buffTrackerFrame.moverText = buffTrackerFrame:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
 buffTrackerFrame.moverText:SetPoint("TOP", 0, -3)
 buffTrackerFrame.moverText:SetText(L["Mover"])
 buffTrackerFrame.moverText:Hide()

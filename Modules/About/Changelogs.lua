@@ -21,12 +21,12 @@ local function CreateChangelogsFrame()
     content:SetSpacing("h1", 9)
     content:SetSpacing("h2", 7)
     content:SetSpacing("p", 5)
-    content:SetFontObject("h1", "CELL_FONT_CLASS_TITLE")
-    content:SetFontObject("h2", "CELL_FONT_CLASS")
+    content:SetFontObject("h1", "CELL_WRATH_FONT_CLASS_TITLE")
+    content:SetFontObject("h2", "CELL_WRATH_FONT_CLASS")
     if LOCALE_zhCN then
-        content:SetFontObject("p", "CELL_FONT_WIDGET")
+        content:SetFontObject("p", "CELL_WRATH_FONT_WIDGET")
     else
-        content:SetFontObject("p", "CELL_FONT_CHINESE")
+        content:SetFontObject("p", "CELL_WRATH_FONT_CHINESE")
     end
     content:SetPoint("TOP", 0, -10)
     content:SetWidth(changelogsFrame:GetWidth() - 30)
