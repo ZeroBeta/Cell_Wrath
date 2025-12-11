@@ -360,7 +360,7 @@ local function CreateImportExportFrame()
     end
 
     -- close
-    local closeBtn = Cell.CreateButton(importExportFrame, "×", "red", {18, 18}, false, false, "CELL_WRATH_FONT_SPECIAL", "CELL_WRATH_FONT_SPECIAL")
+    local closeBtn = Cell.CreateButton(importExportFrame, "X", "red", {18, 18}, false, false, "CELL_WRATH_FONT_WIDGET_TITLE", "CELL_WRATH_FONT_WIDGET_TITLE_DISABLE")
     closeBtn:SetPoint("TOPRIGHT", P.Scale(-5), P.Scale(-1))
     closeBtn:SetScript("OnClick", function() importExportFrame:Hide() end)
 

@@ -128,7 +128,7 @@ local function CreateBackupFrame()
     tips:SetPoint("LEFT", title, "RIGHT", 5, 0)
 
     -- close
-    local closeBtn = Cell.CreateButton(backupFrame, "×", "red", {18, 18}, false, false, "CELL_WRATH_FONT_SPECIAL", "CELL_WRATH_FONT_SPECIAL")
+    local closeBtn = Cell.CreateButton(backupFrame, "X", "red", {18, 18}, false, false, "CELL_WRATH_FONT_WIDGET_TITLE", "CELL_WRATH_FONT_WIDGET_TITLE_DISABLE")
     closeBtn:SetPoint("TOPRIGHT", P.Scale(-5), P.Scale(-1))
     closeBtn:SetScript("OnClick", function() backupFrame:Hide() end)
 

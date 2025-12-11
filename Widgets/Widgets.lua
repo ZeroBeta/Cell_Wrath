@@ -376,7 +376,7 @@ function Cell.CreateMovableFrame(title, name, width, height, frameStrata, frameL
     header.text:SetText(title)
     header.text:SetPoint("CENTER", header)
 
-    header.closeBtn = Cell.CreateButton(header, "×", "red", {20, 20}, false, false, "CELL_WRATH_FONT_SPECIAL", "CELL_WRATH_FONT_SPECIAL")
+    header.closeBtn = Cell.CreateButton(header, "X", "red", {20, 20}, false, false, "CELL_WRATH_FONT_WIDGET_TITLE", "CELL_WRATH_FONT_WIDGET_TITLE_DISABLE")
     header.closeBtn:SetPoint("TOPRIGHT")
     header.closeBtn:SetScript("OnClick", function() f:Hide() end)
 
@@ -3228,7 +3228,7 @@ function Cell.CreateBindingButton(parent, width)
         tinsert(UISpecialFrames, parent.bindingButton:GetName())
         Cell.StylizeFrame(parent.bindingButton, {0.1, 0.1, 0.1, 1}, {accentColor.t[1], accentColor.t[2], accentColor.t[3]})
 
-        parent.bindingButton.close = Cell.CreateButton(parent.bindingButton, "×", "red", {18, 18}, true, true, "CELL_WRATH_FONT_SPECIAL", "CELL_WRATH_FONT_SPECIAL")
+        parent.bindingButton.close = Cell.CreateButton(parent.bindingButton, "X", "red", {18, 18}, true, true, "CELL_WRATH_FONT_WIDGET_TITLE", "CELL_WRATH_FONT_WIDGET_TITLE_DISABLE")
         parent.bindingButton.close:SetPoint("TOPRIGHT", -1, -1)
         parent.bindingButton.close:SetScript("OnClick", function()
             parent.bindingButton:Hide()

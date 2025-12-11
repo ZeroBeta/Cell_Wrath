@@ -160,7 +160,7 @@ local function CreateCodeSnippetsFrame()
     errorPopup:SetPoint("BOTTOMRIGHT")
     errorPopup:Hide()
 
-    errorPopup.close = Cell.CreateButton(errorPopup, "×", "red", {18, 18}, false, false, "CELL_WRATH_FONT_SPECIAL", "CELL_WRATH_FONT_SPECIAL")
+    errorPopup.close = Cell.CreateButton(errorPopup, "X", "red", {18, 18}, false, false, "CELL_WRATH_FONT_WIDGET_TITLE", "CELL_WRATH_FONT_WIDGET_TITLE_DISABLE")
     errorPopup.close:SetPoint("TOPRIGHT")
     errorPopup.close:SetScript("OnClick", function()
         errorPopup:Hide()

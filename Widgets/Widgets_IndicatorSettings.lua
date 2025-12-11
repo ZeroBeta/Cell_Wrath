@@ -4602,7 +4602,7 @@ local function CreateSetting_Auras(parent, index)
         auraImportExportFrame.info = auraImportExportFrame:CreateFontString(nil, "OVERLAY", font_name)
         auraImportExportFrame.info:SetPoint("BOTTOMLEFT", auraImportExportFrame.textArea, "TOPLEFT", 0, 3)
 
-        auraImportExportFrame.closeBtn = Cell.CreateButton(auraImportExportFrame, "×", "red", {18, 18}, false, false, "CELL_WRATH_FONT_SPECIAL", "CELL_WRATH_FONT_SPECIAL")
+        auraImportExportFrame.closeBtn = Cell.CreateButton(auraImportExportFrame, "X", "red", {18, 18}, false, false, "CELL_WRATH_FONT_WIDGET_TITLE", "CELL_WRATH_FONT_WIDGET_TITLE_DISABLE")
         auraImportExportFrame.closeBtn:SetPoint("BOTTOMRIGHT", auraImportExportFrame.textArea, "TOPRIGHT", 0, 1)
         auraImportExportFrame.closeBtn:SetScript("OnClick", function() auraImportExportFrame:Hide() end)
 
@@ -6601,7 +6601,7 @@ local function CreateRoleFilter(parent, class, roles)
     function filter:Load(t)
         if type(t) == "boolean" then
             RoleFilter_UpdateButton(filter.buttons["DAMAGER"], t)
-        else
+        elseif type(t) == "table" then
             for role, b in pairs(filter.buttons) do
                 RoleFilter_UpdateButton(b, t[role])
             end
