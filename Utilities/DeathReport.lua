@@ -240,7 +240,12 @@ end
 
 frame:SetScript("OnEvent", function(self, event, ...)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        self:COMBAT_LOG_EVENT_UNFILTERED(CombatLogGetCurrentEventInfo())
+        -- WotLK 3.3.5a doesn't have CombatLogGetCurrentEventInfo; args passed directly in ...
+        if CombatLogGetCurrentEventInfo then
+            self:COMBAT_LOG_EVENT_UNFILTERED(CombatLogGetCurrentEventInfo())
+        else
+            self:COMBAT_LOG_EVENT_UNFILTERED(...)
+        end
     else
         self[event](self, ...)
     end

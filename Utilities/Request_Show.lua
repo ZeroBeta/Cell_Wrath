@@ -264,7 +264,12 @@ end
 
 SR:SetScript("OnEvent", function(self, event, ...)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        self:COMBAT_LOG_EVENT_UNFILTERED(CombatLogGetCurrentEventInfo())
+        -- WotLK 3.3.5a doesn't have CombatLogGetCurrentEventInfo; args passed directly in ...
+        if CombatLogGetCurrentEventInfo then
+            self:COMBAT_LOG_EVENT_UNFILTERED(CombatLogGetCurrentEventInfo())
+        else
+            self:COMBAT_LOG_EVENT_UNFILTERED(...)
+        end
     else
         self[event](self, ...)
     end
@@ -349,9 +354,15 @@ local function HideAllDRGlows()
 end
 
 -- hide glow if removed
-DR:SetScript("OnEvent", function(self, event)
+DR:SetScript("OnEvent", function(self, event, ...)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        local timestamp, subEvent, _, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = CombatLogGetCurrentEventInfo()
+        -- WotLK 3.3.5a doesn't have CombatLogGetCurrentEventInfo; args passed directly in ...
+        local timestamp, subEvent, _, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID
+        if CombatLogGetCurrentEventInfo then
+            timestamp, subEvent, _, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = CombatLogGetCurrentEventInfo()
+        else
+            timestamp, subEvent, _, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = ...
+        end
         if subEvent == "SPELL_AURA_REMOVED" then
             local unit = Cell.vars.guids[destGUID]
             if unit and drUnits[unit] and drUnits[unit][spellID] then
