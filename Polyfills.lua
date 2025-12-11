@@ -3,6 +3,21 @@ local addonName, ns = ...
 _G.Cell = _G.Cell or ns or {}
 local Cell = _G.Cell
 
+-------------------------------------------------
+-- securecallfunction polyfill
+-- Some 3.3.5 builds lack this helper; Ace libraries expect it.
+-------------------------------------------------
+if type(securecallfunction) ~= "function" then
+    function securecallfunction(func, ...)
+        if type(func) ~= "function" then return end
+        local ok, r1, r2, r3, r4, r5 = pcall(func, ...)
+        if ok then
+            return r1, r2, r3, r4, r5
+        end
+        -- Swallow errors to mimic securecallfunction behavior in newer clients
+    end
+end
+
 
 -------------------------------------------------
 -- PROJECT / FLAVOR SHIM FOR 3.3.5a
@@ -1257,6 +1272,11 @@ end
 if not C_ChatInfo then
     C_ChatInfo = {}
     function C_ChatInfo.SendAddonMessage(prefix, text, channel, target)
+        -- Avoid hard Lua errors if callers pass bad params (seen on some addons)
+        if type(channel) ~= "string" or channel == "" then return end
+        if channel == "WHISPER" and (not target or target == "") then return end
+        if prefix == nil then prefix = "" end
+        if text == nil then text = "" end
         SendAddonMessage(prefix, text, channel, target)
     end
     function C_ChatInfo.RegisterAddonMessagePrefix(prefix)
@@ -1267,7 +1287,7 @@ if not C_ChatInfo then
     function C_ChatInfo.SendAddonMessageLogged(prefix, text, channel, target)
         -- In WotLK 3.3.5, SendAddonMessageLogged doesn't exist
         -- Just use the regular SendAddonMessage
-        SendAddonMessage(prefix, text, channel, target)
+        return C_ChatInfo.SendAddonMessage(prefix, text, channel, target)
     end
 end
 
@@ -1986,6 +2006,41 @@ do
         end
 
         mt.__index._CellFontStringPolyfill = true
+    end
+end
+
+-------------------------------------------------
+-- FontString SetText/SetFormattedText fallback
+-- Some addons (e.g. Quartz) call SetText before setting a font; retail tolerates
+-- this but WotLK errors. Force a safe font before writing text.
+-------------------------------------------------
+do
+    local fs = UIParent:CreateFontString()
+    local mt = getmetatable(fs)
+
+    if mt and mt.__index and not mt.__index._CellFontStringTextFallback then
+        local function ensureFont(self)
+            local font = self:GetFont()
+            if not font then
+                self:SetFont(STANDARD_TEXT_FONT, 12, "")
+            end
+        end
+
+        local origSetText = mt.__index.SetText
+        function mt.__index:SetText(text)
+            ensureFont(self)
+            return origSetText(self, text)
+        end
+
+        if type(mt.__index.SetFormattedText) == "function" then
+            local origSetFormattedText = mt.__index.SetFormattedText
+            function mt.__index:SetFormattedText(fmt, ...)
+                ensureFont(self)
+                return origSetFormattedText(self, fmt, ...)
+            end
+        end
+
+        mt.__index._CellFontStringTextFallback = true
     end
 end
 

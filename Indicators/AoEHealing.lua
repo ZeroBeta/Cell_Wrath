@@ -8,7 +8,13 @@ local I = Cell.iFuncs
 -------------------------------------------------
 -- CreateAoEHealing -- not support for npc
 -------------------------------------------------
-local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
+-- Retail has CombatLogGetCurrentEventInfo; Wrath passes the values directly
+local function GetCLEUInfo(...)
+    if CombatLogGetCurrentEventInfo then
+        return CombatLogGetCurrentEventInfo()
+    end
+    return ...
+end
 
 local function Display(b)
     b.indicators.aoeHealing:Display()
@@ -16,8 +22,10 @@ end
 
 local playerSummoned = {}
 local eventFrame = CreateFrame("Frame")
-eventFrame:SetScript("OnEvent", function()
-    local timestamp, subevent, _, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellId, spellName = CombatLogGetCurrentEventInfo()
+eventFrame:SetScript("OnEvent", function(_, event, ...)
+    if event ~= "COMBAT_LOG_EVENT_UNFILTERED" then return end
+
+    local timestamp, subevent, _, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellId, spellName = GetCLEUInfo(...)
     -- if subevent == "SPELL_SUMMON" then print(subevent, sourceName, sourceGUID, destName, destGUID, spellName) end
     if subevent == "SPELL_SUMMON" then
         -- print(sourceGUID == Cell.vars.playerGUID, destGUID, spellName, spellId)

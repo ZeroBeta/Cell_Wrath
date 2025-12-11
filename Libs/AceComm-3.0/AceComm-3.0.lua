@@ -37,6 +37,23 @@ local Ambiguate = Ambiguate
 
 AceComm.embeds = AceComm.embeds or {}
 
+-- Normalize prefixes to the Blizzard 16-char limit without throwing hard errors.
+-- Some third-party addons (e.g., AtlasLoot) still use longer prefixes; truncating
+-- keeps compatibility without breaking load order when Cell's newer AceComm wins.
+local warnedPrefixes = {}
+local function NormalizePrefix(prefix)
+	if type(prefix) ~= "string" then
+		return prefix
+	end
+	if #prefix > 16 then
+		local short = strsub(prefix, 1, 16)
+		-- Quietly truncate; noisy chat spam is worse than silent fix.
+		warnedPrefixes[prefix] = true
+		return short
+	end
+	return prefix
+end
+
 -- for my sanity and yours, let's give the message type bytes some names
 local MSG_MULTI_FIRST = "\001"
 local MSG_MULTI_NEXT  = "\002"
@@ -58,9 +75,7 @@ function AceComm:RegisterComm(prefix, method)
 		method = "OnCommReceived"
 	end
 
-	if #prefix > 16 then -- TODO: 15?
-		error("AceComm:RegisterComm(prefix,method): prefix length is limited to 16 characters")
-	end
+	prefix = NormalizePrefix(prefix)
 	if C_ChatInfo then
 		C_ChatInfo.RegisterAddonMessagePrefix(prefix)
 	else
@@ -90,6 +105,7 @@ function AceComm:SendCommMessage(prefix, text, distribution, target, prio, callb
 		) then
 		error('Usage: SendCommMessage(addon, "prefix", "text", "distribution"[, "target"[, "prio"[, callbackFn, callbackarg]]])', 2)
 	end
+	prefix = NormalizePrefix(prefix)
 
 	local textlen = #text
 	local maxtextlen = 255  -- Yes, the max is 255 even if the dev post said 256. I tested. Char 256+ get silently truncated. /Mikk, 20110327
