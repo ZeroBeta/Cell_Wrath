@@ -817,7 +817,6 @@ local function ShowBindingMenu(index, b)
     menu:Hide()
 
     bindingButton:SetFunc(function(modifier, key)
-        F.Debug(modifier, key)
         b.keyGrid:SetText(GetBindingDisplay(modifier, key))
 
         changed[index] = changed[index] or {b}
@@ -1379,7 +1378,6 @@ local function ShowActionsMenu(index, b)
     -- Match dropdown width to the actionGrid field width
     local actionGridWidth = b.actionGrid:GetWidth()
     local buttonWidth = b:GetWidth()
-    print("DEBUG DROPDOWN: Button width:", buttonWidth, "ActionGrid width:", actionGridWidth)
     menu:SetWidths(actionGridWidth, 35)
     P.ClearPoints(menu)
     P.Point(menu, "TOPLEFT", b.actionGrid, "BOTTOMLEFT", 0, -1)
@@ -1672,12 +1670,10 @@ LoadProfile = function(isCommon)
 
         -- Set button width to match container and position it
         local containerWidth = bindingsFrame.scrollFrame.content:GetWidth()
-        print("DEBUG: Container width:", containerWidth)
         b:SetWidth(containerWidth)
         -- Resize actionGrid to fill remaining space (button width - keyGrid 130 - typeGrid 70)
         local actionGridWidth = containerWidth - 130 - 70
         b.actionGrid:SetWidth(actionGridWidth)
-        print("DEBUG: Button width:", b:GetWidth(), "ActionGrid width:", b.actionGrid:GetWidth())
         b:SetPoint("TOP", 0, P.Scale(-20)*(i-1)+P.Scale(-5)*(i-1))
     end
     -- hide unused
@@ -1692,7 +1688,6 @@ LoadProfile = function(isCommon)
 end
 
 function F.MoveClickCastings(from, to)
-    F.Debug(from, "->", to)
     if from and to then
         local temp = clickCastingTable[from]
         tremove(clickCastingTable, from)

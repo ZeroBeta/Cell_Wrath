@@ -228,7 +228,7 @@ local function CreatePreviewIcons()
     borderIcon1:SetFont(unpack(previewIconsFont))
     P.Size(borderIcon1, 22, 22)
     borderIcon1:SetPoint("BOTTOMLEFT")
-    SetOnUpdate(borderIcon1, "Magic", 135819, 0)
+    SetOnUpdate(borderIcon1, "Magic", "Interface\\Icons\\Spell_Holy_GreaterHeal", 0)
     borderIcon1:Show()
 
     borderIcon2 = I.CreateAura_BorderIcon("CellAppearancePreviewIcon2", previewIconsBG, 2)
@@ -241,13 +241,13 @@ local function CreatePreviewIcons()
         if self.elapsedTime >= 6 then
             self.elapsedTime = 0
             self.stack = self.stack + 1
-            borderIcon2:SetCooldown(GetTime(), 13, "", 135718, self.stack, Cell.vars.iconAnimation ~= "never")
+            borderIcon2:SetCooldown(GetTime(), 13, "", "Interface\\Icons\\Spell_Nature_Rejuvenation", self.stack, Cell.vars.iconAnimation ~= "never")
         end
     end)
     borderIcon2:SetScript("OnShow", function()
         borderIcon2.preview.stack = 1
         borderIcon2.preview.elapsedTime = 0
-        borderIcon2:SetCooldown(GetTime(), 13, "", 135718, 1)
+        borderIcon2:SetCooldown(GetTime(), 13, "", "Interface\\Icons\\Spell_Nature_Rejuvenation", 1)
     end)
     borderIcon2:Show()
 
@@ -260,12 +260,12 @@ local function CreatePreviewIcons()
         self.elapsedTime = (self.elapsedTime or 0) + elapsed
         if self.elapsedTime >= 6 then
             self.elapsedTime = 0
-            barIcon2:SetCooldown(GetTime(), 13, nil, 136085, 0, Cell.vars.iconAnimation == "duration")
+            barIcon2:SetCooldown(GetTime(), 13, nil, "Interface\\Icons\\Spell_Shadow_DeathScream", 0, Cell.vars.iconAnimation == "duration")
         end
     end)
     barIcon2:SetScript("OnShow", function()
         barIcon2.preview.elapsedTime = 0
-        barIcon2:SetCooldown(GetTime(), 13, nil, 136085, 0)
+        barIcon2:SetCooldown(GetTime(), 13, nil, "Interface\\Icons\\Spell_Shadow_DeathScream", 0)
     end)
     barIcon2:ShowAnimation(true)
     barIcon2:Show()
@@ -276,7 +276,7 @@ local function CreatePreviewIcons()
     barIcon1:SetPoint("BOTTOMRIGHT", barIcon2, "BOTTOMLEFT", P.Scale(-1), 0)
     barIcon1:ShowDuration(true)
     barIcon1:ShowAnimation(true)
-    SetOnUpdate(barIcon1, "", 132155, 5)
+    SetOnUpdate(barIcon1, "", "Interface\\Icons\\Inv_Misc_QuestionMark", 5)
     barIcon1:Show()
 
     -- display debuff type colors

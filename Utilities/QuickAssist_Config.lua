@@ -554,8 +554,8 @@ local function UpdatePreviewButton()
                 -- offensives
                 if spellTable["offensives"]["enabled"] then
                     self.offensiveIcons:Show()
-                    self.offensiveIcons[1]:SetCooldown(GetTime(), 13, nil, 135875, 0, false, oit["glowColor"], oit["glow"])
-                    self.offensiveIcons[2]:SetCooldown(GetTime(), 13, nil, 135838, 0, false, oit["glowColor"], oit["glow"])
+                    self.offensiveIcons[1]:SetCooldown(GetTime(), 13, nil, "Interface\\Icons\\Spell_Shadow_UnholyFrenzy", 0, false, oit["glowColor"], oit["glow"])
+                    self.offensiveIcons[2]:SetCooldown(GetTime(), 13, nil, "Interface\\Icons\\Spell_Nature_BloodLust", 0, false, oit["glowColor"], oit["glow"])
                     self.offensiveIcons:UpdateSize(2)
                 else
                     self.offensiveIcons:Hide()
@@ -563,8 +563,8 @@ local function UpdatePreviewButton()
                 self.offensiveGlow:SetCooldown(GetTime(), 13)
                 -- buffs
                 self.buffIcons:Show()
-                self.buffIcons[1]:SetCooldown(GetTime(), 13, nil, 5199639, 0, false, spellTable["mine"]["buffs"][1][3], bit["glow"])
-                self.buffIcons[2]:SetCooldown(GetTime(), 13, nil, 5061347, 0, false, spellTable["mine"]["buffs"][2][3], bit["glow"])
+                self.buffIcons[1]:SetCooldown(GetTime(), 13, nil, "Interface\\Icons\\Spell_Holy_WordFortitude", 0, false, spellTable["mine"]["buffs"][1][3], bit["glow"])
+                self.buffIcons[2]:SetCooldown(GetTime(), 13, nil, "Interface\\Icons\\Spell_Nature_Regeneration", 0, false, spellTable["mine"]["buffs"][2][3], bit["glow"])
                 self.buffIcons:UpdateSize(2)
                 self.buffBars:Show()
                 self.buffBars[1]:SetCooldown(GetTime(), 13, spellTable["mine"]["buffs"][1][3])
@@ -3421,7 +3421,7 @@ LoadMyBuff = function(b, t)
             b.icon = icon
         else
             b:SetText("|cffff2222"..L["Invalid"])
-            b.tex:SetTexture(134400)
+            b.tex:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark")
         end
         b.tex:SetTexCoord(0.08, 0.92, 0.08, 0.92)
     end
@@ -3443,7 +3443,7 @@ LoadList = function(parent, buttons, addBtn, t, separator)
             buttons[i] = Cell.CreateButton(parent, nil, "accent-hover", {BUTTONS_SIZE, BUTTONS_SIZE})
             buttons[i]:RegisterForClicks("RightButtonUp")
 
-            buttons[i]:SetTexture(134400, {BUTTONS_SIZE-4, BUTTONS_SIZE-4}, {"CENTER", 0, 0})
+            buttons[i]:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark", {BUTTONS_SIZE-4, BUTTONS_SIZE-4}, {"CENTER", 0, 0})
             buttons[i].tex:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
             if separator then
@@ -3484,7 +3484,7 @@ LoadList = function(parent, buttons, addBtn, t, separator)
         end
 
         local name, icon = F.GetSpellInfo(id)
-        if not name then icon = 134400 end
+        if not name then icon = "Interface\\Icons\\INV_Misc_QuestionMark" end
         buttons[i].id = id
         buttons[i].icon = icon
 

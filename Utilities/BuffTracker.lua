@@ -34,7 +34,7 @@ if Cell.isRetail then
     buffs = {
         stamina = {
             tag = ITEM_MOD_STAMINA_SHORT, -- Stamina
-            icon = 135987,
+            icon = "Interface\\Icons\\Spell_Holy_WordFortitude",
             order = 1,
             provider = {
                 PRIEST = {id = 21562, level = 6}, -- Power Word: Fortitude - 真言术：韧
@@ -42,7 +42,7 @@ if Cell.isRetail then
         },
         versatility = {
             tag = STAT_VERSATILITY, -- Versatility
-            icon = 136078,
+            icon = "Interface\\Icons\\Spell_Nature_Regeneration",
             order = 2,
             provider = {
                 DRUID = {id = 1126, level = 9}, -- Mark of the Wild - 野性印记
@@ -50,7 +50,7 @@ if Cell.isRetail then
         },
         mastery = {
             tag = STAT_MASTERY, -- Mastery
-            icon = 4630367,
+            icon = "Interface\\Icons\\Spell_Nature_StoneSkinTotem",
             order = 3,
             provider = {
                 SHAMAN = {id = 462854, level = 16}, -- Skyfury - 天怒
@@ -58,7 +58,7 @@ if Cell.isRetail then
         },
         intellect = {
             tag = ITEM_MOD_INTELLECT_SHORT, -- Intellect
-            icon = 135932,
+            icon = "Interface\\Icons\\Spell_Holy_MagicalSentry",
             order = 4,
             provider = {
                 MAGE = {id = 1459, level = 8}, -- Arcane Brilliance - 奥术智慧
@@ -66,7 +66,7 @@ if Cell.isRetail then
         },
         attackPower = {
             tag = RAID_BUFF_3, -- Attack Power
-            icon = 132333,
+            icon = "Interface\\Icons\\Ability_Warrior_BattleShout",
             order = 5,
             provider = {
                 WARRIOR = {id = 6673, level = 10}, -- Battle Shout - 战斗怒吼
@@ -74,7 +74,7 @@ if Cell.isRetail then
         },
         movement = {
             tag = TUTORIAL_TITLE2, -- Movement
-            icon = 4622448,
+            icon = "Interface\\Icons\\Spell_Holy_SealOfSalvation",
             order = 6,
             provider = {
                 EVOKER = {id = 364342, level = 30}, -- Blessing of the Bronze - 青铜龙的祝福
@@ -164,7 +164,7 @@ elseif Cell.isMists then
     buffs = {
         stamina = {
             tag = RAID_BUFF_2, -- Stamina
-            icon = 135987,
+            icon = "Interface\\Icons\\Spell_Holy_WordFortitude",
             order = 1,
             provider = {
                 PRIEST = {id = 21562, level = 22}, -- Power Word: Fortitude
@@ -174,7 +174,7 @@ elseif Cell.isMists then
         },
         stats = {
             tag = RAID_BUFF_1, -- Stats
-            icon = 136078,
+            icon = "Interface\\Icons\\Spell_Nature_Regeneration",
             order = 2,
             provider = {
                 DRUID = {id = 1126, level = 62}, -- Mark of the Wild
@@ -184,7 +184,7 @@ elseif Cell.isMists then
         },
         spellPower = {
             tag = RAID_BUFF_5, -- Spell Power
-            icon = 135932,
+            icon = "Interface\\Icons\\Spell_Holy_MagicalSentry",
             order = 3,
             provider = {
                 MAGE = {id = {1459, 61316}, level = 58}, -- Arcane Brilliance / Dalaran Brilliance
@@ -194,7 +194,7 @@ elseif Cell.isMists then
         },
         attackPower = {
             tag = RAID_BUFF_3, -- Attack Power
-            icon = 132333,
+            icon = "Interface\\Icons\\Ability_Warrior_BattleShout",
             order = 4,
             provider = {
                 DEATHKNIGHT = {id = 57330, level = 65}, -- Horn of Winter
@@ -204,7 +204,7 @@ elseif Cell.isMists then
         },
         mastery = {
             tag = RAID_BUFF_7, -- Mastery
-            icon = 135908,
+            icon = "Interface\\Icons\\Spell_Holy_GreaterBlessingofKings",
             order = 5,
             provider = {
                 PALADIN = {id = 19740, level = 81}, -- Blessing of Might

@@ -1470,11 +1470,11 @@ local function UnitButton_UpdateBuffs(self, isFullUpdate)
     if self._mirror_image and I.IsDefensiveCooldown(55342) then -- exists and enabled
         if self._buffs.defensiveFound < indicatorNums["defensiveCooldowns"] then
             self._buffs.defensiveFound = self._buffs.defensiveFound + 1
-            self.indicators.defensiveCooldowns[self._buffs.defensiveFound]:SetCooldown(self._mirror_image, 40, nil, 135994, 0)
+            self.indicators.defensiveCooldowns[self._buffs.defensiveFound]:SetCooldown(self._mirror_image, 40, nil, "Interface\\Icons\\Spell_Magic_LesserInvisibilty", 0)
         end
         if self._buffs.allFound < indicatorNums["allCooldowns"] then
             self._buffs.allFound = self._buffs.allFound + 1
-            self.indicators.allCooldowns[self._buffs.allFound]:SetCooldown(self._mirror_image, 40, nil, 135994, 0)
+            self.indicators.allCooldowns[self._buffs.allFound]:SetCooldown(self._mirror_image, 40, nil, "Interface\\Icons\\Spell_Magic_LesserInvisibilty", 0)
         end
     end
 
@@ -1596,13 +1596,13 @@ local function UpdateMassBarrier(b, event)
         local info = LGI:GetCachedInfo(b.states.guid)
         if info then
             if info.specId == 62 then -- Arcane
-                b._mass_barrier_icon = 135991
+                b._mass_barrier_icon = "Interface\\Icons\\Spell_Holy_DivineProtection"
             elseif info.specId == 63 then -- Fire
-                b._mass_barrier_icon = 132221
+                b._mass_barrier_icon = "Interface\\Icons\\Spell_Fire_FlameShock"
             elseif info.specId == 64 then -- Frost
-                b._mass_barrier_icon = 135988
+                b._mass_barrier_icon = "Interface\\Icons\\Spell_Frost_FrostShock"
             else
-                b._mass_barrier_icon = 1723997
+                b._mass_barrier_icon = "Interface\\Icons\\Spell_Holy_PowerWordBarrier"
             end
         end
     elseif event == "SPELL_AURA_REMOVED" then

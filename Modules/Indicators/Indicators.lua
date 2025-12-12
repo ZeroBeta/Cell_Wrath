@@ -349,7 +349,7 @@ local function InitIndicator(indicatorName)
 
     elseif indicatorName == "debuffs" then
         local types = {"", "Curse", "Disease", "Magic", "Poison", "", "Curse", "Disease", "Magic", "Poison"}
-        local icons = {132155, 136139, 136128, 240443, 136182, 132155, 136139, 136128, 240443, 136182}
+        local icons = {"Interface\\Icons\\Inv_Misc_QuestionMark", "Interface\\Icons\\Spell_Shadow_CurseOfTounges", "Interface\\Icons\\Spell_Shadow_AnimateDead", "Interface\\Icons\\Spell_Holy_InnerFire", "Interface\\Icons\\Ability_Rogue_DualWeild", "Interface\\Icons\\Inv_Misc_QuestionMark", "Interface\\Icons\\Spell_Shadow_CurseOfTounges", "Interface\\Icons\\Spell_Shadow_AnimateDead", "Interface\\Icons\\Spell_Holy_InnerFire", "Interface\\Icons\\Ability_Rogue_DualWeild"}
         for i = 1, 10 do
             SetOnUpdate(indicator[i], types[i], icons[i], i)
         end
@@ -446,7 +446,7 @@ local function InitIndicator(indicatorName)
 
         indicator.icon = indicator:CreateTexture(nil, "ARTWORK")
         indicator.icon:SetAllPoints(indicator)
-        indicator.icon:SetTexture(237555)
+        indicator.icon:SetTexture("Interface\\Icons\\Spell_Shadow_Possession")
         indicator.icon:AddMaskTexture(indicator.mask)
 
         indicator.border = indicator:CreateTexture(nil, "BORDER")

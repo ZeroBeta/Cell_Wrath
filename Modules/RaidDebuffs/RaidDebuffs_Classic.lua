@@ -1032,8 +1032,8 @@ local function CreateDebuffButton(i, sTable)
         debuffButtons[i].spellIcon = icon
         debuffButtons[i]:SetText(name)
     else
-        debuffButtons[i].icon:SetTexture(134400)
-        debuffButtons[i].spellIcon = 134400
+        debuffButtons[i].icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark")
+        debuffButtons[i].spellIcon = "Interface\\Icons\\INV_Misc_QuestionMark"
         debuffButtons[i]:SetText(sTable["id"])
     end
 

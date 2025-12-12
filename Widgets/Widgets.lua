@@ -3413,7 +3413,7 @@ function Cell.CreateBindingListButton(parent, modifier, bindKey, bindType, bindA
     spellIcon:Hide()
 
     function b:ShowIcon(texture)
-        spellIcon:SetTexture(texture or 134400)
+        spellIcon:SetTexture(texture or "Interface\\Icons\\INV_Misc_QuestionMark")
         spellIconBg:Show()
         spellIcon:Show()
         -- actionGrid.text:ClearAllPoints()
