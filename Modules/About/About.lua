@@ -21,6 +21,13 @@ local function CreateDescriptionPane()
     descriptionPane = Cell.CreateTitledPane(aboutTab, "Cell", 422, 320)
     descriptionPane:SetPoint("TOPLEFT", aboutTab, "TOPLEFT", 5, -5)
 
+    -- Code Snippets button
+    local snippetsBtn = Cell.CreateButton(descriptionPane, L["Code Snippets"], "accent", {120, 17})
+    snippetsBtn:SetPoint("TOPRIGHT")
+    snippetsBtn:SetScript("OnClick", function()
+        F.ShowCodeSnippets()
+    end)
+
     local descText = descriptionPane:CreateFontString(nil, "OVERLAY", "CELL_WRATH_FONT_WIDGET")
     descText:SetPoint("TOPLEFT", 5, -27)
     descText:SetPoint("BOTTOMRIGHT", -10, 5)
