@@ -1818,23 +1818,34 @@ local function UpdateAppearance(which)
 
     -- scale
     if not which or which == "scale" then
-        CellParent:SetScale(CellDB["appearance"]["scale"])
+        -- CellParent:SetScale(CellDB["appearance"]["scale"]) -- REMOVED: Do not scale the entire addon
 
-        CellTooltip:UpdatePixelPerfect()
-        CellSpellTooltip:UpdatePixelPerfect()
-        Cell.menu:UpdatePixelPerfect()
+        if Cell.frames.optionsFrame then
+            Cell.frames.optionsFrame:SetScale(CellDB["appearance"]["scale"])
+        end
+
+        if Cell.frames.raidRosterFrame then
+            Cell.frames.raidRosterFrame:SetScale(CellDB["appearance"]["scale"])
+        end
 
         if Cell.frames.changelogsFrame then
+            Cell.frames.changelogsFrame:SetScale(CellDB["appearance"]["scale"])
             Cell.frames.changelogsFrame:UpdatePixelPerfect()
         end
 
         if Cell.frames.codeSnippetsFrame then
+            Cell.frames.codeSnippetsFrame:SetScale(CellDB["appearance"]["scale"])
             Cell.frames.codeSnippetsFrame:UpdatePixelPerfect()
         end
 
         if CellColorPicker then
+            CellColorPicker:SetScale(CellDB["appearance"]["scale"])
             CellColorPicker:UpdatePixelPerfect()
         end
+
+        CellTooltip:UpdatePixelPerfect()
+        CellSpellTooltip:UpdatePixelPerfect()
+        Cell.menu:UpdatePixelPerfect()
     end
 
     -- strata
