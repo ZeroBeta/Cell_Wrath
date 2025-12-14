@@ -84,6 +84,22 @@ marks = Cell.CreateFrame("CellRaidMarksFrame_Marks", marksFrame, 196, 20, true)
 marks:SetPoint("BOTTOMLEFT")
 marks:Hide()
 
+local function RemoveRaidTargets()
+    -- Always try to clear specific units that might be marked
+    SetRaidTarget("player", 0)
+    if UnitExists("target") then SetRaidTarget("target", 0) end
+
+    if GetNumRaidMembers() > 0 then
+        for i = 1, 40 do
+            SetRaidTarget("raid"..i, 0)
+        end
+    elseif GetNumPartyMembers() > 0 then
+        for i = 1, 4 do
+            SetRaidTarget("party"..i, 0)
+        end
+    end
+end
+
 local ticker
 local markButtons = {}
 for i = 1, 9 do
