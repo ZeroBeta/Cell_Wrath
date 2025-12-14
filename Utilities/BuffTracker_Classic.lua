@@ -386,8 +386,9 @@ Cell.RegisterCallback("ShowMover", "BuffTracker_ShowMover", ShowMover)
 ---------------------------------------------------------------------
 local sendChannel
 local function UpdateSendChannel()
-    if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-        sendChannel = "INSTANCE_CHAT"
+    local inInstance, instanceType = IsInInstance()
+    if instanceType == "pvp" or instanceType == "arena" then
+        sendChannel = "BATTLEGROUND"
     elseif IsInRaid() then
         sendChannel = "RAID"
     else
@@ -405,11 +406,11 @@ local function CreateBuffButton(parent, size, spell1, spell2, icon, index)
 
     b:RegisterForClicks("LeftButtonUp", "RightButtonUp", "LeftButtonDown", "RightButtonDown") -- NOTE: ActionButtonUseKeyDown will affect this
     b:SetAttribute("type1", "spell")
-    b:SetAttribute("spell", spell1)
-    b:SetAttribute("shift-type1", "spell")
-    b:SetAttribute("shift-spell1", spell2)
+    b:SetAttribute("spell1", spell1)
+    b:SetAttribute("type2", "spell")
+    b:SetAttribute("spell2", spell2)
     b:HookScript("OnClick", function(self, button, down)
-        if button == "RightButton" and (down == GetCVarBool("ActionButtonUseKeyDown")) then
+        if button == "LeftButton" and IsShiftKeyDown() and not down then
             local msg = F.GetUnaffectedString(index)
             if msg then
                 UpdateSendChannel()
@@ -495,6 +496,7 @@ do
 end
 
 local function UpdateButtons()
+    local inCombat = InCombatLockdown()
     for _, buff in ipairs(buffOrder) do
         if available[buff] then
             local n = F.Getn(unaffected[buff])
@@ -502,9 +504,22 @@ local function UpdateButtons()
                 buttons[buff].count:SetText("")
                 buttons[buff]:SetAlpha(0.5)
                 buttons[buff]:StopGlow()
+                if not inCombat then
+                    buttons[buff]:SetAttribute("unit", nil)
+                else
+                    buffTrackerFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+                end
             else
                 buttons[buff].count:SetText(n)
                 buttons[buff]:SetAlpha(1)
+
+                if not inCombat then
+                    local unit = next(unaffected[buff])
+                    buttons[buff]:SetAttribute("unit", unit)
+                else
+                    buffTrackerFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+                end
+
                 if unaffected[buff][myUnit] then
                     -- color, N, frequency, length, thickness
                     buttons[buff]:StartGlow("Pixel", {1, 0.19, 0.19, 1}, 8, 0.25, P.Scale(8), P.Scale(2))
@@ -819,6 +834,7 @@ function buffTrackerFrame:PLAYER_REGEN_ENABLED()
     buffTrackerFrame:UnregisterEvent("PLAYER_REGEN_ENABLED")
     RepointButtons()
     ResizeButtons()
+    UpdateButtons()
 end
 
 buffTrackerFrame:SetScript("OnEvent", function(self, event, ...)
