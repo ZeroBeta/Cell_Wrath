@@ -442,6 +442,7 @@ function eventFrame:ADDON_LOADED(arg1)
             CellDB["bigDebuffs"] = I.GetDefaultBigDebuffs()
         end
         Cell.vars.bigDebuffs = F.ConvertTable(CellDB["bigDebuffs"])
+        Cell.vars.bigDebuffNames = F.GetSpellNames(CellDB["bigDebuffs"])
 
         -- debuffTypeColor ------------------------------------------------------------------------
         if type(CellDB["debuffTypeColor"]) ~= "table" then

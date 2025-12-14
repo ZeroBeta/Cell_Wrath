@@ -1837,11 +1837,12 @@ local function ShowIndicatorSettings(id)
         -- bigDebuffs
         elseif currentSetting == "bigDebuffs" then
             w:SetDBValue(L["Big Debuffs"], CellDB["bigDebuffs"], true)
-            w:SetFunc(function(value)
+            w.func = function(value)
                 CellDB["bigDebuffs"] = value
                 Cell.vars.bigDebuffs = F.ConvertTable(CellDB["bigDebuffs"])
+                Cell.vars.bigDebuffNames = F.GetSpellNames(CellDB["bigDebuffs"])
                 Cell.Fire("UpdateIndicators", notifiedLayout, "", "bigDebuffs")
-            end)
+            end
 
         -- actionsPreview
         elseif currentSetting == "actionsPreview" then

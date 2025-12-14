@@ -690,6 +690,17 @@ function F.TableToString(t, sep)
     return table.concat(t, sep)
 end
 
+function F.GetSpellNames(t)
+    local names = {}
+    for _, id in pairs(t) do
+        local name = GetSpellInfo(id)
+        if name then
+            names[name] = true
+        end
+    end
+    return names
+end
+
 function F.ConvertTable(t, value)
     local temp = {}
     for k, v in ipairs(t) do
