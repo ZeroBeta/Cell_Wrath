@@ -187,7 +187,7 @@ local function CreateRTPane()
             if last then
                 b:SetPoint("TOPLEFT", last, "TOPRIGHT", 2, 0)
             else
-                b:SetPoint("TOPLEFT", sizeEditBox, "TOPRIGHT", 5, 0)
+                b:SetPoint("TOPLEFT", sizeEditBox.confirmBtn, "TOPRIGHT", 5, 0)
             end
 
             last = b
