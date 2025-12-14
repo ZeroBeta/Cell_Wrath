@@ -1108,18 +1108,17 @@ function SlashCmdList.CELL(msg, editbox)
     --     end
 
     else
-        F.Print(L["Available slash commands"]..":\n"..
-            "|cFFFFB5C5/cell debug|r: toggle debug mode or use subcommands (v, r, c, h).\n"..
-            "|cFFFFB5C5/cell options|r, |cFFFFB5C5/cell opt|r: "..L["show Cell options frame"]..".\n"..
-            "|cFFFFB5C5/cell healers|r: "..L["create a \"Healers\" indicator"]..".\n"..
-            "|cFFFFB5C5/cell rescale|r: "..strlower(L["Apply Recommended Scale"])..".\n"..
-            "|cFFFF7777"..L["These \"reset\" commands below affect all your characters in this account"]..".|r\n"..
-            "|cFFFFB5C5/cell reset position|r: "..L["reset Cell position"]..".\n"..
-            "|cFFFFB5C5/cell reset layouts|r: "..L["reset all Layouts and Indicators"]..".\n"..
-            "|cFFFFB5C5/cell reset clickcastings|r: "..L["reset all Click-Castings"]..".\n"..
-            "|cFFFFB5C5/cell reset raiddebuffs|r: "..L["reset all Raid Debuffs"]..".\n"..
-            "|cFFFFB5C5/cell reset snippets|r: "..L["reset all Code Snippets"]..".\n"..
-            "|cFFFFB5C5/cell reset all|r: "..L["reset all Cell settings"].."."
-        )
+        F.Print(L["Available slash commands"]..":")
+        print(" |cFFFFB5C5/cell debug|r: toggle debug mode or use subcommands (v, r, c, h).")
+        print(" |cFFFFB5C5/cell options|r, |cFFFFB5C5/cell opt|r: "..L["show Cell options frame"]..".")
+        print(" |cFFFFB5C5/cell healers|r: "..L["create a \"Healers\" indicator"]..".")
+        print(" |cFFFFB5C5/cell rescale|r: "..strlower(L["Apply Recommended Scale"])..".")
+        print(" |cFFFF7777"..L["These \"reset\" commands below affect all your characters in this account"]..".|r")
+        print(" |cFFFFB5C5/cell reset position|r: "..L["reset Cell position"]..".")
+        print(" |cFFFFB5C5/cell reset layouts|r: "..L["reset all Layouts and Indicators"]..".")
+        print(" |cFFFFB5C5/cell reset clickcastings|r: "..L["reset all Click-Castings"]..".")
+        print(" |cFFFFB5C5/cell reset raiddebuffs|r: "..L["reset all Raid Debuffs"]..".")
+        print(" |cFFFFB5C5/cell reset snippets|r: "..L["reset all Code Snippets"]..".")
+        print(" |cFFFFB5C5/cell reset all|r: "..L["reset all Cell settings"]..".")
     end
 end
