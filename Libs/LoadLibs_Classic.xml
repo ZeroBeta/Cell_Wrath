@@ -11,6 +11,7 @@
     <Include file="LibSharedMedia-3.0\lib.xml"/>
     <Include file="LibCustomGlow-1.0\LibCustomGlow-1.0.xml"/>
     <Include file="AceComm-3.0\AceComm-3.0.xml"/>
+    <Include file="LibHealComm-4.0\LibHealComm-4.0.xml"/>
     <Include file="LibSerialize\lib.xml"/>
     <Include file="LibDeflate\lib.xml"/>
     <Script file="LibBadWords.lua"/>

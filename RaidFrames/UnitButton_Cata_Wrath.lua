@@ -1993,12 +1993,15 @@ local function UnitButton_UpdateHealPrediction(self)
 
     if CELL_USE_LIBHEALCOMM and HealComm then
         --! NOTE: use LibHealComm
-        if self.__displayedGuid then
-            local modifier = HealComm:GetHealModifier(self.__displayedGuid) or 1
-            value = (HealComm:GetHealAmount(self.__displayedGuid, HealComm.CASTED_HEALS) or 0) * modifier
-            -- local hot = select(3, HealComm:GetNextHealAmount(self.__displayedGuid, HealComm.HOT_HEALS)) or 0
+        local guid = self.__displayedGuid or UnitGUID(unit)
+        if guid then
+            local modifier = HealComm:GetHealModifier(guid) or 1
+            value = (HealComm:GetHealAmount(guid, HealComm.CASTED_HEALS) or 0) * modifier
+            -- local hot = select(3, HealComm:GetNextHealAmount(guid, HealComm.HOT_HEALS)) or 0
             -- NOTE: hots within 3 seconds
-            local hot = (HealComm:GetHealAmount(self.__displayedGuid, HealComm.OVERTIME_AND_BOMB_HEALS, GetTime()+3) or 0) * modifier
+            -- Fix: LibHealComm constants might be nil if lib issues, safe fallback to HOT_HEALS
+            local flag = HealComm.OVERTIME_AND_BOMB_HEALS or HealComm.HOT_HEALS
+            local hot = (HealComm:GetHealAmount(guid, flag, GetTime()+3) or 0) * modifier
             value = value + hot
         end
     else
@@ -2261,24 +2264,41 @@ end
 -------------------------------------------------
 if CELL_USE_LIBHEALCOMM then
     HealComm = LibStub("LibHealComm-4.0", true)
-
+    
     if HealComm then
         Cell.HealComm = {}
-        local function HealComm_UpdateHealPrediction(_, event, casterGUID, spellID, healType, endTime, ...)
-            -- print(event, casterGUID, spellID, healType, endTime, ...)
-            -- update incomingHeal
+        
+        local function HealComm_UpdateHealPrediction(event, casterGUID, spellID, healType, endTime, ...)
+            -- print("[Cell Debug] HealComm Callback:", event)
+            -- update incomingHeal for all affected targets
             for i = 1, select("#", ...) do
-                F.HandleUnitButton("guid", select(i, ...), UnitButton_UpdateHealPrediction)
+                local targetGUID = select(i, ...)
+                if targetGUID then
+                    F.HandleUnitButton("guid", targetGUID, UnitButton_UpdateHealPrediction)
+                end
             end
         end
-        Cell.HealComm.HealComm_UpdateHealPrediction = HealComm_UpdateHealPrediction
 
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealStarted", "HealComm_UpdateHealPrediction")
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealUpdated", "HealComm_UpdateHealPrediction")
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealStopped", "HealComm_UpdateHealPrediction")
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealDelayed", "HealComm_UpdateHealPrediction")
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_ModifierChanged", "HealComm_UpdateHealPrediction")
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_GUIDDisappeared", "HealComm_UpdateHealPrediction")
+        local function HealComm_UpdateHealPrediction_Modifier(event, guid)
+            -- print("[Cell Debug] HealComm Mod:", event, guid)
+            if guid then
+                F.HandleUnitButton("guid", guid, UnitButton_UpdateHealPrediction)
+            end
+        end
+
+        function Cell.HealComm:HealComm_HealStarted(...) HealComm_UpdateHealPrediction(...) end
+        function Cell.HealComm:HealComm_HealUpdated(...) HealComm_UpdateHealPrediction(...) end
+        function Cell.HealComm:HealComm_HealDelayed(...) HealComm_UpdateHealPrediction(...) end
+        function Cell.HealComm:HealComm_HealStopped(...) HealComm_UpdateHealPrediction(...) end
+        function Cell.HealComm:HealComm_ModifierChanged(...) HealComm_UpdateHealPrediction_Modifier(...) end
+        function Cell.HealComm:HealComm_GUIDDisappeared(...) HealComm_UpdateHealPrediction_Modifier(...) end
+
+        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealStarted")
+        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealUpdated")
+        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealStopped")
+        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealDelayed")
+        HealComm.RegisterCallback(Cell.HealComm, "HealComm_ModifierChanged")
+        HealComm.RegisterCallback(Cell.HealComm, "HealComm_GUIDDisappeared")
     end
 end
 

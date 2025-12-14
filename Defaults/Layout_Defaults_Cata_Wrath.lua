@@ -30,9 +30,9 @@ Cell.defaults.indicatorIndices = {
     ["raidDebuffs"] = 24,
     ["targetedSpells"] = 25,
     ["targetCounter"] = 26,
-    ["actions"] = 27,
-    ["missingBuffs"] = 28,
-    ["crowdControls"] = 29,
+    ["crowdControls"] = 27,
+    ["actions"] = 28,
+    ["missingBuffs"] = 29,
 }
 
 Cell.defaults.layout = {
@@ -481,23 +481,6 @@ Cell.defaults.layout = {
             },
         }, -- 26
         {
-            ["name"] = "Actions",
-            ["indicatorName"] = "actions",
-            ["type"] = "built-in",
-            ["enabled"] = true,
-            ["speed"] = 1,
-        }, -- 27
-        {
-            ["name"] = "Missing Buffs",
-            ["indicatorName"] = "missingBuffs",
-            ["type"] = "built-in",
-            ["enabled"] = false,
-            ["position"] = {"BOTTOMRIGHT", "button", "BOTTOMRIGHT", 0, 4},
-            ["frameLevel"] = 10,
-            ["size"] = {13, 13},
-            ["orientation"] = "right-to-left",
-        }, -- 28
-        {
             ["name"] = "Crowd Controls",
             ["indicatorName"] = "crowdControls",
             ["type"] = "built-in",
@@ -513,6 +496,23 @@ Cell.defaults.layout = {
                 {"Cell ".._G.DEFAULT, 11, "Outline", false, "BOTTOMRIGHT", 2, -1, {1, 1, 1}},
             },
             ["orientation"] = "left-to-right",
+        }, -- 27
+        {
+            ["name"] = "Actions",
+            ["indicatorName"] = "actions",
+            ["type"] = "built-in",
+            ["enabled"] = true,
+            ["speed"] = 1,
+        }, -- 28
+        {
+            ["name"] = "Missing Buffs",
+            ["indicatorName"] = "missingBuffs",
+            ["type"] = "built-in",
+            ["enabled"] = false,
+            ["position"] = {"BOTTOMRIGHT", "button", "BOTTOMRIGHT", 0, 4},
+            ["frameLevel"] = 10,
+            ["size"] = {13, 13},
+            ["orientation"] = "right-to-left",
         }, -- 29
     },
 }

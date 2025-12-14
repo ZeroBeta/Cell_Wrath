@@ -3478,6 +3478,20 @@ function F.Revise()
         end
     end
 
+    --! Fix heal prediction for Sirus/Standard WotLK for existing users
+    -- If UnitGetIncomingHeals is missing (Sirus), we MUST use LibHealComm
+    -- Existing users might have "CELL_USE_LIBHEALCOMM = false" from previous migration
+    -- NOTE: Sirus has a dummy UnitGetIncomingHeals function so we can't rely on checking its type.
+    -- We just force-check the snippet on 3.3.5.
+    if CellDB["snippets"] and CellDB["snippets"][0] and CellDB["snippets"][0]["code"] then
+        local code = CellDB["snippets"][0]["code"]
+        -- Look for explicitly disabled LibHealComm pattern from r224 migration
+        -- "CELL_USE_LIBHEALCOMM = false"
+        if string.find(code, "CELL_USE_LIBHEALCOMM%s*=%s*false") then
+             CellDB["snippets"][0]["code"] = string.gsub(code, "CELL_USE_LIBHEALCOMM%s*=%s*false", "CELL_USE_LIBHEALCOMM = true -- Auto-fixed for standard WotLK")
+        end
+    end
+
     CellDB["revise"] = Cell.version
     if CellCharacterDB then
         CellCharacterDB["revise"] = Cell.version
