@@ -1533,8 +1533,9 @@ local function UnitButton_UpdateHealthStates(self, diff)
              end
         end
         self.states.totalAbsorbs = total
-        -- Wrath doesn’t expose heal-absorb API; reuse total absorbs for the absorb bar.
-        self.states.healAbsorbs = self.states.totalAbsorbs
+        -- WotLK 3.3.5a: Heal absorbs don't exist in WotLK (added in Cataclysm+)
+        -- Only shield absorbs (like PW:S) exist, so healAbsorbs should always be 0
+        self.states.healAbsorbs = 0
     else
         self.states.totalAbsorbs = 0
         self.states.healAbsorbs = 0
@@ -3231,10 +3232,12 @@ end
 
 function B.UpdateShields(button)
     predictionEnabled = CellDB["appearance"]["healPrediction"][1]
+    -- WotLK 3.3.5a: Heal absorbs don't exist in WotLK (added in Cataclysm+)
+    -- Force disable the heal absorb feature for WotLK
     if CellDB["appearance"]["healAbsorb"][1] == nil then
-        CellDB["appearance"]["healAbsorb"][1] = true
+        CellDB["appearance"]["healAbsorb"][1] = false  -- Default to false for WotLK
     end
-    absorbEnabled = CellDB["appearance"]["healAbsorb"][1]
+    absorbEnabled = false  -- Always disabled for WotLK
     absorbInvertColor = CellDB["appearance"]["healAbsorbInvertColor"]
     shieldEnabled = CellDB["appearance"]["shield"][1]
     overshieldEnabled = CellDB["appearance"]["overshield"][1]
@@ -3244,7 +3247,8 @@ function B.UpdateShields(button)
     button.widgets.shieldBarR:SetVertexColor(unpack(CellDB["appearance"]["shield"][2]))
     button.widgets.overShieldGlow:SetVertexColor(unpack(CellDB["appearance"]["overshield"][2]))
     button.widgets.overShieldGlowR:SetVertexColor(unpack(CellDB["appearance"]["overshield"][2]))
-    if button.widgets.absorbsBar then
+    -- WotLK 3.3.5a: Skip if absorbsBar doesn't exist (heal absorbs disabled)
+    if button.widgets.absorbsBar and button.widgets.overAbsorbGlow then
         if absorbInvertColor then
             button.widgets.absorbsBar:SetVertexColor(F.InvertColor(button.widgets.healthBar:GetStatusBarColor()))
             button.widgets.overAbsorbGlow:SetVertexColor(F.InvertColor(button.widgets.healthBar:GetStatusBarColor()))
@@ -3301,11 +3305,16 @@ end
 
 local function ShieldBar_SetValue_Horizontal(self, shieldPercent, healthPercent)
     local barWidth = self:GetParent():GetWidth()
+    -- WotLK 3.3.5a: Calculate max available width to prevent overflow beyond health bar
+    local maxAvailableWidth = barWidth * (1 - healthPercent)
+
     if shieldPercent + healthPercent > 1 then -- overshield
         local p = 1 - healthPercent
         if p ~= 0 then
             if shieldEnabled then
-                self:SetWidth(p * barWidth)
+                -- Constrain shield width to available space
+                local shieldWidth = math.min(p * barWidth, maxAvailableWidth)
+                self:SetWidth(shieldWidth)
                 self:Show()
             else
                 self:Hide()
@@ -3336,7 +3345,9 @@ local function ShieldBar_SetValue_Horizontal(self, shieldPercent, healthPercent)
         end
     else
         if shieldEnabled then
-            self:SetWidth(shieldPercent * barWidth)
+            -- Constrain shield width to available space
+            local shieldWidth = math.min(shieldPercent * barWidth, maxAvailableWidth)
+            self:SetWidth(shieldWidth)
             self:Show()
         else
             self:Hide()
@@ -3349,6 +3360,8 @@ end
 
 local function AbsorbsBar_SetValue_Horizontal(self, absorbsPercent, healthPercent)
     local barWidth = self.healthBar:GetWidth()
+    -- WotLK 3.3.5a: Calculate max available width to prevent overflow beyond health bar
+    local maxAvailableWidth = barWidth * (1 - healthPercent)
 
     if absorbInvertColor then
         self:SetVertexColor(F.InvertColor(self.healthBar:GetStatusBarColor()))
@@ -3356,11 +3369,15 @@ local function AbsorbsBar_SetValue_Horizontal(self, absorbsPercent, healthPercen
     end
 
     if absorbsPercent > healthPercent then
-        self:SetWidth(absorbsPercent * barWidth)
+        -- Constrain absorb width to available space
+        local absorbWidth = math.min(absorbsPercent * barWidth, maxAvailableWidth)
+        self:SetWidth(absorbWidth)
         self:Show()
         self.overAbsorbGlow:Show()
     else
-        self:SetWidth(absorbsPercent * barWidth)
+        -- Constrain absorb width to available space
+        local absorbWidth = math.min(absorbsPercent * barWidth, maxAvailableWidth)
+        self:SetWidth(absorbWidth)
         self:Show()
         self.overAbsorbGlow:Hide()
     end
@@ -3390,11 +3407,16 @@ end
 
 local function ShieldBar_SetValue_Vertical(self, shieldPercent, healthPercent)
     local barHeight = self:GetParent():GetHeight()
+    -- WotLK 3.3.5a: Calculate max available height to prevent overflow beyond health bar
+    local maxAvailableHeight = barHeight * (1 - healthPercent)
+
     if shieldPercent + healthPercent > 1 then -- overshield
         local p = 1 - healthPercent
         if p ~= 0 then
             if shieldEnabled then
-                self:SetHeight(p * barHeight)
+                -- Constrain shield height to available space
+                local shieldHeight = math.min(p * barHeight, maxAvailableHeight)
+                self:SetHeight(shieldHeight)
                 self:Show()
             else
                 self:Hide()
@@ -3425,7 +3447,9 @@ local function ShieldBar_SetValue_Vertical(self, shieldPercent, healthPercent)
         end
     else
         if shieldEnabled then
-            self:SetHeight(shieldPercent * barHeight)
+            -- Constrain shield height to available space
+            local shieldHeight = math.min(shieldPercent * barHeight, maxAvailableHeight)
+            self:SetHeight(shieldHeight)
             self:Show()
         else
             self:Hide()
@@ -3438,6 +3462,8 @@ end
 
 local function AbsorbsBar_SetValue_Vertical(self, absorbsPercent, healthPercent)
     local barHeight = self.healthBar:GetHeight()
+    -- WotLK 3.3.5a: Calculate max available height to prevent overflow beyond health bar
+    local maxAvailableHeight = barHeight * (1 - healthPercent)
 
     if absorbInvertColor then
         self:SetVertexColor(F.InvertColor(self.healthBar:GetStatusBarColor()))
@@ -3445,11 +3471,15 @@ local function AbsorbsBar_SetValue_Vertical(self, absorbsPercent, healthPercent)
     end
 
     if absorbsPercent > healthPercent then
-        self:SetHeight(absorbsPercent * barHeight)
+        -- Constrain absorb height to available space
+        local absorbHeight = math.min(absorbsPercent * barHeight, maxAvailableHeight)
+        self:SetHeight(absorbHeight)
         self:Show()
         self.overAbsorbGlow:Show()
     else
-        self:SetHeight(absorbsPercent * barHeight)
+        -- Constrain absorb height to available space
+        local absorbHeight = math.min(absorbsPercent * barHeight, maxAvailableHeight)
+        self:SetHeight(absorbHeight)
         self:Show()
         self.overAbsorbGlow:Hide()
     end
@@ -3551,17 +3581,22 @@ function B.SetOrientation(button, orientation, rotateTexture)
         F.RotateTexture(overShieldGlowR, 0)
 
         -- update absorbsBar
-        absorbsBar.SetValue = AbsorbsBar_SetValue_Horizontal
-        P.ClearPoints(absorbsBar)
-        P.Point(absorbsBar, "TOPLEFT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
-        P.Point(absorbsBar, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "BOTTOMRIGHT")
+        -- WotLK 3.3.5a: Skip if absorbsBar doesn't exist (heal absorbs disabled)
+        if absorbsBar then
+            absorbsBar.SetValue = AbsorbsBar_SetValue_Horizontal
+            P.ClearPoints(absorbsBar)
+            P.Point(absorbsBar, "TOPLEFT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
+            P.Point(absorbsBar, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "BOTTOMRIGHT")
+        end
 
         -- update overAbsorbGlow
-        P.ClearPoints(overAbsorbGlow)
-        P.Point(overAbsorbGlow, "TOPLEFT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
-        P.Point(overAbsorbGlow, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "BOTTOMRIGHT")
-        P.Width(overAbsorbGlow, 8)
-        F.RotateTexture(overAbsorbGlow, 0)
+        if overAbsorbGlow then
+            P.ClearPoints(overAbsorbGlow)
+            P.Point(overAbsorbGlow, "TOPLEFT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
+            P.Point(overAbsorbGlow, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "BOTTOMRIGHT")
+            P.Width(overAbsorbGlow, 8)
+            F.RotateTexture(overAbsorbGlow, 0)
+        end
 
         -- update damageFlashTex
         damageFlashTex.SetValue = DamageFlashTex_SetValue_Horizontal
@@ -3630,17 +3665,22 @@ function B.SetOrientation(button, orientation, rotateTexture)
         F.RotateTexture(overShieldGlowR, 90)
 
         -- update absorbsBar
-        absorbsBar.SetValue = AbsorbsBar_SetValue_Vertical
-        P.ClearPoints(absorbsBar)
-        P.Point(absorbsBar, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "TOPLEFT")
-        P.Point(absorbsBar, "BOTTOMRIGHT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
+        -- WotLK 3.3.5a: Skip if absorbsBar doesn't exist (heal absorbs disabled)
+        if absorbsBar then
+            absorbsBar.SetValue = AbsorbsBar_SetValue_Vertical
+            P.ClearPoints(absorbsBar)
+            P.Point(absorbsBar, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "TOPLEFT")
+            P.Point(absorbsBar, "BOTTOMRIGHT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
+        end
 
         -- update overAbsorbGlow
-        P.ClearPoints(overAbsorbGlow)
-        P.Point(overAbsorbGlow, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "TOPLEFT")
-        P.Point(overAbsorbGlow, "BOTTOMRIGHT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
-        P.Height(overAbsorbGlow, 8)
-        F.RotateTexture(overAbsorbGlow, 90)
+        if overAbsorbGlow then
+            P.ClearPoints(overAbsorbGlow)
+            P.Point(overAbsorbGlow, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "TOPLEFT")
+            P.Point(overAbsorbGlow, "BOTTOMRIGHT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
+            P.Height(overAbsorbGlow, 8)
+            F.RotateTexture(overAbsorbGlow, 90)
+        end
 
         -- update damageFlashTex
         damageFlashTex.SetValue = DamageFlashTex_SetValue_Vertical
@@ -4011,6 +4051,10 @@ function CellUnitButton_OnLoad(button)
     overShieldGlowR:Hide()
     shieldBar.overShieldGlowR = overShieldGlowR
 
+    -- WotLK 3.3.5a: Heal absorbs don't exist in WotLK, so don't create these widgets
+    -- This saves resources and prevents the heal absorb bar from ever showing
+    -- (Kept as comments for compatibility if porting to other expansions)
+    --[[
     -- over-absorb glow
     local overAbsorbGlow = midLevelFrame:CreateTexture(name.."OverAbsorbGlow", "ARTWORK", nil, -2)
     button.widgets.overAbsorbGlow = overAbsorbGlow
@@ -4030,6 +4074,7 @@ function CellUnitButton_OnLoad(button)
     absorbsBar:Hide()
     absorbsBar.SetValue = DumbFunc
     absorbsBar.overAbsorbGlow = overAbsorbGlow
+    --]]
 
     -- bar animation
     -- flash

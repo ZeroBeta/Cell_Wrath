@@ -440,21 +440,27 @@ local function UpdatePreviewShields(r, g, b)
         previewButton2.widgets.incomingHeal:Hide()
     end
 
-    if CellDB["appearance"]["healAbsorb"][1] then
-        previewButton2.widgets.absorbsBar:SetValue(0.8, 0.6)
-        if CellDB["appearance"]["healAbsorbInvertColor"] then
-            previewButton2.widgets.absorbsBar:SetVertexColor(F.InvertColor(previewButton2.widgets.healthBar:GetStatusBarColor()))
-            previewButton2.widgets.overAbsorbGlow:SetVertexColor(F.InvertColor(previewButton2.widgets.healthBar:GetStatusBarColor()))
+    -- WotLK 3.3.5a: Heal absorbs don't exist, skip if widgets not created
+    if previewButton2.widgets.absorbsBar and previewButton2.widgets.overAbsorbGlow then
+        if CellDB["appearance"]["healAbsorb"][1] then
+            previewButton2.widgets.absorbsBar:SetValue(0.8, 0.6)
+            if CellDB["appearance"]["healAbsorbInvertColor"] then
+                previewButton2.widgets.absorbsBar:SetVertexColor(F.InvertColor(previewButton2.widgets.healthBar:GetStatusBarColor()))
+                previewButton2.widgets.overAbsorbGlow:SetVertexColor(F.InvertColor(previewButton2.widgets.healthBar:GetStatusBarColor()))
+            else
+                previewButton2.widgets.absorbsBar:SetVertexColor(unpack(CellDB["appearance"]["healAbsorb"][2]))
+                previewButton2.widgets.overAbsorbGlow:SetVertexColor(unpack(CellDB["appearance"]["healAbsorb"][2]))
+            end
         else
-            previewButton2.widgets.absorbsBar:SetVertexColor(unpack(CellDB["appearance"]["healAbsorb"][2]))
-            previewButton2.widgets.overAbsorbGlow:SetVertexColor(unpack(CellDB["appearance"]["healAbsorb"][2]))
+            previewButton2.widgets.absorbsBar:Hide()
+            previewButton2.widgets.overAbsorbGlow:Hide()
         end
-    else
-        previewButton2.widgets.absorbsBar:Hide()
-        previewButton2.widgets.overAbsorbGlow:Hide()
     end
 
     if CellDB["appearance"]["shield"][1] then
+        -- WotLK 3.3.5a: Call UpdateShields to ensure shield globals are set before SetValue
+        -- This ensures shieldEnabled, overshieldEnabled, etc. are properly initialized
+        B.UpdateShields(previewButton2)
         previewButton2.widgets.shieldBar:SetValue(0.6, 0.6)
         previewButton2.widgets.shieldBar:SetVertexColor(unpack(CellDB["appearance"]["shield"][2]))
     else
@@ -821,17 +827,19 @@ local function UpdateCheckButtons()
     predColorPicker:SetEnabled(CellDB["appearance"]["healPrediction"][1] and CellDB["appearance"]["healPrediction"][2])
     shieldColorPicker:SetEnabled(CellDB["appearance"]["shield"][1])
     reverseCB:SetEnabled(CellDB["appearance"]["shield"][1])
-    absorbColorPicker:SetEnabled(CellDB["appearance"]["healAbsorb"][1])
-    invertColorCB:SetEnabled(CellDB["appearance"]["healAbsorb"][1])
+    -- WotLK 3.3.5a: Keep heal absorb controls hidden (don't enable/show them)
+    -- absorbColorPicker:SetEnabled(CellDB["appearance"]["healAbsorb"][1])
+    -- invertColorCB:SetEnabled(CellDB["appearance"]["healAbsorb"][1])
     oversColorPicker:SetEnabled(CellDB["appearance"]["overshield"][1])
 
-    if CellDB["appearance"]["healAbsorbInvertColor"] then
-        absorbCB:SetText(L["Heal Absorb"])
-        absorbColorPicker:Hide()
-    else
-        absorbCB:SetText("")
-        absorbColorPicker:Show()
-    end
+    -- WotLK 3.3.5a: Keep heal absorb controls hidden
+    -- if CellDB["appearance"]["healAbsorbInvertColor"] then
+    --     absorbCB:SetText(L["Heal Absorb"])
+    --     absorbColorPicker:Hide()
+    -- else
+    --     absorbCB:SetText("")
+    --     absorbColorPicker:Show()
+    -- end
 end
 
 local function UpdateColorPickers()
@@ -1451,6 +1459,7 @@ local function CreateUnitButtonStylePane()
     -- useLibCB:SetPoint("TOPLEFT", predCustomCB, "BOTTOMLEFT", 0, -7)
     -- useLibCB:SetEnabled(Cell.isVanilla or Cell.isCata)
 
+    -- WotLK 3.3.5a: Heal absorbs don't exist in WotLK, hide these settings
     -- heal absorb
     absorbCB = Cell.CreateCheckButton(unitButtonPane, "", function(checked, self)
         CellDB["appearance"]["healAbsorb"][1] = checked
@@ -1459,6 +1468,7 @@ local function CreateUnitButtonStylePane()
     end)
     absorbCB:SetPoint("TOPLEFT", predCB, "BOTTOMLEFT", 0, -28)
     absorbCB:SetEnabled(true)
+    absorbCB:Hide()  -- WotLK: Hide this setting
 
     absorbColorPicker = Cell.CreateColorPicker(unitButtonPane, L["Heal Absorb"], true, function(r, g, b, a)
         CellDB["appearance"]["healAbsorb"][2][1] = r
@@ -1468,6 +1478,7 @@ local function CreateUnitButtonStylePane()
         Cell.Fire("UpdateAppearance", "shields")
     end)
     absorbColorPicker:SetPoint("TOPLEFT", absorbCB, "TOPRIGHT", 5, 0)
+    absorbColorPicker:Hide()  -- WotLK: Hide this setting
 
     -- heal absorb invert color
     invertColorCB = Cell.CreateCheckButton(unitButtonPane, L["Invert Color"], function(checked, self)
@@ -1476,6 +1487,7 @@ local function CreateUnitButtonStylePane()
         Cell.Fire("UpdateAppearance", "shields")
     end)
     invertColorCB:SetPoint("TOPLEFT", absorbCB, "BOTTOMRIGHT", 0, -7)
+    invertColorCB:Hide()  -- WotLK: Hide this setting
 
     -- shield
     shieldCB = Cell.CreateCheckButton(unitButtonPane, "", function(checked, self)
@@ -1483,7 +1495,9 @@ local function CreateUnitButtonStylePane()
         UpdateCheckButtons()
         Cell.Fire("UpdateAppearance", "shields")
     end)
-    shieldCB:SetPoint("TOPLEFT", absorbCB, "BOTTOMLEFT", 0, -28)
+    -- WotLK: Position at same level as Heal Prediction (not as a child)
+    -- Place below predCustomCB but align with predCB's left edge
+    shieldCB:SetPoint("TOPLEFT", predCB, "BOTTOMLEFT", 0, -35)
     shieldCB:SetEnabled(not Cell.isVanilla)
 
     shieldColorPicker = Cell.CreateColorPicker(unitButtonPane, L["Shield Texture"], true, function(r, g, b, a)
@@ -1714,6 +1728,14 @@ local function ShowTab(tab)
         UpdatePreviewButton()
         LoadData()
         init = true
+
+        -- WotLK 3.3.5a: Delay shield update to ensure frame layout is finalized
+        -- This prevents shield overflow on first appearance tab open
+        C_Timer.After(0.05, function()
+            if previewButton2 and previewButton2:IsVisible() then
+                UpdatePreviewButton("shields")
+            end
+        end)
     else
         appearanceTab:Hide()
     end
@@ -1818,7 +1840,7 @@ local function UpdateAppearance(which)
 
     -- scale
     if not which or which == "scale" then
-        -- CellParent:SetScale(CellDB["appearance"]["scale"]) -- REMOVED: Do not scale the entire addon
+        CellParent:SetScale(CellDB["appearance"]["scale"])
 
         if Cell.frames.optionsFrame then
             Cell.frames.optionsFrame:SetScale(CellDB["appearance"]["scale"])
