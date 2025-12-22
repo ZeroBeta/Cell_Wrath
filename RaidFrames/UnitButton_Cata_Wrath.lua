@@ -13,7 +13,6 @@ local P = Cell.pixelPerfectFuncs
 ---@type CellAnimations
 local A = Cell.animations
 
-local HealComm
 
 CELL_FADE_OUT_HEALTH_PERCENT = nil
 
@@ -2012,24 +2011,8 @@ local function UnitButton_UpdateHealPrediction(self)
     local unit = self.states.displayedUnit
     if not unit then return end
 
-    local value = 0
-
-    if CELL_USE_LIBHEALCOMM and HealComm then
-        --! NOTE: use LibHealComm
-        local guid = self.__displayedGuid or UnitGUID(unit)
-        if guid then
-            local modifier = HealComm:GetHealModifier(guid) or 1
-            value = (HealComm:GetHealAmount(guid, HealComm.CASTED_HEALS) or 0) * modifier
-            -- local hot = select(3, HealComm:GetNextHealAmount(guid, HealComm.HOT_HEALS)) or 0
-            -- NOTE: hots within 3 seconds
-            -- Fix: LibHealComm constants might be nil if lib issues, safe fallback to HOT_HEALS
-            local flag = HealComm.OVERTIME_AND_BOMB_HEALS or HealComm.HOT_HEALS
-            local hot = (HealComm:GetHealAmount(guid, flag, GetTime()+3) or 0) * modifier
-            value = value + hot
-        end
-    else
-        value = UnitGetIncomingHeals(unit) or 0
-    end
+    local value = UnitGetIncomingHeals(unit) or 0
+    -- print("[Cell Debug] Native API:", unit, "Value:", value)
 
     if value == 0 then
         self.widgets.incomingHeal:Hide()
@@ -2279,49 +2262,6 @@ UnitButton_UpdateHealthColor = function(self)
         local r, g, b, a = self.widgets.healthBar:GetStatusBarColor()
         self.widgets.absorbsBar:SetVertexColor(F.InvertColor(r, g, b, a))
         self.widgets.overAbsorbGlow:SetVertexColor(F.InvertColor(r, g, b, a))
-    end
-end
-
--------------------------------------------------
--- LibHealComm
--------------------------------------------------
-if CELL_USE_LIBHEALCOMM then
-    HealComm = LibStub("LibHealComm-4.0", true)
-    
-    if HealComm then
-        Cell.HealComm = {}
-        
-        local function HealComm_UpdateHealPrediction(event, casterGUID, spellID, healType, endTime, ...)
-            -- print("[Cell Debug] HealComm Callback:", event)
-            -- update incomingHeal for all affected targets
-            for i = 1, select("#", ...) do
-                local targetGUID = select(i, ...)
-                if targetGUID then
-                    F.HandleUnitButton("guid", targetGUID, UnitButton_UpdateHealPrediction)
-                end
-            end
-        end
-
-        local function HealComm_UpdateHealPrediction_Modifier(event, guid)
-            -- print("[Cell Debug] HealComm Mod:", event, guid)
-            if guid then
-                F.HandleUnitButton("guid", guid, UnitButton_UpdateHealPrediction)
-            end
-        end
-
-        function Cell.HealComm:HealComm_HealStarted(...) HealComm_UpdateHealPrediction(...) end
-        function Cell.HealComm:HealComm_HealUpdated(...) HealComm_UpdateHealPrediction(...) end
-        function Cell.HealComm:HealComm_HealDelayed(...) HealComm_UpdateHealPrediction(...) end
-        function Cell.HealComm:HealComm_HealStopped(...) HealComm_UpdateHealPrediction(...) end
-        function Cell.HealComm:HealComm_ModifierChanged(...) HealComm_UpdateHealPrediction_Modifier(...) end
-        function Cell.HealComm:HealComm_GUIDDisappeared(...) HealComm_UpdateHealPrediction_Modifier(...) end
-
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealStarted")
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealUpdated")
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealStopped")
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealDelayed")
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_ModifierChanged")
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_GUIDDisappeared")
     end
 end
 
@@ -2820,6 +2760,13 @@ local function UnitButton_RegisterEvents(self)
 
     self:RegisterEvent("UNIT_HEAL_PREDICTION")
 
+    -- Fix: Register spellcast events for immediate update on player cast
+    self:RegisterEvent("UNIT_SPELLCAST_START")
+    self:RegisterEvent("UNIT_SPELLCAST_STOP")
+    self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+    self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
+    self:RegisterEvent("UNIT_SPELLCAST_DELAYED")
+
     self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE")
     self:RegisterEvent("UNIT_THREAT_LIST_UPDATE")
     self:RegisterEvent("UNIT_ENTERED_VEHICLE")
@@ -2881,7 +2828,7 @@ local function UnitButton_UnregisterEvents(self)
     self:UnregisterAllEvents()
 end
 
-local function UnitButton_OnEvent(self, event, unit)
+local function UnitButton_OnEvent(self, event, unit, ...)
     -- print(event, self:GetName(), unit, self.states.displayedUnit, self.states.unit)
     -- if UnitExists(unit) and (UnitIsUnit(unit, self.states.displayedUnit) or UnitIsUnit(unit, self.states.unit)) then
     if unit and (self.states.displayedUnit == unit or self.states.unit == unit or UnitIsUnit(unit, self.states.displayedUnit)) then
@@ -2910,10 +2857,8 @@ local function UnitButton_OnEvent(self, event, unit)
             UnitButton_UpdateHealAbsorbs(self, true)
             -- UnitButton_UpdateStatusText(self)
 
-        elseif event == "UNIT_HEAL_PREDICTION" then
-            if not CELL_USE_LIBHEALCOMM then
-                UnitButton_UpdateHealPrediction(self)
-            end
+        elseif event == "UNIT_HEAL_PREDICTION" or event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_CHANNEL_START" or event == "UNIT_SPELLCAST_CHANNEL_STOP" or event == "UNIT_SPELLCAST_DELAYED" then
+            UnitButton_UpdateHealPrediction(self)
 
         elseif event == "UNIT_MAXPOWER" then
             UnitButton_UpdatePowerStates(self)

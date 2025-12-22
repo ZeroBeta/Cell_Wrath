@@ -62,21 +62,6 @@ Cell.isMists   = (Cell.flavor == "mists")
 Cell.isTWW     = false -- definitely not TWW on 3.3.5a
 
 -------------------------------------------------
--- Heal Prediction API Auto-Detection
--- UnitGetIncomingHeals is Cataclysm+ API.
--- Sirus (3.3.5) has this API but it appears to be broken/dummy (returns 0/nil).
--- Ascension (3.3.5) has this API working.
--- Default behavior: Prefer LibHealComm on 3.3.5 to be safe, unless user explicitly opted for native API in snippets.
--------------------------------------------------
-if type(UnitGetIncomingHeals) ~= "function" then
-    -- Native API not available (standard WotLK)
-    CELL_USE_LIBHEALCOMM = true
-elseif CELL_USE_LIBHEALCOMM == nil then
-    -- API exists (Sirus or Ascension).
-    -- Since Sirus has a broken API, we default to LibHealComm to ensure functionality.
-    -- Users on Ascension who want native API performance can set CELL_USE_LIBHEALCOMM = false in Code Snippets.
-    CELL_USE_LIBHEALCOMM = true
-end
 
 if not IsMetaKeyDown then
     function IsMetaKeyDown() return false end

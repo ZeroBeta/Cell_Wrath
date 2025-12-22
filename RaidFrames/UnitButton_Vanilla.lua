@@ -13,7 +13,6 @@ local P = Cell.pixelPerfectFuncs
 ---@type CellAnimations
 local A = Cell.animations
 
-local HealComm
 
 CELL_FADE_OUT_HEALTH_PERCENT = nil
 
@@ -1872,7 +1871,6 @@ local function UnitButton_UpdateHealth(self, diff)
     end
 end
 
-local CELL_USE_LIBHEALCOMM = false
 local function UnitButton_UpdateHealPrediction(self)
     if not predictionEnabled then
         self.widgets.incomingHeal:Hide()
@@ -1882,21 +1880,7 @@ local function UnitButton_UpdateHealPrediction(self)
     local unit = self.states.displayedUnit
     if not unit then return end
 
-    local value = 0
-
-    if CELL_USE_LIBHEALCOMM and HealComm then
-        --! NOTE: use LibHealComm
-        if self.__displayedGuid then
-            local modifier = HealComm:GetHealModifier(self.__displayedGuid) or 1
-            value = (HealComm:GetHealAmount(self.__displayedGuid, HealComm.CASTED_HEALS) or 0) * modifier
-            -- local hot = select(3, HealComm:GetNextHealAmount(self.__displayedGuid, HealComm.HOT_HEALS)) or 0
-            -- NOTE: hots within 3 seconds
-            local hot = (HealComm:GetHealAmount(self.__displayedGuid, HealComm.OVERTIME_AND_BOMB_HEALS, GetTime()+3) or 0) * modifier
-            value = value + hot
-        end
-    else
-        value = UnitGetIncomingHeals(unit) or 0
-    end
+    local value = UnitGetIncomingHeals(unit) or 0
 
     if value == 0 then
         self.widgets.incomingHeal:Hide()
@@ -2144,32 +2128,6 @@ UnitButton_UpdateHealthColor = function(self)
 end
 
 -------------------------------------------------
--- LibHealComm
--------------------------------------------------
-if CELL_USE_LIBHEALCOMM then
-    HealComm = LibStub("LibHealComm-4.0", true)
-
-    if HealComm then
-        Cell.HealComm = {}
-        local function HealComm_UpdateHealPrediction(_, event, casterGUID, spellID, healType, endTime, ...)
-            -- print(event, casterGUID, spellID, healType, endTime, ...)
-            -- update incomingHeal
-            for i = 1, select("#", ...) do
-                F.HandleUnitButton("guid", select(i, ...), UnitButton_UpdateHealPrediction)
-            end
-        end
-        Cell.HealComm.HealComm_UpdateHealPrediction = HealComm_UpdateHealPrediction
-
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealStarted", "HealComm_UpdateHealPrediction")
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealUpdated", "HealComm_UpdateHealPrediction")
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealStopped", "HealComm_UpdateHealPrediction")
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_HealDelayed", "HealComm_UpdateHealPrediction")
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_ModifierChanged", "HealComm_UpdateHealPrediction")
-        HealComm.RegisterCallback(Cell.HealComm, "HealComm_GUIDDisappeared", "HealComm_UpdateHealPrediction")
-    end
-end
-
--------------------------------------------------
 -- cleu health updater
 -------------------------------------------------
 local cleuHealthUpdater = CreateFrame("Frame", "CellCleuHealthUpdater")
@@ -2380,9 +2338,7 @@ local function UnitButton_OnEvent(self, event, unit)
             -- UnitButton_UpdateStatusText(self)
 
         elseif event == "UNIT_HEAL_PREDICTION" then
-            if not CELL_USE_LIBHEALCOMM then
-                UnitButton_UpdateHealPrediction(self)
-            end
+            UnitButton_UpdateHealPrediction(self)
 
         elseif event == "UNIT_MAXPOWER" then
             UnitButton_UpdatePowerStates(self)
